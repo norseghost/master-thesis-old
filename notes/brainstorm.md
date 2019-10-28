@@ -9,7 +9,7 @@ Spændingsfelt i det daglige arbejde - ekstern kontrol opleves, at true faglig a
 spendingsfelt i uddannelsen - SL ønsker faglig specialisering igen; en gang ønske om 5-árig udd
  → de er blevet professionsbachelorer; men ser en 'ære' i, at være 'oplært i virkeligheden'
  → der savnes sammenhæng ml teoretiske begreber og praksis fra nyuddannede?
-    mener der stod noget om det i Socialpædagoig for noget tid siden
+    mener der stod noget om det i Socialpædagogen for noget tid siden
 
 ## Styringsmekanismer
 APST: 'her er vi nu'
@@ -34,6 +34,8 @@ Pædagogerne
 - sociallovgiving, tilsynsformer
 - uddannetsesbekendtgørelser over tid
 
+- kurser/videreuddannelse
+
 ## Teori
 
 udforske professionsociologien
@@ -42,4 +44,11 @@ policy-arkæologi (foucault)
 accountablity - O'Day
 Måske hellere capability approach i dette?
 Goffman - institutionens underliv/de arbejdende på den totale institution
+
+
+## TODO
+
+kontakte Ann Nedergaard Frederiksen ang mulig erhvervsspeciale
+LITTERATUR
+
 
