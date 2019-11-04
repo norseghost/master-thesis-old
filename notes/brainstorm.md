@@ -38,6 +38,10 @@ Pædagogerne
 
 ## Teori
 
+begrebernes histore?
+- velfærdsprofessioner
+- fagprofessionelle
+- semiprofessioner
 udforske professionsociologien
 Campbell's matrix
 policy-arkæologi (foucault)
