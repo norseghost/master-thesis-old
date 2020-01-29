@@ -6,6 +6,8 @@ tags
 
 # or the literature
 lit/
+# data is pre-generated, no need to track
+data/
 # dont keep non-clean data
 old*
 ## Core latex/pdflatex auxiliary files:
