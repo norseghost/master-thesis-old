@@ -1,17 +1,25 @@
-\section{metode}
+\section{Metode}
 
-\subsection{dataindsamling og analyse}
+\subsection{Dataindsamling og analyse}
 
-gennemgang af folketingstaler fra 1953--> nu
+Jeg vil foretage en gennemgang af folketingstaler fra 1953 indtil nu.
 
-data fra scraping af folketingstidende.dk;
+Data er hentet via scraping af folketingstidende.dk \autocite{pedersenFolketinget2019}
+
 fejlkilder: ocr/tekstkonverteringsfejl; mis-attributering;
 
 databearbejdning - jeg har tekst med metadata; hvordan forstå tekst som sprog?
 
-udpipe --> annoterer tekst som tale/setningsled/etc
+generel proces fra \autocite{kwartlerTextMiningPractice2017}
 
-lemmatization
+
+
+udpipe -->  annoterer tekst som tale/setningsled/etc
+
+vs Bag-of-words analyse
+
+lemmatization og stopwords.
+Domænespecifikke stopwords pákrævede - mange ministre fx
 
 vowpal wabbit --> noget med hashing, der giver en numerisk betegnelse for bestemte ord
 
@@ -19,14 +27,14 @@ manuelt, liste af ord pr dokument, stopwords (tidytext)
 
 metode: lda topic modeling, der ser på en gruppe dokumenter, og fors
 
-ser på det øverste (og lidt af det midterste) af tre niveauer i teksanalayse
+ser på det øverste (og lidt af det midterste) af tre niveauer i tekstanalyse \autocite{evansMachineTranslationMining2016}
 
 indhold — proces — signaler 
 
-10.1146/annurev-soc-081715-074206
+BoW analyse ser på indhold
 
 sentiment analysis — for at få øje på de nedre niveauer
-→ hvad synes de om det?
+→ hvad synes de om det? (udpipe forsøger)
 
 \subsection{Analysestrategi}
 
@@ -42,4 +50,4 @@ makro eller mikro?
 
 Bourdieu --> kapitaler
 Bernstein --> koder
-(lidt fra en side) positioning theory --> hvordan omtaler man andre for at positionere sig selv (og de andre)?
+positioning theory --> hvordan omtaler man andre for at positionere sig selv (og de andre)?
