@@ -7,11 +7,32 @@ library(tm)
 library(here)
 library(parallel)
 
-ft_speeches <- fread(here("data/folketinget_1953_2019_raw.csv"))
+ft_raw <- fread(here("data/folketinget_1953_2019_raw.csv"))
+# prepare udpipe for lemmatization
+library(udpipe)
+udmodel <- udpipe_download_model("danish")
+lemmatize_speeches <- function(text) {
+    dt <- udpipe_annotate(
+        object = udpipe_load_model(udmodel$file_model),
+        x = text,
+        doc_id = "1",
+        tagger = "default",
+        parser = "none",
+        trace = 0
+    ) %>% as.data.table
+    lemmata <- dt %>%
+        select(lemma) %>%
+        unlist %>%
+        str_c(collapse = " ")
+    return(lemmata)
+}
+
+test <- lemmatize_speeches(ft_raw$text[[355]], ft_raw$doc_id[[355]])
 
 
 # I'll probably want more stopwords later
 # after some exploratory analysis
+
 ft_stopwords <- c(stopwords("danish"))
 clean_text <- function(text) {
     text %>%
@@ -25,14 +46,19 @@ clean_text <- function(text) {
     tolower
 }
 
-ft_speeches[, text := sapply(
+ft_clean <- ft_raw[, text := sapply(
                              .SD[, text], clean_text),
              by = .groups]
+
+ft_lemmatized <- ft_clean[, text := sapply(
+                             .SD[, text], lemmatize_speeches),
+             by = .groups]
+
 # tried running this in parallel
 # but that killed my laptop :(
 # OOm maybe?
- cluster <- makePSOCKcluster(names = 4, outfile = "")
-# the cluster needs to see my stopwords
+cluster <- makePSOCKcluster(names = 4, outfile = "")
+# the cluster needs to se e my stopwords
 clusterExport(
         cl = cluster,
         varlist = c("ft_stopwords"),
