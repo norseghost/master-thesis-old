@@ -1,30 +1,60 @@
-\section{Metode}
+\section{Metode}\label{sec:method}
 
-\subsection{Dataindsamling og analyse}
+\epigraph{\itshape
+“Når jeg anvender et ord,” sagde Klumpe-Dumpe temmelig hånligt, “så betyder det lige netop, hvad jeg vil have, det skal betyde - hverken mere eller mindre.”
 
-Jeg vil foretage en gennemgang af folketingstaler fra 1953 indtil nu.
+“Men spørgsmålet er,” sagde Alice, “om du kan få ordene til at betyde vidt forskellige ting.”
 
-Data er hentet via scraping af folketingstidende.dk \autocite{pedersenFolketinget2019}
+“Spørgsmålet er,” sagde Klumpe-Dumpe, “hvem det er, der bestemmer - det er det, der er det afgørende.”
+}{Lewis Carroll, \textit{Bag spejlet, og hvad Alice fandt der} (\citeyear{carrollAliceEventyrlandOg1977})}
 
-fejlkilder: ocr/tekstkonverteringsfejl; mis-attributering;
+Ord er bærende for meget af den mellemenneskelige kommunikation.
+Nu kan de færreste af os tillade os en så egenrådig tilgang til ords betydning som Klumpe-Dumpe.
+Ord har kun den mening, vi I fællesskab lægger i dem.
+Denne mening er ikke nødvendigvis statisk, og nye fænomener nødvendiggør også til tider nye begreber.
 
-databearbejdning - jeg har tekst med metadata; hvordan forstå tekst som sprog?
+Et sådant forholdsvist nyt fænomen er computerbehandling af tekst.
+Dette går gerne under betegnelser som “Natural Language Processing” — eller NLP\footnote{Ej at forveksle med den anden NLP; “NeuroLignuistic Programming”}, eller tekstmining\footnote{Der er semantiske forskelle i disse samlebegreber; men de er ikke gensidigt udelukkende}.
+Muligheden for, at lade computerprogrammer og algoritmer tygge sig igennem store mængder sprog har ikke kun ført til, at Google og Facebook ved mere om dig en din din familie.
+Den har også banet vej for, en ny måde at gøre sociologi på — den “algoritmiske sociologi” (eng. “computational sociology”)\todo{kilde: computational sociology}.
+Dette speciale lægger sig i denne voksende tradition.
 
-generel proces fra \autocite{kwartlerTextMiningPractice2017}
+Men computeroptællinger alene gør ikke en sociologisk undersøgelse.
+Der er stadigvæk behov for begrebsrammer, der kan underbygge en forståelse af de samspilsprocesser der udgør kommunikation.
+Jeg vil i denne opgave benytte mig af positioneringsteori; der ser på talehandlinger i en socialt konstrueret virkelighed\todo{kilde: pos theory}.
+\todo{knyt Klumpe-Dumpe og at det gælder, at bestemme, op til pos theory}
 
+Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
+Derefter vil jeg præsentere positioneringsteori, og hvorfor jeg mener, den giver en anvendelig begrebsamme til at drage indsigter ud af min analyse.
 
+\subsection{Dataindsamling og analyse}\label{sec:data}
 
-udpipe -->  annoterer tekst som tale/setningsled/etc
+Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1953 indtil primo 2020.
+Datasættet er dannet ved, at hente mødereferater i PDF-form fra folketingstidende.dk, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold  \autocite{pedersenFolketinget2019}.
 
-vs Bag-of-words analyse
+En sådan indsamlingsproces er ikke uden fejlkilder. Konvertering fra PDF til tekstformat kan medføre fejl i overgangen, og uregelmæssigheder i dokumentet kan fx medføre mis-attributering af talere.\todo{kilde: PDF ingest fejlkilder}
+Dette for at understrege, at en analyse forholder sig til, de data der foreligger.
+En gennemgang af tilfældige taler viser nogle tydelige tekstgenkendelsesfejl, for eksempel.
+Denne kilde til usikkerhed er det vigtigt at være bevidst.
 
-lemmatization og stopwords.
-Domænespecifikke stopwords pákrævede - mange ministre fx
+\subsubsection{Tekstmining eller NLP}
+
+NLP - behandling af naturligt sprog;  ikke nødvendigvis kun tekst. udleder semantisk betydning af sprog - grammatik, sœtningsstruktur, osv. Dette er dog krævende beregninger!
+tekst mining - udledning af data fra en samling tekst. Ord rystes sammen, uden hensyntagen til deres placering i dokumentet - typisk kaldet en Bag of Words-model. Dog kan nogle modeller for tekstanalyse se på n-grams (n ord der forekommer sammen), eller skip-grams (ord der er n ord fra hinanden) som analyseobjekt. \todo{skal jeg bruge n/skip grams mon?}
+I tekstmining laver man matematiske kodeller over forhold mellem ord og dokumenter.
+Sådan en analyse kan drage nytte af NLP, idet det semantisk rigt data er nemmere at udlede indsigter fra.
+
+\citeauthor{evansMachineTranslationMining2016} beskriver tre niveauer indenfor tekstanalyse.
+\begin{itemize}
+  \item
+    Man kan se på tekstens indhold, overordnet set
+  \item
+    man kan se på kommunikationsprocessen
+  \item
+    man kan se på sociale signaler
+
 
 vowpal wabbit --> noget med hashing, der giver en numerisk betegnelse for bestemte ord
-
-manuelt, liste af ord pr dokument, stopwords (tidytext)
-
 metode: lda topic modeling, der ser på en gruppe dokumenter, og fors
 
 ser på det øverste (og lidt af det midterste) af tre niveauer i tekstanalyse \autocite{evansMachineTranslationMining2016}
@@ -35,6 +65,17 @@ BoW analyse ser på indhold
 
 sentiment analysis — for at få øje på de nedre niveauer
 → hvad synes de om det? (udpipe forsøger)
+
+\subsubsection{Forhåndsbearbejdning af data}\label{sec:preproc}
+
+jeg har tekst (med metadata); hvordan kunne analysere den?
+
+generel proces fra \autocite{kwartlerTextMiningPractice2017}
+
+manuelt, liste af ord pr dokument, stopwords (tidytext)
+
+lemmatization og stopwords.
+Domænespecifikke stopwords pákrævede - mange ministre fx
 
 \subsection{Analysestrategi}
 
