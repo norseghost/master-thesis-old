@@ -14,17 +14,25 @@ Ord har kun den mening, vi I fællesskab lægger i dem.
 Denne mening er ikke nødvendigvis statisk, og nye fænomener nødvendiggør også til tider nye begreber.
 
 Et sådant forholdsvist nyt fænomen er computerbehandling af tekst.
-Dette går gerne under betegnelser som “Natural Language Processing” — eller NLP\footnote{Ej at forveksle med den anden NLP; “NeuroLignuistic Programming”}, eller tekstmining\footnote{Der er semantiske forskelle i disse samlebegreber; men de er ikke gensidigt udelukkende}.
-Muligheden for, at lade computerprogrammer og algoritmer tygge sig igennem store mængder sprog har ikke kun ført til, at Google og Facebook ved mere om dig en din din familie.
+Dette går gerne under betegnelser som “Natural Language Processing” — eller NLP\footnote{Ej at forveksle med den anden NLP; “NeuroLinguistic Programming”}, eller tekstmining\footnote{Der er semantiske forskelle i disse samlebegreber; men de er ikke gensidigt udelukkende}.
+Muligheden for, at lade computerprogrammer og algoritmer tygge sig igennem store mængder sprog har ikke kun ført til, at Google og Facebook ved mere om dig en din familie.
 Den har også banet vej for, en ny måde at gøre sociologi på — den “algoritmiske sociologi” (eng. “computational sociology”)\todo{kilde: computational sociology}.
 Dette speciale lægger sig i denne voksende tradition.
 
 Men computeroptællinger alene gør ikke en sociologisk undersøgelse.
 Der er stadigvæk behov for begrebsrammer, der kan underbygge en forståelse af de samspilsprocesser der udgør kommunikation.
 Jeg vil i denne opgave benytte mig af positioneringsteori; der ser på talehandlinger i en socialt konstrueret virkelighed\todo{kilde: pos theory}.
+
 \todo{knyt Klumpe-Dumpe og at det gælder, at bestemme, op til pos theory}
 
-Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
+Ved at se på tekst som repræsentationer af social samhandling, kan man udlede meget af det sociale spil der har foregået.
+bundet op på tekstens niveau af nærhed til det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion\todo{omskriv tekst ift socialt spildet aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion\todo{omskriv tekst ift socialt spil}
+For dette speciales vedkommende, hvor teksten er referater af folketingstaler, er afstanden til det spil, der foregår på den politiske arena forholdsvis kort.
+Derved ser jeg gode muligheder for, at kunne danne insigter i det politiske spil i min analyse.
+
+
+
+ \todo{en bedre overgang}Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
 Derefter vil jeg præsentere positioneringsteori, og hvorfor jeg mener, den giver en anvendelig begrebsamme til at drage indsigter ud af min analyse.
 
 \subsection{Dataindsamling og analyse}\label{sec:data}
@@ -37,17 +45,29 @@ Dette for at understrege, at en analyse forholder sig til, de data der foreligge
 En gennemgang af tilfældige taler viser nogle tydelige tekstgenkendelsesfejl, for eksempel.
 Denne kilde til usikkerhed er det vigtigt at være bevidst.
 
-\subsubsection{Tekstmining eller NLP}
+\subsubsection{Den algoritmiske sociologis muligheder og begrensninger}
+
+Tekst er kun et subset af kommunikation; der er dele af det sociale spil der kun foregår IRL, og tekst er en form for abstraheret repræsentation af disse \autocite[s. 22]{evansMachineTranslationMining2016}
+
+begrensninger først:
+
+Computeren har ikke samme sociale og historiske kontekst som fx i \citeauthor{juulDiskurserOmUngdom2013} i \citetitle{juulDiskurserOmUngdom2013}; og kan give en mere overfladisk analyse.
+
+muligheder:
+
+strukturerede klassifikationsalgoritmer kan give pålidelige klassifikationer af massive samlinger af tekst, der langt overgår den enkelte forskers kapacitet.
+Ustrukturerede algoritmer kan afdække strukturer i tekstmaterialet, der kan have sociologisk interesse.
+De seneste års udviklinger indenfor analyseteknologier kan også udlede mening af fx sætningsstrukturer og kontekst, til en vis grad \autocite[s. 22]{evansMachineTranslationMining2016}.
 
 NLP - behandling af naturligt sprog;  ikke nødvendigvis kun tekst. udleder semantisk betydning af sprog - grammatik, sœtningsstruktur, osv. Dette er dog krævende beregninger!
 tekst mining - udledning af data fra en samling tekst. Ord rystes sammen, uden hensyntagen til deres placering i dokumentet - typisk kaldet en Bag of Words-model. Dog kan nogle modeller for tekstanalyse se på n-grams (n ord der forekommer sammen), eller skip-grams (ord der er n ord fra hinanden) som analyseobjekt. \todo{skal jeg bruge n/skip grams mon?}
-I tekstmining laver man matematiske kodeller over forhold mellem ord og dokumenter.
+I tekstmining laver man matematiske modeller over forhold mellem ord og dokumenter.
 Sådan en analyse kan drage nytte af NLP, idet det semantisk rigt data er nemmere at udlede indsigter fra.
 
 \citeauthor{evansMachineTranslationMining2016} beskriver tre niveauer indenfor tekstanalyse.
 \begin{itemize}
   \item
-    Man kan se på tekstens indhold, overordnet set
+    Man kan se på tekstens indhold, overordnet set, og udlede kollektive tankemønstre og beslutningsprocesser
   \item
     man kan se på kommunikationsprocessen
   \item
@@ -58,13 +78,6 @@ vowpal wabbit --> noget med hashing, der giver en numerisk betegnelse for bestem
 metode: lda topic modeling, der ser på en gruppe dokumenter, og fors
 
 ser på det øverste (og lidt af det midterste) af tre niveauer i tekstanalyse \autocite{evansMachineTranslationMining2016}
-
-indhold — proces — signaler 
-
-BoW analyse ser på indhold
-
-sentiment analysis — for at få øje på de nedre niveauer
-→ hvad synes de om det? (udpipe forsøger)
 
 \subsubsection{Forhåndsbearbejdning af data}\label{sec:preproc}
 
