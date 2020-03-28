@@ -1,4 +1,4 @@
-\section{Metode}\label{sec:method}
+\part{Metodiske og analytiske overvejelser}\label{part:method}
 
 \epigraph{\itshape
 “Når jeg anvender et ord,” sagde Klumpe-Dumpe temmelig hånligt, “så betyder det lige netop, hvad jeg vil have, det skal betyde - hverken mere eller mindre.”
@@ -13,6 +13,7 @@ Nu kan de færreste af os tillade os en så egenrådig tilgang til ords betydnin
 Ord har kun den mening, vi I fællesskab lægger i dem.
 Denne mening er ikke nødvendigvis statisk, og nye fænomener nødvendiggør også til tider nye begreber.
 
+
 Et sådant forholdsvist nyt fænomen er computerbehandling af tekst.
 Dette går gerne under betegnelser som “Natural Language Processing” — eller NLP\footnote{Ej at forveksle med den anden NLP; “NeuroLinguistic Programming”}, eller tekstmining\footnote{Der er semantiske forskelle i disse samlebegreber; men de er ikke gensidigt udelukkende}.
 Muligheden for, at lade computerprogrammer og algoritmer tygge sig igennem store mængder sprog har ikke kun ført til, at Google og Facebook ved mere om dig en din familie.
@@ -26,7 +27,7 @@ Jeg vil i denne opgave benytte mig af positioneringsteori; der ser på talehandl
 \todo{knyt Klumpe-Dumpe og at det gælder, at bestemme, op til pos theory}
 
 Ved at se på tekst som repræsentationer af social samhandling, kan man udlede meget af det sociale spil der har foregået.
-bundet op på tekstens niveau af nærhed til det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion\todo{omskriv tekst ift socialt spildet aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion\todo{omskriv tekst ift socialt spil}
+bundet op på tekstens niveau af nærhed til det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion\todo{omskriv tekst ift socialt spil}
 For dette speciales vedkommende, hvor teksten er referater af folketingstaler, er afstanden til det spil, der foregår på den politiske arena forholdsvis kort.
 Derved ser jeg gode muligheder for, at kunne danne insigter i det politiske spil i min analyse.
 
@@ -35,7 +36,7 @@ Derved ser jeg gode muligheder for, at kunne danne insigter i det politiske spil
  \todo{en bedre overgang}Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
 Derefter vil jeg præsentere positioneringsteori, og hvorfor jeg mener, den giver en anvendelig begrebsamme til at drage indsigter ud af min analyse.
 
-\subsection{Dataindsamling og analyse}\label{sec:data}
+\section{Dataindsamling og analyse}\label{sec:data}
 
 Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1953 indtil primo 2020.
 Datasættet er dannet ved, at hente mødereferater i PDF-form fra folketingstidende.dk, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold  \autocite{pedersenFolketinget2019}.
@@ -45,7 +46,7 @@ Dette for at understrege, at en analyse forholder sig til, de data der foreligge
 En gennemgang af tilfældige taler viser nogle tydelige tekstgenkendelsesfejl, for eksempel.
 Denne kilde til usikkerhed er det vigtigt at være bevidst.
 
-\subsubsection{Den algoritmiske sociologis muligheder og begrensninger}
+\subsection{Den algoritmiske sociologis muligheder og begrensninger}
 
 Tekst er kun et subset af kommunikation; der er dele af det sociale spil der kun foregår IRL, og tekst er en form for abstraheret repræsentation af disse \autocite[s. 22]{evansMachineTranslationMining2016}
 
@@ -79,7 +80,7 @@ metode: lda topic modeling, der ser på en gruppe dokumenter, og fors
 
 ser på det øverste (og lidt af det midterste) af tre niveauer i tekstanalyse \autocite{evansMachineTranslationMining2016}
 
-\subsubsection{Forhåndsbearbejdning af data}\label{sec:preproc}
+\subsection{Forhåndsbearbejdning af data}\label{sec:preproc}
 
 jeg har tekst (med metadata); hvordan kunne analysere den?
 
@@ -90,7 +91,7 @@ manuelt, liste af ord pr dokument, stopwords (tidytext)
 lemmatization og stopwords.
 Domænespecifikke stopwords pákrævede - mange ministre fx
 
-\subsection{Analysestrategi}
+\section{Analysestrategi}
 
 topic modeling giver hvad-de-taler-om
 
