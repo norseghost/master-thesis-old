@@ -36,7 +36,7 @@ ft_stopwords <- c(
         "https://raw.githubusercontent.com/stopwords-iso/stopwords-da/master/stopwords-da.txt",
         warn = FALSE),
     readLines(
-        here("bin/stopwords.txt"))
+        here("lib/stopwords.txt"))
 )
 
 clean_text <- function(text) {
