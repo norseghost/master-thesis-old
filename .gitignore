@@ -1,6 +1,6 @@
 # I don't care about the output PDF
 *.pdf
-tex/.txt
+tex/*.txt
 *.docx*
 tags
 
