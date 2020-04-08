@@ -3,6 +3,7 @@
 tex/*.txt
 *.docx*
 tags
+*.udpipe
 
 # or the literature
 lit/
