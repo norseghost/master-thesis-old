@@ -11,7 +11,12 @@ ft_raw <- fread(here("data/folketinget_1953_2019_raw.csv"))
 
 # prepare udpipe for lemmatization
 library(udpipe)
-udmodel <- udpipe_download_model("danish")
+udmodel <- udpipe_download_model(
+    language = "danish",
+    model_dir = here("lib/"),
+    overwrite = FALSE
+)
+
 lemmatize <- function(text) {
     dt <- udpipe_annotate(
         object = udpipe_load_model(udmodel$file_model),
