@@ -36,7 +36,7 @@ Derved ser jeg gode muligheder for, at kunne danne insigter i det politiske spil
  \todo{en bedre overgang}Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
 Derefter vil jeg præsentere positioneringsteori, og hvorfor jeg mener, den giver en anvendelig begrebsamme til at drage indsigter ud af min analyse.
 
-\section{Dataindsamling og analyse}\label{sec:data}
+\chapter{Dataindsamling og analyse}\label{chap:data}
 
 Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1953 indtil primo 2020.
 Datasættet er dannet ved, at hente mødereferater i PDF-form fra folketingstidende.dk, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold  \autocite{pedersenFolketinget2019}.
@@ -46,7 +46,7 @@ Dette for at understrege, at en analyse forholder sig til, de data der foreligge
 En gennemgang af tilfældige taler viser nogle tydelige tekstgenkendelsesfejl, for eksempel.
 Denne kilde til usikkerhed er det vigtigt at være bevidst.
 
-\subsection{Den algoritmiske sociologis muligheder og begrensninger}
+\section{Den algoritmiske sociologis muligheder og begrensninger}
 
 Tekst er kun et subset af kommunikation; der er dele af det sociale spil der kun foregår IRL, og tekst er en form for abstraheret repræsentation af disse \autocite[s. 22]{evansMachineTranslationMining2016}
 
@@ -80,18 +80,18 @@ metode: lda topic modeling, der ser på en gruppe dokumenter, og fors
 
 ser på det øverste (og lidt af det midterste) af tre niveauer i tekstanalyse \autocite{evansMachineTranslationMining2016}
 
-\subsection{Forhåndsbearbejdning af data}\label{sec:preproc}
+\section{Forhåndsbearbejdning af data}\label{sec:preproc}
 
 jeg har tekst (med metadata); hvordan kunne analysere den?
 
-generel proces fra \autocite{kwartlerTextMiningPractice2017}
+generel proces fra \autocite{kwartlerTextMinngPractice2017}
 
 manuelt, liste af ord pr dokument, stopwords (tidytext)
 
 lemmatization og stopwords.
 Domænespecifikke stopwords pákrævede - mange ministre fx
 
-\section{Analysestrategi}
+\chapter{Analysestrategi}\label{chap:strategy}
 
 topic modeling giver hvad-de-taler-om
 
