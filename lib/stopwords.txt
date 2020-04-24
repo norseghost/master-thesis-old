@@ -21,4 +21,5 @@ f.t.
 forslag
 lovforslag
 lovforslaget
-lovforslagene bemærkning
+lovforslagene
+bemærkning
