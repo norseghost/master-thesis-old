@@ -13,9 +13,9 @@ ft_raw <- fread(here("data/folketinget_1953_2019_raw.csv"))
 library(udpipe)
 udmodel <- udpipe_download_model(
     language = "danish",
-    model_dir = here("lib/"),
     overwrite = FALSE
 )
+
 
 lemmatize <- function(text) {
     dt <- udpipe_annotate(
@@ -36,12 +36,10 @@ lemmatize <- function(text) {
 # I'll probably want more stopwords later
 # after some exploratory analysis
 ft_stopwords <- c(
-
+    readLines(here("lib/stopwords.txt")),
     readLines(
         "https://raw.githubusercontent.com/stopwords-iso/stopwords-da/master/stopwords-da.txt",
-        warn = FALSE),
-    readLines(
-        here("lib/stopwords.txt"))
+        warn = FALSE)
 )
 
 clean_text <- function(text) {
@@ -49,13 +47,14 @@ clean_text <- function(text) {
     tolower %>%
     removeNumbers %>%
     removePunctuation %>%
-    removeWords(stopwords) %>%
+    removeWords(ft_stopwords) %>%
     lemmatize %>%
     # the corpus contains occurences of hangul character
     # hwalp - 홢 - this is unwanted
     str_remove_all(., "홢") %>%
     stripWhitespace
 }
+
 gr99 <- ft_raw[.groups == 99] %>% as.data.table
 
 gr99_clean <- gr99[, text := sapply(
@@ -64,11 +63,13 @@ gr99_clean <- gr99[, text := sapply(
 
 # set up parallel processing
 library(parallel)
-cluster <- makeForkCluster(nnodes = 3, outfile = "")
+cluster <- makePSOCKcluster(
+                names = 20,
+        )
 # the cluster needs to se e my stopwords
 clusterExport(
         cl = cluster,
-        varlist = c("ft_stopwords", "lemmatize", "clean_text"),
+        varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
         envir = .GlobalEnv
 )
 #and needs to have the required libraries loaded
@@ -79,13 +80,14 @@ clusterEvalQ(
         library(udpipe)
     }
 )
+
 gr99_clean <- gr99[, text := parSapply(
                             cluster, .SD[, text], clean_text),
              by = .I]
 
 # apply the cleaning operation in parallel
 # the dataset is already prepared in 100 batches
-ft_speeches[, text := parSapply(
+ft_clean <- ft_raw[, text := parSapply(
                             cluster, .SD[, text], clean_text),
             by = .groups]
 
