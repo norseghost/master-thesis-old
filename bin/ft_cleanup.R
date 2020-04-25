@@ -55,16 +55,11 @@ clean_text <- function(text) {
     stripWhitespace
 }
 
-gr99 <- ft_raw[.groups == 99] %>% as.data.table
-
-gr99_clean <- gr99[, text := sapply(
-                            .SD[, text], clean_text),
-             by = .I]
 
 # set up parallel processing
 library(parallel)
 cluster <- makePSOCKcluster(
-                names = 20,
+                names = 8
         )
 # the cluster needs to se e my stopwords
 clusterExport(
@@ -78,12 +73,9 @@ clusterEvalQ(
         library(tm)
         library(tidyverse)
         library(udpipe)
+        library(data.table)
     }
 )
-
-gr99_clean <- gr99[, text := parSapply(
-                            cluster, .SD[, text], clean_text),
-             by = .I]
 
 # apply the cleaning operation in parallel
 # the dataset is already prepared in 100 batches
@@ -105,3 +97,13 @@ ft_clean <- ft_raw[, text := sapply(
 ft_lemmatized <- ft_clean[, text := sapply(
                              .SD[, text], lemmatize),
              by = .groups]
+
+gr99 <- ft_raw[.groups == 99] %>% as.data.table
+
+gr99_clean <- gr99[, text := sapply(
+                            .SD[, text], clean_text),
+             by = .I]
+gr99_clean <- gr99[, text := parSapply(
+                            cluster, .SD[, text], clean_text),
+             by = .I]
+
