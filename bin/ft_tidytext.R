@@ -5,14 +5,32 @@ library(tidyverse)
 library(tidytext)
 library(tm)
 library(here)
+library(future)
+plan(multicore)
 
-ft_raw <- read_csv(here("data/folketinget_1953_2019_raw.csv"))
+ft_speeches <- read_csv(here("data/ft_lematized_timeseries.csv"))
+factor
+ft_tidy <- ft_speeches  %>%
+    unnest_tokens(lemma, text)
 
-group_99 <- read_csv(here("data/group99_clean_lemmatized.csv"))
+# count token occurrences across documents
 
-group_99_tidy <- group_99  %>%
-    unnest_tokens(lemma, text) %>%
-    count(lemma, doc_id, sort = TRUE)
+ft_tidy <- read_csv(here("data/ft_tidy_lemmatized.csv"))
+
+ft_periods <- ft_tidy %>%
+    distinct(timeseries) %>%
+    pull
+
+ft_periods_tokens <- vector("list", length(ft_periods))
+names(ft_periods_tokens) <- ft_periods
+for (i in seq_along(ft_periods)) {
+    ft_periods_tokens[[i]] <- ft_tidy %>%
+        filter(timeseries == ft_periods[[i]]) %>%
+        count(lemma, doc_id, sort = TRUE)
+}
+
+
+
 
 group_99_tidy %>%
     count(lemma, sort = TRUE) %>%
@@ -26,7 +44,7 @@ group_99_tidy %>%
 group99_tfidf <- group_99_tidy %>%
     bind_tf_idf(lemma, doc_id, n)
 
-group99_tfidf %>% 
+group99_tfidf %>%
     arrange(desc(tf_idf)) %>%
     str_detect(, "udd")
 
