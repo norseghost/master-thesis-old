@@ -36,6 +36,55 @@ for (i in seq_along(ft_periods)) {
 }
 
 
+ft_periods_tokens <- ft_periods_tokens[-c(1,4)]
+
+ft_periods_tokens[["all"]] <- ft_tidy %>%
+    filter(timeseries == names(ft_periods_tokens)) %>%
+    count(lemma, doc_id, sort = TRUE)
+
+saveRDS(ft_periods_tokens, here("data/ft_periods_tokens.rds"))
+
+ft_periods_tokens <- readRDS(here("data/ft_periods_tokens.rds"))
+
+
+ft_periods_tfidf <- ft_periods_tokens %>%
+    map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
+    values %>%
+    # filter out terms that are in the lower 40 percent of
+    # tf_idf score per corpus
+    map(~ filter(.x, tf_idf > quantile(tf_idf, .4, na.rm = TRUE)))
+
+ft_periods_dtm <- ft_periods_tfidf %>%
+    map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
+    values
+
+ft_periods_models <- ft_periods_dtm %>%
+    map(~ FindTopicsNumber(
+      .x,
+      topics = seq(from = 2, to = 30, by = 1),
+      metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
+      method = "Gibbs",
+      control = list(seed = 1234)
+    ))
+
+# TODO: Run a coherence score test per period to determine 'k'
+# https://towardsdatascience.com/beginners-guide-to-lda-topic-modelling-with-r-e57a5a8e7a25
+k_list <- seq(1, 20, by = 1)
+generate_models <- function(dtm, ks) {
+            # filename <- file.path(here("models/"), paste0(k, "_topics.rda"))
+            # if (!file.exists(filename)) {
+    models <- vector("list", length(ks))
+    for (k in seq_along(ks)) {
+                models[[k]] <- FitLdaModel(dtm = dtm, k = k, method = "vem")
+                models[[k]]$k <- k
+                models[[k]]$coherence <- CalcProbCoherence(phi = m$phi, dtm = dtm, M = 5)
+           }
+                # save(m, file = filename)
+            # } else {
+            #     load(filename)
+            # }
+}
+
 
 
 group_99_tidy %>%
