@@ -15,7 +15,7 @@ options(future.globals.maxSize = 8912896000)
 plan(multicore)
 
 ft_speeches <- read_csv(here("data/ft_lematized_timeseries.csv"))
-factor
+
 ft_tidy <- ft_speeches  %>%
     unnest_tokens(lemma, text)
 
@@ -86,43 +86,47 @@ generate_models <- function(dtm, ks) {
 }
 
 
+ft_periods_lda <- ft_periods_dtm %>%
+    map(~ future(LDA(.x, k = 15, control = list(seed = 1234)))) %>%
+    values
 
-group_99_tidy %>%
-    count(lemma, sort = TRUE) %>%
-    filter(n > 2500) %>%
-    mutate(lemma = reorder(lemma, n)) %>%
-    ggplot(aes(lemma, n)) +
-    geom_col() +
-    xlab(NULL) +
-    coord_flip()
+ft_periods_docs <- ft_periods_lda %>%
+    map(~ future(tidy(.x, matrix = "gamma"))) %>%
+    values
 
-group99_tfidf <- group_99_tidy %>%
-    bind_tf_idf(lemma, doc_id, n)
 
-group99_tfidf %>%
-    arrange(desc(tf_idf)) %>%
-    str_detect(, "udd")
+ft_periods_topics <- ft_periods_lda %>%
+    map(~ future(tidy(.x, matrix = "beta"))) %>%
+    values
 
-group99_dtm <- group_99_tidy %>%
-    cast_dtm(doc_id, lemma, n)
+# TODO: run this for all periods
+ft_assignments <- augment(ft_periods_lda[[3]], data = ft_periods_dtm[[3]])
 
-library(topicmodels)
-group_99_lda <- LDA(group99_dtm, k = 24, control = list(seed = 1234))
 
-gr99_topics <- tidy(group_99_lda, matrix = "beta")
+# TODO: I'm writing a shitty and probably slow reimplementatin of map
+#       This is probably ill advised, but seems faster than getting map to work
+ft_periods_top_terms <- vector("list", length(ft_periods))
+names(ft_periods_top_terms) <- ft_periods
+for (i in seq_along(ft_periods)) {
+ft_periods_top_terms[[i]] <- ft_periods_topics[[i]] %>%
+        group_by(topic) %>%
+        top_n(15, beta) %>%
+        ungroup() %>%
+        arrange(topic, -beta)
+}
 
-gr99_top_terms <- gr99_topics %>%
-    group_by(topic) %>%
-    top_n(15, beta) %>%
-    ungroup() %>%
-    arrange(topic, -beta)
+ft_periods_term_plots  <- vector("list", length(ft_periods))
+names(ft_periods_top_terms) <- ft_periods
+for (i in seq_along(ft_periods)) {
+ft_periods_term_plots[[i]] <- ft_periods_top_terms[[i]] %>%
+        mutate(term = reorder_within(term, beta, topic)) %>%
+        ggplot(aes(term, beta, fill = factor(topic))) +
+        geom_col(show.legend = FALSE) +
+        facet_wrap(~ topic, scales = "free") +
+        coord_flip() +
+        scale_x_reordered()
+}
 
-gr99_top_terms %>%
-    mutate(term = reorder_within(term, beta, topic)) %>%
-    ggplot(aes(term, beta, fill = factor(topic))) +
-    geom_col(show.legend = FALSE) +
-    facet_wrap(~ topic, scales = "free") +
-    coord_flip() +
-    scale_x_reordered()
+paths <- str_c(names(ft_periods_top_terms), ".pdf")
 
-ggsave("gr99-2.png", path = here("fig"))
+pwalk(list(paths, ft_periods_term_plots), ggsave, path = here("fig"))
