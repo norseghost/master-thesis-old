@@ -8,6 +8,8 @@
 “Spørgsmålet er,” sagde Klumpe-Dumpe, “hvem det er, der bestemmer - det er det, der er det afgørende.”
 }{Lewis Carroll, \textit{Bag spejlet, og hvad Alice fandt der} (\citeyear{carrollAliceEventyrlandOg1977})}
 
+\chapter{Den algoritmiske sociologis muligheder og begrensninger}
+
 Ord er bærende for meget af den mellemenneskelige kommunikation.
 Nu kan de færreste af os tillade os en så egenrådig tilgang til ords betydning som Klumpe-Dumpe.
 Ord har kun den mening, vi I fællesskab lægger i dem.
@@ -19,51 +21,41 @@ Dette går gerne under betegnelser som “Natural Language Processing” — ell
 Muligheden for, at lade computerprogrammer og algoritmer tygge sig igennem store mængder sprog har ikke kun ført til, at Google og Facebook ved mere om dig en din familie.
 Den har også banet vej for, en ny måde at gøre sociologi på — den “algoritmiske sociologi” (eng. “computational sociology”)\todo{kilde: computational sociology}.
 Dette speciale lægger sig i denne voksende tradition.
+Ud over at søge et svar på min problemformulering\todo{denne sætning er aaaaaalt for lang}, vil jeg også anvende dette speciale som en udforskning af den algortimiske tilgang til sociologi i en pædagogisk-sociologisk kontekst.
 
 Men computeroptællinger alene gør ikke en sociologisk undersøgelse.
 Der er stadigvæk behov for begrebsrammer, der kan underbygge en forståelse af de samspilsprocesser der udgør kommunikation.
 Jeg vil i denne opgave benytte mig af positioneringsteori; der ser på talehandlinger i en socialt konstrueret virkelighed\todo{kilde: pos theory}.
 
-\todo{knyt Klumpe-Dumpe og at det gælder, at bestemme, op til pos theory og måske symbolsk vold?}
+\todo{knyt Klumpe-Dumpe og at det gælder, at bestemme, op til pos theory og måske symbolsk vold/mellemklassemagt etc?}
 
 Ved at se på tekst som repræsentationer af social samhandling, kan man udlede meget af det sociale spil der har foregået.
-bundet op på tekstens niveau af nærhed til det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion\todo{omskriv tekst ift socialt spil}
+bundet op på tekstens niveau af nærhed til det aktuelle sociale spil; some er meget umiddelbar, og kan udgøre en helhed i sig selv; en selvbiografi vil risikere post-hoc selvredaktion \todo{omskriv tekst ift socialt spil}
 For dette speciales vedkommende, hvor teksten er referater af folketingstaler, er afstanden til det spil, der foregår på den politiske arena forholdsvis kort.
 Derved ser jeg gode muligheder for, at kunne danne insigter i det politiske spil i min analyse.
-
-
 
  \todo{en bedre overgang}Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
 Derefter vil jeg præsentere positioneringsteori, og hvorfor jeg mener, den giver en anvendelig begrebsamme til at drage indsigter ud af min analyse.
 
-\chapter{Dataindsamling og analyse}\label{chap:data}
-
-Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1953 indtil primo 2020.
-Datasættet er dannet ved, at hente mødereferater i PDF-form fra folketingstidende.dk, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold  \autocite{pedersenFolketinget2019}.
-
-En sådan indsamlingsproces er ikke uden fejlkilder. Konvertering fra PDF til tekstformat kan medføre fejl i overgangen, og uregelmæssigheder i dokumentet kan fx medføre mis-attributering af talere.\todo{kilde: PDF ingest fejlkilder}
-Dette for at understrege, at en analyse forholder sig til, de data der foreligger.
-En gennemgang af tilfældige taler viser nogle tydelige tekstgenkendelsesfejl, for eksempel.
-Denne kilde til usikkerhed er det vigtigt at være bevidst.
-
-\section{Den algoritmiske sociologis muligheder og begrensninger}
 
 Tekst er kun et subset af kommunikation; der er dele af det sociale spil der kun foregår IRL, og tekst er en form for abstraheret repræsentation af disse \autocite[s. 22]{evansMachineTranslationMining2016}
 
-begrensninger først:
+\section{Begrænsninger og faldgruber}
 
-Computeren har ikke samme sociale og historiske kontekst som fx i \citeauthor{juulDiskurserOmUngdom2013} i \citetitle{juulDiskurserOmUngdom2013}; og kan give en mere overfladisk analyse.
+Computeren har ikke samme sociale og historiske kontekst som fx i \citeauthor{juulDiskurserOmUngdom2013} i \citetitle{juulDiskurserOmUngdom2013}; og kan ikke give en analyse.
+Dette er stadgvæk forskerens ansvar.
 
-muligheder:
+Det er også forskerens ansvar, at ikke falde i faldgruben, hvor man anser algoritmens svar som endegyldige.
+Algoritmens resultater kan ikke være bedre end de data der bliver tilført den\footnote{den såkaldte “garbage in — garbage out” paradigme}.
+I tillæg er der til- og fravalg blandt udvælgelse af data og algoritmens parametre der til et vis grad er overladt til forskerens skøn.
+Mine egne overvejelser herom vil følge løbende i denne del af specialet.
 
-strukturerede klassifikationsalgoritmer kan give pålidelige klassifikationer af massive samlinger af tekst, der langt overgår den enkelte forskers kapacitet.
-Ustrukturerede algoritmer kan afdække strukturer i tekstmaterialet, der kan have sociologisk interesse.
-De seneste års udviklinger indenfor analyseteknologier kan også udlede mening af fx sætningsstrukturer og kontekst, til en vis grad \autocite[s. 22]{evansMachineTranslationMining2016}.
+I forlængelse af, at computerens resultater er afhængige af god datakvalitet; kan der også forekomme fejlkilder i dataindsamling og -generering.
+En tidlig gennemgang af data viste for eksempel, at der tydeligt var en mangel på tidlige taler i det indsamlede materiale, i forhold til hvad der er tilgængeligt på folketingstidende.dk.
+Der forekommer også bivirkinger efter omgørelse af mødereferaterne fra PDF til ren tekst; så som en del forekomster af tegnet “홢”, eller ord der er blevet brudt af bindestreger. 
 
-NLP - behandling af naturligt sprog;  ikke nødvendigvis kun tekst. udleder semantisk betydning af sprog - grammatik, sœtningsstruktur, osv. Dette er dog krævende beregninger!
-tekst mining - udledning af data fra en samling tekst. Ord rystes sammen, uden hensyntagen til deres placering i dokumentet - typisk kaldet en Bag of Words-model. Dog kan nogle modeller for tekstanalyse se på n-grams (n ord der forekommer sammen), eller skip-grams (ord der er n ord fra hinanden) som analyseobjekt. \todo{skal jeg bruge n/skip grams mon?}
-I tekstmining laver man matematiske modeller over forhold mellem ord og dokumenter.
-Sådan en analyse kan drage nytte af NLP, idet det semantisk rigt data er nemmere at udlede indsigter fra.
+
+\section{Muligheder}
 
 \citeauthor{evansMachineTranslationMining2016} beskriver tre niveauer indenfor tekstanalyse.
 \begin{itemize}
@@ -75,63 +67,206 @@ Sådan en analyse kan drage nytte af NLP, idet det semantisk rigt data er nemmer
     man kan se på sociale signaler
 \end{itemize}
 
-vowpal wabbit --> noget med hashing, der giver en numerisk betegnelse for bestemte ord
-metode: lda topic modeling, der ser på en gruppe dokumenter, og fors
+[[[figur over de tre niveauer??]]]
 
-ser på det øverste (og lidt af det midterste) af tre niveauer i tekstanalyse \autocite{evansMachineTranslationMining2016}
+strukturerede klassifikationsalgoritmer kan give pålidelige klassifikationer af massive samlinger af tekst, der langt overgår den enkelte forskers kapacitet.
+Ustrukturerede algoritmer kan afdække strukturer i tekstmaterialet, der kan have sociologisk interesse.
+De seneste års udviklinger indenfor analyseteknologier kan også udlede mening af fx sætningsstrukturer og kontekst, til en vis grad \autocite[s. 22]{evansMachineTranslationMining2016}.
+
+\section{Centrale begreber, kort fortalt}\todo[color=green]{David: Dette er lige meget for at jeg kan huske hvilke begreber jeg skal introducere også. muligt/bedre at flette dem ind løbende?}
+
+Korpus: en samling dokumenter
+
+Dokument: en enhed tekst der skal analyseres
+
+Token: Den analyse-enhed der søges sammenhæng ud fra.
+Gerne kun ét ord; men kan også være to eller flere efterfølgende ord (såkaldte n-grams); eller ord der har n afstand mellem hinanden (disse kaldes skip-grams)
+
+tf-idf: Meget af de analyser jeg anvender bygger på forholdet mellem tekstfrekvens og dokumentfrekvens.
+text frequency — inverse document frequency er en beregning\todo{formel tf-idf} der tilskriver tokens en værdi mellom 0 og 1 efter hvor hyppigt de forekommer i det samlede korpus.
+Tokens der forekommer i mange eller alle dokumenter vil have en lav tf-idf; tokens der findes i færre dokumenter vil have en højere tf-idf score.
+
+NLP - behandling af naturligt sprog;  ikke nødvendigvis kun tekst.
+udleder semantisk betydning af sprog - grammatik, sœtningsstruktur, osv. 
+
+tekstmining - udledning af data fra en samling tekst.
+Generelt rystes alle ord sammen, uden hensyntagen til deres placering i dokumentet - typisk kaldet en Bag of Words-model.
+I tekstmining laver man matematiske modeller over forhold mellem ord og dokumenter.
+Sådan en analyse kan drage nytte af NLP, idet det semantisk rigt data er nemmere at udlede indsigter fra.
+\chapter{Dataindsamling og analyse}\label{chap:data}
+
+Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1978 indtil ultimo 2019.
+Datasættet er dannet ved, at hente mødereferater i PDF-form fra folketingstidende.dk, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold  \autocite{pedersenFolketinget2019}.
+
+Min undersøgelse er primært på det øverste af de tre niveauer i tekstanalyse efter \autocite{evansMachineTranslationMining2015}. 
+Jeg ser hovedsagelig på tekstens overordnede indhold, og forsøger at drage slutninger herfra.
+Mit projekt er dermed også primært at klassificere som tekst-mining.
+
 
 \section{Forhåndsbearbejdning af data}\label{sec:preproc}
 
-jeg har tekst (med metadata); hvordan kunne analysere den?
+jeg har tekst (med metadata); hvordan forberede denne til analyse?
 
-generel proces fra \autocite{kwartlerTextMiningPractice2017}
+Tekstmaterialet kan med fordel simplificeres inden analyse.\todo{kilde simplificer tekst}
+For eksempel er ordene “stemme”, “stemte”, “stemmer” alle relaterede til konceptet at stemme.
+Men uden forhåndsbehandling vil disse blive regnet for at være tre forskellige begreber.
+Jeg har derfor brugt et NLP-bibliotek\todo{citation udpipe} til at foretage såkaldt \textit{lemmatization}.
+Computeren analyserer hvert ord, og udleder grundstammen --- lemma — af det. I eksemplet ovenfor er grundformen “stem” - og vi kan fange alle omtaler af konceptet at stemme.
+Dog vil man her også muligvis tabe noget information - handlede det fx om “en der stemmer”, eller “vi har nu talt stemmer op”?
+“Stemmer” kan også være lyden af mennesker der taler; og ikke, som givetvis i en folketingskontekst, en kollektiv beslutningsproces.
 
-manuelt, liste af ord pr dokument, stopwords (tidytext)
+En anden vej til at reducere kompleksiteten i tekstmaterialet er, at udelukke ord med lav analyseværdi.
+Tal og tegnsætting kan som regel udelukkes.
+Ord der forekommer meget hyppigt eller meget sjældent vil kunne forvrænge en analyse; og gøre det svært at drage meningsfulde konklusioner.
+En meget anvendt teknik er at sortere såkaldte \textit{stopord} fra.
+Der findes generelle lister over ord der, på bagrund af formodet lav analyseværdi, kan filtreres ud af dokumenterne inden analyse.
+Men disse lister vil ikke kunne fange domænespecifikke ord af denne karakter\footnote{de er også kritiseret for, at udelukke mulige meningsfulde analyser på forhånd. Se fx. [[[CITAT NO STOPWORDS]]]}.
+I folketingstalerne omtales regeringen og ministre fx forholdsvis oftere end i daglig tale.
+I stedet for at jeg på egen hånd vurderer, hvilke ord der skal sorteres fra, kan jeg også her tage en computers evner til at tælle i brug.
+Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter blot beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
 
-lemmatization vs stemming
+Derudover skal der også tages stilling til, hvad slags tokens der skal undersøges.
+Unigrams - et ord af gangen - giver et godt billede af frekvenser; men glatter kontekst ud.
+“EFG” nævnes en del gange - men er man kritisk eller positiv?
 
-bag-of-words vs fortolkning af sprog
+For at fange denne dimension kan det give mening at se på flere ord sammen — n-grams.
+Meget anvendt er bi- og trigrams; hvor man ser på to eller tre ord der forekommer samtidigt.
 
-Domænespecifikke stopwords ofte en god ide - mange ministre fx
+Det er også muligt, at bruge NLP-verktøjer til, at se på setningsstruktur; og dermed udvælge fx kun navneord og verbum med tilhørende beskrivelsesord; hvis man var interesseret i at afdække tone og føleser i dokumenter.
 
-evt også filtrere ved frekvæns - ord der forekommer hyppigt i alle dokumenter har ikke analytisk værdi; ej heller ord der er meget sjældne.
-
-al sådan forhándsbearbejdning er og vil altid være baseret på forskerskøn.
+Det kan dog ikke understreges for meget, at denne forhándsbearbejdning er og vil altid være baseret på forskerskøn.
+Det påligger forskeren, at navigere i de mange muligheder.
+Forskellige undersøgelsesspørgsmål vil kræve forskellige tilpasninger.
 Det er ikke mere objektivt blot fordi en computer er sat til at arbejde på det!
+
+Metadata er nyttig for at lave klassifikationer og undergrupperinger for analyse.
+Hvem taler, og hvilket part tilhører vedkommende?
+Hvornår er talen fra?
+
 
 \chapter{Analysestrategi}\label{chap:strategy}
 
-Vil se udvikling over tid: derfor nødvendigt at dele data ind i perioder til sammenligning.
+Jeg vil i det følgende gennemgå min tilgang og strategi for at finde mening i mit (meget store) datamateriale.
+Først med en oversigt over de overordnede trin, og derefter en drøftelse af mine overvejelser for disse. 
 
-Men hvordan dele op?
+\section{Overordnet plan for analysen}\label{sec:plan}
 
-\citeauthor{bondergaardHistoricalEmergenceKey2014} foreslår følgende, for at gentage:
+\autocite{kwartlerTextMiningPractice2017} beskriver 6 trin for analyse af tekst:
+\begin{enumerate}
+  \item
+    Definer problemet, og de specifikke mål
+  \item
+    identificer teksten som skal behandles
+  \item
+    Skab orden i tekstmaterialet
+  \item
+    Lav udtræk af relevante aspekter af data
+  \item
+    Analyser
+  \item
+    Opnå nye indsigter
+\end{enumerate}
+
+I løbet af min analyse vil jeg gennemgå disse trin flere gange, med forskellige formål og indhold.
+Flere af iterationerne vil være tiltagende specifikke, idet jeg kan bruge resultater af de foregående runder som grundlag for de næste.
+Jeg vil også bevæge mig i mellem de overordnede niveauer efter \autocite{evansMachineTranslationMining2016} som er beskrevet ovenfor.
+
+Jeg vil:
+
+\begin{itemize}
+  \item
+    dele data op i perioder
+  \item
+    for hver periode,
+    \begin{itemize}
+      \item
+        generere emner på baggrund af tekst-indholdet i de enkelte taler
+      \item
+        udvælge emner der ser ud til at omhandle uddannelse generelt og erhvervsuddannelse specifikt
+      \item
+        i disse emner vil jeg, 
+        \begin{itemize}
+          \item
+            se på tendenser i perioderne
+          \item
+            generere nye emner med dette subset
+          \item
+            se efter sammenhænge på baggrund af analyser på tværs af fx partiforhold, regeringsmagt, talerens (formodede) intentioner.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Forhåndsbehandling af tekst}
+
+Forskellige trin i denne plan vil stille forskellige krav til forhåndsbehandling af tekst, for at gøre den anvendelig til analyserbare data.
+
+For eksempel, så vil en 
+
+
+\subsection{Perioder}\label{sec:periods}
+Jeg ønsker at se og sammenligne udvikling i diskurser omkring erhvervs- og ungdomsuddanelser over tid.
+Derfor nødvendigt/vælger jeg\todo{der findes ML tilgange til timeseries analyse, tror jeg. Hvorfor ikke bruge disse?} at dele data ind i perioder til sammenligning.
+
+Men hvordan kan en sådan opdeling gribes an?
+Jeg tager udgangspunkt i centrale hendelser i uddannelseshistorisk sammenhæng; og justerer derudover periodernes grænser til at falde sammen med regeringsperioder.
+Dermed har jeg mulighed for, at gennemføre analyser på baggrund af regeringsmagt kontra opposition, fx.
+Dette er ikke den eneste gyldige opdeling.
+Man kunne fx også delt data op i årtier - 59erne, 70erne osv.
+Dette ville give perioder af ensartet længde, samt at man ikke behøver at tage stilling til hvilke år perioderne skal tilhøre.
+Det ville dog blive sværere at afdække eventuelle diskursændringer omkring specifikke uddannelseshistoriske hændelser.
+
+For at opsummere: \citeauthor{bondergaardHistoricalEmergenceKey2014} foreslår følgende historiske perioder for de danske erhvervsuddannelser:
 
 ← 1945: lavenes mesterlære, fra monopol til deregulering til re-regulering
 
-1945 — 1967: udvidelse og specialisering af mesterlæren
+1945 --- 1967: udvidelse og specialisering af mesterlæren
 
-1967 — 1990: mesterlæren i konflikt med den nye erhvervsuddannelse
+1967 --- 1990: mesterlæren i konflikt med den nye erhvervsuddannelse
 
-jeg vil foreslå en periode mere:
+Denne deler jeg yderligere op, for at undgå at nogle perioder bliver meget lange, til 1967-1978 og 1978-1990.
+I 1977 bliver der truffet vedtag om at indføre den Erhvervsfaglige Grunduddannelse (EFG); og ved at starte perioden i '78 får vi den efterfølgende diskussion med.
+1990 markeres ved, at de tekniske skoler nu skal have selvstyre....\todo{1990ernes EUD - ufærdigt}
+jeg vil foreslå to perioder yderligere:
 
-1990 → målstyring, selvstyre, ressourceudvikling, inklusion, global konkurrence \todo{måske også en mere, fra ca. 2012-14}
+1990 --- 2001 målstyring, selvstyre, ressourceudvikling, inklusion, global konkurrence 
+2001 — 2014: Ansvar for egen læring, fokus på unge
+2014 -> : Stor reformiver, uden at man venter på resultater af tidligere reformer
 
-den første periode ligger udenfor omfanget af mit kildemateriale; men jeg håber at fange tendenser fra de andre perioder
+Folketingstidende strækker sig kun tilbage til 1953, hvilket besværliggør en analyse af den første periode beskrevet ovenfor.
+Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder - fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
+Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvilsomme, i bedste fald.
+Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen\todo{regering i 1978} og kort efter indførelsen af EFG på landsplan.
 
-Alternativer:
+\subsection{Udledning af emner i det samlede korpus}
 
-årtier > nemmere at plotte i tabeller, måske
+Jeg sidder nu med ??? folektingstaler, udan at (kunne) vide, hvorvidt en given tale er relevant for min analyse.
+Mit første skridt vil være, at foretage en grovsortering, for at kunne finde taler der kunne være nyttige at se nærmere på.
+Dette er en uoverskuelig opgave at gøre manuelt.
+Men computeren vil gerne lave denne slags beregninger.
 
-regeringsperioder > kan man se ændrede diskurser efter et skifte? evt med afsæt i perioder fra \citeauthor{bondergaardHistoricalEmergenceKey2014, juulDiskurserOmUngdom2013}
+Første trin vil være, at finde antallet emner at søge i; da en LDA-algoritme kræver en forhåndsindstillet mængde.
 
+LDA \autocite{grunTopicmodelsPackageFitting2011}: 
 
+emner (topics) er en distrbution af ord over alle dokumenter
+
+dokumenter er en distribution af dokumenter over ord
+
+der gives en beregning på, hvorvidt et ord er en del af et emne
+
+antallet emner til en LDA-algoritme skal specificeres på forhånd.
+
+Biblioteket \texttt{ldatuning} kan lave sammenligninger af forskellige metoder, til udvælgelse af antal emner; for at undgå at vælge rent tilfældigt.
+
+\todo{grafer over fordeling af emner}
+
+Ved at se fordelingen af de fire
 
 topic modeling giver hvad-de-taler-om
 
 sentiment analysis giver hvordan-de-taler-om
 
-tf-idf giver grad af emne-enighed? diskurs-enighed?
+tf-idf giver.... ikke ret meget i sig selv; men giver mulighed for videre analyse.
 
 Men hvad betyder det?
 
