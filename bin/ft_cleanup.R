@@ -5,8 +5,8 @@ library(tidyverse)
 library(data.table)
 library(tm)
 library(here)
-
-
+library(future)
+options(future.globals.maxSize = 8912896000)
 ft_raw <- fread(here("data/folketinget_1953_2019_raw.csv"))
 
 # prepare udpipe for lemmatization
@@ -55,6 +55,9 @@ clean_text <- function(text) {
     stripWhitespace
 }
 
+ft_clean <- ft_raw %>%
+    map(~ future(clean_text(.x))) %>%
+    values
 
 # set up parallel processing
 library(parallel)
