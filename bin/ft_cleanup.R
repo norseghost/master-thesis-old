@@ -47,7 +47,7 @@ clean_text <- function(text) {
     tolower %>%
     removeNumbers %>%
     removePunctuation %>%
-    removeWords(ft_stopwords) %>%
+    # removeWords(ft_stopwords) %>%
     lemmatize %>%
     # the corpus contains occurences of hangul character
     # hwalp - 홢 - this is unwanted
