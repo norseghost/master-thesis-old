@@ -50,24 +50,85 @@ ft_periods_tokens <- readRDS(here("data/ft_periods_tokens.rds"))
 ft_periods_tfidf <- ft_periods_tokens %>%
     map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
     values %>%
-    # filter out terms that are in the lower 40 percent of
-    # tf_idf score per corpus
-    map(~ filter(.x, tf_idf > quantile(tf_idf, .4, na.rm = TRUE)))
+    # filter out terms that are below the median tf_idf score per corpus
+    # doi://10.18637/jss.v040.i13 for rationale,
+    map(~ filter(.x, tf_idf > median(tf_idf, na.rm = TRUE)))
 
 ft_periods_dtm <- ft_periods_tfidf %>%
-    map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
+    map(~ future((cast_dtm(.x, doc_id, lemma, n)))) %>%
     values
 
 ft_periods_models <- ft_periods_dtm %>%
     map(~ FindTopicsNumber(
       .x,
-      topics = seq(from = 2, to = 30, by = 1),
+      topics = seq(from = 2, to = 100, by = 3),
       metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
       method = "Gibbs",
       control = list(seed = 1234)
     ))
 
-# TODO: Run a coherence score test per period to determine 'k'
+models_plot <- ft_periods_models %>%
+    map(~ plot_topic_numbers(.x))
+    
+#'
+#' @export
+#' @import ggplot2
+plot_topic_numbers <- function(values) {
+  # Drop models if present, as they won't rescale
+  if ("LDA_model" %in% names(values)) {
+    values <- values[!names(values) %in% c("LDA_model")]
+  }
+  # normalize to [0,1]
+  columns <- base::subset(values, select = 2:ncol(values))
+  values <- base::data.frame(
+    values["topics"],
+    base::apply(columns, 2, function(column) {
+      scales::rescale(column, to = c(0, 1), from = range(column))
+    })
+  )
+
+  # melt
+  values <- reshape2::melt(values, id.vars = "topics", na.rm = TRUE)
+
+  # separate max-arg & min-arg metrics
+  values$group <- values$variable %in% c("Griffiths2004", "Deveaud2014")
+  values$group <- base::factor(
+    values$group,
+    levels = c(FALSE, TRUE),
+    labels = c("minimize", "maximize")
+  )
+
+  # standart plot
+  p <- ggplot(values, aes_string(x = "topics", y = "value", group = "variable"))
+  p <- p + geom_line()
+  p <- p + geom_point(aes_string(shape = "variable"), size = 3)
+  p <- p + guides(size = FALSE, shape = guide_legend(title = "metrics:"))
+  p <- p + scale_x_continuous(breaks = values$topics)
+  p <- p + labs(x = "number of topics", y = NULL)
+
+  # separate in two parts
+  p <- p + facet_grid(group ~ .)
+
+  # style
+  # p <- p + theme_bw(base_size = 14, base_family = "") %+replace% theme(
+  p <- p + theme_bw() %+replace% theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_line(colour = "grey70"),
+    panel.grid.minor.x = element_blank(),
+    legend.key = element_blank(),
+    strip.text.y = element_text(angle = 90)
+  )
+
+  # move strip block to left side
+  g <- ggplotGrob(p)
+  g$layout[g$layout$name == "strip-right", c("l", "r")] <- 3
+  grid::grid.newpage()
+  grid::grid.draw(g)
+
+ return(p)
+}
+ # TODO: Run a coherence score test per period to determine 'k'
 # https://towardsdatascience.com/beginners-guide-to-lda-topic-modelling-with-r-e57a5a8e7a25
 k_list <- seq(1, 20, by = 1)
 generate_models <- function(dtm, ks) {
@@ -127,6 +188,6 @@ ft_periods_term_plots[[i]] <- ft_periods_top_terms[[i]] %>%
         scale_x_reordered()
 }
 
-paths <- str_c(names(ft_periods_top_terms), ".pdf")
+paths <- str_c(names(models_plot), "-topicnumbers.tex")
 
-pwalk(list(paths, ft_periods_term_plots), ggsave, path = here("fig"))
+pwalk(list(paths, models_plot), ggsave, path = here("fig"))
