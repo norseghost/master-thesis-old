@@ -8,9 +8,7 @@ library(here)
 library(future)
 library(topicmodels)
 library(ldatuning)
-library(textmineR)
-library(gmp)
-library(gofastr)
+library(tikzDevice)
 options(future.globals.maxSize = 8912896000)
 plan(multicore)
 
@@ -52,7 +50,11 @@ ft_periods_tfidf <- ft_periods_tokens %>%
     values %>%
     # filter out terms that are below the median tf_idf score per corpus
     # doi://10.18637/jss.v040.i13 for rationale,
-    map(~ filter(.x, tf_idf > median(tf_idf, na.rm = TRUE)))
+    map(~ filter(.x, tf_idf > median(tf_idf, na.rm = TRUE))) %>%
+    # also filter out the 0.002 most rare terms
+    # (of those left) to catch misspellings and errors
+    # TODO: Reference?
+    map(~ filter(.x, tf_idf, < quantile(tf_idf, 0.998)))
 
 ft_periods_dtm <- ft_periods_tfidf %>%
     map(~ future((cast_dtm(.x, doc_id, lemma, n)))) %>%
@@ -128,23 +130,6 @@ plot_topic_numbers <- function(values) {
 
  return(p)
 }
- # TODO: Run a coherence score test per period to determine 'k'
-# https://towardsdatascience.com/beginners-guide-to-lda-topic-modelling-with-r-e57a5a8e7a25
-k_list <- seq(1, 20, by = 1)
-generate_models <- function(dtm, ks) {
-            # filename <- file.path(here("models/"), paste0(k, "_topics.rda"))
-            # if (!file.exists(filename)) {
-    models <- vector("list", length(ks))
-    for (k in seq_along(ks)) {
-                models[[k]] <- FitLdaModel(dtm = dtm, k = k, method = "vem")
-                models[[k]]$k <- k
-                models[[k]]$coherence <- CalcProbCoherence(phi = m$phi, dtm = dtm, M = 5)
-           }
-                # save(m, file = filename)
-            # } else {
-            #     load(filename)
-            # }
-}
 
 
 ft_periods_lda <- ft_periods_dtm %>%
@@ -184,10 +169,23 @@ ft_periods_term_plots[[i]] <- ft_periods_top_terms[[i]] %>%
         ggplot(aes(term, beta, fill = factor(topic))) +
         geom_col(show.legend = FALSE) +
         facet_wrap(~ topic, scales = "free") +
+library(tikzDevice)
         coord_flip() +
         scale_x_reordered()
 }
 
+library(tikzDevice)
+options(tikzDefaultEngine = 'xetex')
+options(tikzMetricsDictionary = here('/lib/tikzmetrics'))
+options(tikzXelatexPackages =
+        c(
+          "\\usepackage{tikz}\n"
+          ,"\\usepackage[active,tightpage,xetex]{preview}\n",
+          "\\usepackage{fontspec,xunicode}\n",
+          "\\PreviewEnvironment{pgfpicture}\n",
+          "\\setlength\\PreviewBorder{0pt}\n")
+        )
+
 paths <- str_c(names(models_plot), "-topicnumbers.tex")
 
-pwalk(list(paths, models_plot), ggsave, path = here("fig"))
+pwalk(list(paths, models_plot), ggsave, device=tikzDevice::tikz, path = here("fig"), standAlone = FALSE)
