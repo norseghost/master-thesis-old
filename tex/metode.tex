@@ -83,7 +83,7 @@ Token: Den analyse-enhed der søges sammenhæng ud fra.
 Gerne kun ét ord; men kan også være to eller flere efterfølgende ord (såkaldte n-grams); eller ord der har n afstand mellem hinanden (disse kaldes skip-grams)
 
 tf-idf: Meget af de analyser jeg anvender bygger på forholdet mellem tekstfrekvens og dokumentfrekvens.
-text frequency — inverse document frequency er en beregning\todo{formel tf-idf} der tilskriver tokens en værdi mellom 0 og 1 efter hvor hyppigt de forekommer i det samlede korpus.
+text frequency — inverse document frequency er en beregning\todo{formel tf-idf} der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
 Tokens der forekommer i mange eller alle dokumenter vil have en lav tf-idf; tokens der findes i færre dokumenter vil have en højere tf-idf score.
 
 NLP - behandling af naturligt sprog;  ikke nødvendigvis kun tekst.
@@ -200,7 +200,8 @@ Jeg vil:
 
 Forskellige trin i denne plan vil stille forskellige krav til forhåndsbehandling af tekst, for at gøre den anvendelig til analyserbare data.
 
-For eksempel, så vil en 
+For eksempel, så vil opdeling i grove kategorier til videre analyse kunne anvende en opdeling i enkelte ord, for at fange overordnede trends.
+En mere granuleret analyse derimod, vil måske hellere se på to eller tre ord sammen; eller inddrage sproglige analyser for at udlede metadata på sprogniveau.
 
 
 \subsection{Perioder}\label{sec:periods}
@@ -259,8 +260,9 @@ antallet emner til en LDA-algoritme skal specificeres på forhånd.
 Biblioteket \texttt{ldatuning} kan lave sammenligninger af forskellige metoder, til udvælgelse af antal emner; for at undgå at vælge rent tilfældigt.
 
 \todo{grafer over fordeling af emner}
+\input{../fig/models_plot.tex}
 
-Ved at se fordelingen af de fire
+Ved at se på kurvene fra disse sammenligninger, flader de ud omkring de 60-80 emner.
 
 topic modeling giver hvad-de-taler-om
 
