@@ -70,49 +70,43 @@ ft_periods_models <- ft_periods_dtm %>%
     ))
 
 models_plot <- ft_periods_models %>%
-    map(~ plot_topic_numbers(.x))
-    
-#'
-#' @export
-#' @import ggplot2
-plot_topic_numbers <- function(values) {
+    map(~ normalize_topic_numbers(.x)) %>%
+    bind_rows(.id = "period") %>%
+    reshape2::melt(., id.vars = c("topics", "period"), na.rm = TRUE) %>%
+    plot_topic_numbers %>%
+    ggsave(
+           filename="models_plot.tex",
+           width=7,
+           height=10, 
+           units = "in",
+           device = tikz,
+           path = here("fig"),
+           standAlone = FALSE)
+
+normalize_topic_numbers <- function(values) {
   # Drop models if present, as they won't rescale
-  if ("LDA_model" %in% names(values)) {
-    values <- values[!names(values) %in% c("LDA_model")]
-  }
+  # Also, Deveaud is not useful for this dataset
+  values <- values %>% 
+    select(-Deveaud2014)
   # normalize to [0,1]
-  columns <- base::subset(values, select = 2:ncol(values))
-  values <- base::data.frame(
-    values["topics"],
-    base::apply(columns, 2, function(column) {
-      scales::rescale(column, to = c(0, 1), from = range(column))
-    })
-  )
+  columns <- values %>%
+    select(-topics) %>%
+    modify(~ scales::rescale(.x, to = c(0, 1), from = range(.x))) 
+  values <- values %>%
+    select(topics) %>%
+    bind_cols(columns)
+}
 
-  # melt
-  values <- reshape2::melt(values, id.vars = "topics", na.rm = TRUE)
-
-  # separate max-arg & min-arg metrics
-  values$group <- values$variable %in% c("Griffiths2004", "Deveaud2014")
-  values$group <- base::factor(
-    values$group,
-    levels = c(FALSE, TRUE),
-    labels = c("minimize", "maximize")
-  )
-
-  # standart plot
+plot_topic_numbers <- function(values) {
+  # standard plot-
   p <- ggplot(values, aes_string(x = "topics", y = "value", group = "variable"))
+  p <- p + facet_grid(period ~ .)
   p <- p + geom_line()
   p <- p + geom_point(aes_string(shape = "variable"), size = 3)
-  p <- p + guides(size = FALSE, shape = guide_legend(title = "metrics:"))
+  p <- p + guides(size = FALSE, shape = guide_legend(title = "Målefunktion"))
+  p <- p + facet_grid(period ~ .)
   p <- p + scale_x_continuous(breaks = values$topics)
-  p <- p + labs(x = "number of topics", y = NULL)
-
-  # separate in two parts
-  p <- p + facet_grid(group ~ .)
-
-  # style
-  # p <- p + theme_bw(base_size = 14, base_family = "") %+replace% theme(
+  p <- p + labs(x = "Antal emner", y = NULL)
   p <- p + theme_bw() %+replace% theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
@@ -121,14 +115,12 @@ plot_topic_numbers <- function(values) {
     legend.key = element_blank(),
     strip.text.y = element_text(angle = 90)
   )
-
   # move strip block to left side
   g <- ggplotGrob(p)
   g$layout[g$layout$name == "strip-right", c("l", "r")] <- 3
   grid::grid.newpage()
   grid::grid.draw(g)
-
- return(p)
+  return(p)
 }
 
 
@@ -188,4 +180,4 @@ options(tikzXelatexPackages =
 
 paths <- str_c(names(models_plot), "-topicnumbers.tex")
 
-pwalk(list(paths, models_plot), ggsave, device=tikzDevice::tikz, path = here("fig"), standAlone = FALSE)
+pwalk(list(paths, models_plot), ggsave, width=4, height=3, units = "in", device = tikz, path = here("fig"), standAlone = FALSE)
