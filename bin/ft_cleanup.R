@@ -1,22 +1,26 @@
 # ft_cleanup.R
 # clean up text in the folketinget dataset
 
-library(tidyverse)
 library(data.table)
+library(tidyverse)
 library(tm)
 library(here)
 library(future)
+library(udpipe)
 options(future.globals.maxSize = 8912896000)
+
+plan(multicore, workers = 8L)
+
 ft_raw <- fread(here("data/folketinget_1953_2019_raw.csv"))
 
 # prepare udpipe for lemmatization
-library(udpipe)
 udmodel <- udpipe_download_model(
     language = "danish",
+    model_dir = here("lib"),
     overwrite = FALSE
 )
 
-
+# lemmatize text for future tokenization
 lemmatize <- function(text) {
     dt <- udpipe_annotate(
         object = udpipe_load_model(udmodel$file_model),
@@ -35,6 +39,7 @@ lemmatize <- function(text) {
 
 # I'll probably want more stopwords later
 # after some exploratory analysis
+# but wait! Stopwords counter-indicatd for certain analysis
 ft_stopwords <- c(
     readLines(here("lib/stopwords.txt")),
     readLines(
@@ -42,6 +47,7 @@ ft_stopwords <- c(
         warn = FALSE)
 )
 
+# wrapper function to perform text cleanup steps
 clean_text <- function(text) {
     text %>%
     tolower %>%
@@ -55,9 +61,11 @@ clean_text <- function(text) {
     stripWhitespace
 }
 
-ft_clean <- ft_raw %>%
-    map(~ future(clean_text(.x))) %>%
-    values
+ft_clean <- test %>%
+    group_by(.groups) %>%
+    map(~ future(mutate(.x, text = clean_text(.x[["text"]])))) %>%
+    values %>%
+    ungroup
 
 # set up parallel processing
 library(parallel)
@@ -67,7 +75,7 @@ cluster <- makePSOCKcluster(
 # the cluster needs to se e my stopwords
 clusterExport(
         cl = cluster,
-        varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
+        varlist = c("lemmatize", "clean_text", "udmodel"),
         envir = .GlobalEnv
 )
 #and needs to have the required libraries loaded
@@ -82,31 +90,7 @@ clusterEvalQ(
 
 # apply the cleaning operation in parallel
 # the dataset is already prepared in 100 batches
+test <- as.data.table(ft_raw)
 ft_clean <- ft_raw[, text := parSapply(
                             cluster, .SD[, text], clean_text),
             by = .groups]
-
-
-# apply the cleaning operation in parallel
-# the dataset is already prepared in 100 batches
-ft_speeches[, text := parSapply(
-                            cluster, .SD[, text], clean_text),
-            by = .groups]
-
-ft_clean <- ft_raw[, text := sapply(
-                             .SD[, text], clean_text),
-             by = .groups]
-
-ft_lemmatized <- ft_clean[, text := sapply(
-                             .SD[, text], lemmatize),
-             by = .groups]
-
-gr99 <- ft_raw[.groups == 99] %>% as.data.table
-
-gr99_clean <- gr99[, text := sapply(
-                            .SD[, text], clean_text),
-             by = .I]
-gr99_clean <- gr99[, text := parSapply(
-                            cluster, .SD[, text], clean_text),
-             by = .I]
-
