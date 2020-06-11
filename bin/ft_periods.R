@@ -21,7 +21,8 @@ library(future)
 
 options(future.globals.maxSize= 89128960000)
 
-ft_speeches <- fread(here("data/ft_clean_lemmatized.csv"))
+ft_speeches <- fread(here("data/ft_clean_no_stopwords.csv"))
+
 ft_speeches[, timeseries := sapply(Date, (function(x) {
                             case_when(
                                  x < as.Date("1957-05-28") ~ "1953-57",
@@ -33,4 +34,6 @@ ft_speeches[, timeseries := sapply(Date, (function(x) {
                                  x > as.Date("2014-02-03") ~ "2014-20"
                             )}
                         ))]
+
+fwrite(ft_speeches, here("data/ft_clean_no_stopwords_timeseries.csv"))
 
