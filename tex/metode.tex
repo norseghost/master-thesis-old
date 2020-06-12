@@ -208,7 +208,23 @@ En mere granuleret analyse derimod, vil måske hellere se på to eller tre ord s
 Jeg ønsker at se og sammenligne udvikling i diskurser omkring erhvervs- og ungdomsuddanelser over tid.
 Derfor nødvendigt/vælger jeg\todo{der findes ML tilgange til timeseries analyse, tror jeg. Hvorfor ikke bruge disse?} at dele data ind i perioder til sammenligning.
 
-Men hvordan kan en sådan opdeling gribes an?
+For at opsummere: jeg vil se på diskurser omkring erhvervsuddannelser siden 1978, inddelt i følgende perioder:
+
+\begin{itemize}
+  \item
+    \textbf{1978 — 1990:} Uddannelse i fokus
+  \item
+    \textbf{1990 — 2001}: Målstyring og selvstyre, under markedsvilkår
+  \item
+    \textbf{2001-2014:} Ansvar for egen læring, med individet i fokus
+  \item
+    \textbf{2014-2020} Reformernes tidsalder
+\end{itemize}
+
+Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder - fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
+Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvilsomme, i bedste fald.
+Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen\todo{regering i 1978} og kort efter indførelsen af EFG på landsplan.
+
 Jeg tager udgangspunkt i centrale hendelser i uddannelseshistorisk sammenhæng; og justerer derudover periodernes grænser til at falde sammen med regeringsperioder.
 Dermed har jeg mulighed for, at gennemføre analyser på baggrund af regeringsmagt kontra opposition, fx.
 Dette er ikke den eneste gyldige opdeling.
@@ -216,31 +232,9 @@ Man kunne fx også delt data op i årtier - 59erne, 70erne osv.
 Dette ville give perioder af ensartet længde, samt at man ikke behøver at tage stilling til hvilke år perioderne skal tilhøre.
 Det ville dog blive sværere at afdække eventuelle diskursændringer omkring specifikke uddannelseshistoriske hændelser.
 
-For at opsummere: \citeauthor{bondergaardHistoricalEmergenceKey2014} foreslår følgende historiske perioder for de danske erhvervsuddannelser:
-
-← 1945: lavenes mesterlære, fra monopol til deregulering til re-regulering
-
-1945 --- 1967: udvidelse og specialisering af mesterlæren
-
-1967 --- 1990: mesterlæren i konflikt med den nye erhvervsuddannelse
-
-Denne deler jeg yderligere op, for at undgå at nogle perioder bliver meget lange, til 1967-1978 og 1978-1990.
-I 1977 bliver der truffet vedtag om at indføre den Erhvervsfaglige Grunduddannelse (EFG); og ved at starte perioden i '78 får vi den efterfølgende diskussion med.
-1990 markeres ved, at de tekniske skoler nu skal have selvstyre....\todo{1990ernes EUD - ufærdigt}
-jeg vil foreslå to perioder yderligere:
-
-1990 --- 2001 målstyring, selvstyre, ressourceudvikling, inklusion, global konkurrence 
-2001 — 2014: Ansvar for egen læring, fokus på unge
-2014 -> : Stor reformiver, uden at man venter på resultater af tidligere reformer
-
-Folketingstidende strækker sig kun tilbage til 1953, hvilket besværliggør en analyse af den første periode beskrevet ovenfor.
-Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder - fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
-Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvilsomme, i bedste fald.
-Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen\todo{regering i 1978} og kort efter indførelsen af EFG på landsplan.
-
 \subsection{Udledning af emner i det samlede korpus}
 
-Jeg sidder nu med ??? folektingstaler, udan at (kunne) vide, hvorvidt en given tale er relevant for min analyse.
+Jeg sidder nu med ???\todo{hvor mange taler i det samlede korpus?} folketingstaler, udan at (kunne) vide, hvorvidt en given tale er relevant for min analyse.
 Mit første skridt vil være, at foretage en grovsortering, for at kunne finde taler der kunne være nyttige at se nærmere på.
 Dette er en uoverskuelig opgave at gøre manuelt.
 Men computeren vil gerne lave denne slags beregninger.
@@ -260,7 +254,10 @@ antallet emner til en LDA-algoritme skal specificeres på forhånd.
 Biblioteket \texttt{ldatuning} kan lave sammenligninger af forskellige metoder, til udvælgelse af antal emner; for at undgå at vælge rent tilfældigt.
 
 \todo{grafer over fordeling af emner}
+\begin{figure}
+\centering
 \input{../fig/models_plot.tex}
+\end{figure}
 
 Ved at se på kurvene fra disse sammenligninger, flader de ud omkring de 60-80 emner.
 
