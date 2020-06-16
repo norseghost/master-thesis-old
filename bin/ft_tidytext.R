@@ -5,26 +5,38 @@ library(tidyverse)
 library(tidytext)
 library(tm)
 library(here)
-library(future)
 library(topicmodels)
 library(ldatuning)
 library(tikzDevice)
+library(future)
 options(future.globals.maxSize = 8912896000)
-plan(multicore)
+options(tikzDefaultEngine = 'xetex')
+options(tikzMetricsDictionary = here('/lib/tikzmetrics'))
+options(tikzXelatexPackages =
+        c(
+          "\\usepackage{tikz}\n"
+          ,"\\usepackage[active,tightpage,xetex]{preview}\n",
+          "\\usepackage{fontspec,xunicode}\n",
+          "\\PreviewEnvironment{pgfpicture}\n",
+          "\\setlength\\PreviewBorder{0pt}\n")
+        )
+plan(multicore, workers = 8L)
 
-ft_speeches <- read_csv(here("data/ft_lematized_timeseries.csv"))
+ft_speeches <- read_csv(here("data/ft_clean_no_stopwords_timeseries.csv"))
 
 ft_tidy <- ft_speeches  %>%
-    unnest_tokens(lemma, text)
+    unnest_tokens(lemma, text, token = "ngrams", n = 2)
 
-# count token occurrences across documents
+saveRDS(ft_tidy, here("data/ft_tidy_bigrams_timeseries.rds"))
 
-ft_tidy <- read_csv(here("data/ft_tidy_lemmatized.csv"))
+ft_tidy <- read_csv(here("data/ft_tidy_bigrams_timeseries.csv"))
 
 ft_periods <- ft_tidy %>%
     distinct(timeseries) %>%
     pull
 
+# count token occurrences across documents
+# TODO: rewrite using `dplyr::modify()`
 ft_periods_tokens <- vector("list", length(ft_periods))
 names(ft_periods_tokens) <- ft_periods
 for (i in seq_along(ft_periods)) {
@@ -33,17 +45,16 @@ for (i in seq_along(ft_periods)) {
         count(lemma, doc_id, sort = TRUE)
 }
 
-
-ft_periods_tokens <- ft_periods_tokens[-c(1,4)]
+# remove the two earliest periods
+ft_periods_tokens <- ft_periods_tokens[-c(3,6)]
 
 ft_periods_tokens[["all"]] <- ft_tidy %>%
     filter(timeseries == names(ft_periods_tokens)) %>%
     count(lemma, doc_id, sort = TRUE)
 
-saveRDS(ft_periods_tokens, here("data/ft_periods_tokens.rds"))
+saveRDS(ft_periods_tokens, here("data/ft_periods_tokens_bigrams.rds"))
 
-ft_periods_tokens <- readRDS(here("data/ft_periods_tokens.rds"))
-
+ft_periods_tokens <- readRDS(here("data/ft_periods_tokens_bigrams.rds"))
 
 ft_periods_tfidf <- ft_periods_tokens %>%
     map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
@@ -54,20 +65,47 @@ ft_periods_tfidf <- ft_periods_tokens %>%
     # also filter out the 0.002 most rare terms
     # (of those left) to catch misspellings and errors
     # TODO: Reference?
-    map(~ filter(.x, tf_idf, < quantile(tf_idf, 0.998)))
+    map(~ filter(.x, tf_idf < quantile(tf_idf, 0.998)))
+
+
+ zsaveRDS(ft_periods_tokens, here("data/tfidf_periods_bigrams"))
 
 ft_periods_dtm <- ft_periods_tfidf %>%
     map(~ future((cast_dtm(.x, doc_id, lemma, n)))) %>%
     values
 
+saveRDS(ft_periods_dtm, here("data/dtm_periods_bigrams"))
+
+ft_periods_dtm <- readRDS(here("data/dtm_periods_bigrams"))
+
+ft_periods_lda <- ft_periods_dtm %>%
+    map(~ future(LDA(.x, method = "Gibbs", k = 35, control = list(seed = 1234, burnin = 500, thin = 300, iter = 3000)))) %>%
+    values
+
+saveRDS(ft_periods_lda, here("data/lda-35_periods_bigrams"))
+
+ft_periods_docs <- ft_periods_lda %>%
+    map(~ future(tidy(.x, matrix = "gamma"))) %>%
+    values
+
+
+ft_periods_topics <- ft_periods_lda %>%
+    map(~ future(tidy(.x, matrix = "beta"))) %>%
+    values
+
+
 ft_periods_models <- ft_periods_dtm %>%
     map(~ FindTopicsNumber(
       .x,
-      topics = seq(from = 2, to = 100, by = 3),
+      topics = seq(from = 2, to = 120, by = 10),
       metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
       method = "Gibbs",
-      control = list(seed = 1234)
+      control = list(seed = 1234),
+      verbose = TRUE,
+      mc.cores = 8
     ))
+
+ft_periods_models <- readRDS(here("data/models_120.rds"))
 
 models_plot <- ft_periods_models %>%
     map(~ normalize_topic_numbers(.x)) %>%
@@ -76,12 +114,13 @@ models_plot <- ft_periods_models %>%
     plot_topic_numbers %>%
     ggsave(
            filename="models_plot.tex",
-           width=7,
-           height=10, 
-           units = "in",
+           width=15,
+           height=15, 
+           units = "cm",
            device = tikz,
            path = here("fig"),
-           standAlone = FALSE)
+           standAlone = FALSE,
+    )
 
 normalize_topic_numbers <- function(values) {
   # Drop models if present, as they won't rescale
@@ -124,19 +163,6 @@ plot_topic_numbers <- function(values) {
 }
 
 
-ft_periods_lda <- ft_periods_dtm %>%
-    map(~ future(LDA(.x, k = 15, control = list(seed = 1234)))) %>%
-    values
-
-ft_periods_docs <- ft_periods_lda %>%
-    map(~ future(tidy(.x, matrix = "gamma"))) %>%
-    values
-
-
-ft_periods_topics <- ft_periods_lda %>%
-    map(~ future(tidy(.x, matrix = "beta"))) %>%
-    values
-
 # TODO: run this for all periods
 ft_assignments <- augment(ft_periods_lda[[3]], data = ft_periods_dtm[[3]])
 
@@ -167,16 +193,7 @@ library(tikzDevice)
 }
 
 library(tikzDevice)
-options(tikzDefaultEngine = 'xetex')
-options(tikzMetricsDictionary = here('/lib/tikzmetrics'))
-options(tikzXelatexPackages =
-        c(
-          "\\usepackage{tikz}\n"
-          ,"\\usepackage[active,tightpage,xetex]{preview}\n",
-          "\\usepackage{fontspec,xunicode}\n",
-          "\\PreviewEnvironment{pgfpicture}\n",
-          "\\setlength\\PreviewBorder{0pt}\n")
-        )
+
 
 paths <- str_c(names(models_plot), "-topicnumbers.tex")
 
