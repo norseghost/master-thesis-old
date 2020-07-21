@@ -34,8 +34,58 @@ control <- list(
 
 ft_speeches <- read_csv(here("data/ft_clean_no_stopwords_timeseries.csv"))
 
+# Generate a set of Document-Term Matrices from the folketinget dataset
+# input:
+# - a folketinget tibble, modified to add a 'timeseries' field
+#   (see bin/ft_periods.R)
+# TODO: incorporate periods code into this codefile
+generate_dtms <- function(speeches) {
+  # there are errors in the folketinget dataset that makes documents
+  # pre 1978 ish suspect -- remove these
+  speeches <- speeches %>%
+    filter(timeseries != "1957-68") %>%
+    filter(timeseries != "1968-78")
+  # TODO: this is basically a group_by, right?
+  periods <- speeches %>%
+    distinct(timeseries) %>%
+    pull
+  # TODO: And I think this is a terribad implementation of split()
+  corpora <- vector("list", length(periods))
+  names(corpora) <- periods
+  for (i in seq_along(periods)) {
+      corpora[[i]] <- speeches %>%
+          filter(timeseries == periods[[i]])
+  }
+  # add a 'all' dtm too, as a control
+  corpora[["all"]] <- speeches %>%
+      filter(timeseries %in% periods)
+  tfidf <- corpora %>%
+    # unnest tokens using tidytext
+    # TODO: add centralized config for n, token etc
+    map(~ unnest_tokens(.x, lemma, text, token = "ngrams", n = 2)) %>%
+    # add token fields
+    map(~ future(count(.x, lemma, doc_id, sort = TRUE))) %>%
+    values %>%
+    # generate a tf_idf
+    map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
+    values
+  dtms <- tfidf %>%
+    # the filter settings here are derived from inspecting the raw tf_idf
+    map(~ future(filter(.x, tf_idf > mean(unique(tf_idf), na.rm = TRUE)))) %>%
+    values %>%
+    map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
+    values %>%
+    # also these
+    map(~ future(removeSparseTerms(.x, 0.9999))) %>%
+    values %>%
+    # the removal of sparse terms creates empty rows
+    # this won't do
+    # only empty rows will be non-unique
+    # so ditch them (preserving row order)
+    dtm[unique(dtm$i), ]
+  return(list(tfidf, dtms))
+}
 
-  
 ft_periods <- ft_speeches %>%
     filter(timeseries != "1957-68") %>%
     filter(timeseries != "1968-78") %>%
@@ -148,12 +198,15 @@ models_compare <- function(dtm, name) {
       method = "Gibbs",
       control = control,
       verbose = TRUE,
-      return.models = TRUE
+      return_models = TRUE
     )
-  saveRDS(models, here(str_c("data/", name, "_", max_K, "by", steps,".rds")))
+  saveRDS(models, here(str_c("data/", name, "_", max_K, "by", steps, ".rds")))
+  rm(models)
+  gc()
+  return(NULL)
 }
 
-imap(ft_periods_dtm_nosparse, models_compare(dtm = .x, name = .y))
+imap(ft_periods_dtm_nosparse[-c(1,2)], ~ models_compare(dtm = .x, name = .y))
 
 ft_periods_models <- ft_periods_dtm_nosparse %>%
     map(~ future(.x[unique(.x$i), ])) %>%
