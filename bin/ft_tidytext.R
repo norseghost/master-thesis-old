@@ -1,4 +1,4 @@
-# ft_tidytext.R
+# tidytext.R
 # exploratory data analysis using the tidytext packages
 
 library(tidyverse)
@@ -32,12 +32,12 @@ control <- list(
             iter = iter)
 
 
-ft_speeches <- read_csv(here("data/ft_clean_no_stopwords_timeseries.csv"))
+speeches <- read_csv(here("data/clean_no_stopwords_timeseries.csv"))
 
 # Generate a set of Document-Term Matrices from the folketinget dataset
 # input:
 # - a folketinget tibble, modified to add a 'timeseries' field
-#   (see bin/ft_periods.R)
+#   (see bin/periods.R)
 # TODO: incorporate periods code into this codefile
 generate_dtms <- function(speeches) {
   # there are errors in the folketinget dataset that makes documents
@@ -71,6 +71,8 @@ generate_dtms <- function(speeches) {
     values
   dtms <- tfidf %>%
     # the filter settings here are derived from inspecting the raw tf_idf
+    # the cutoff is derived from the mean of all unique tf_idf scores
+    # to raise the floor quite a bit
     map(~ future(filter(.x, tf_idf > mean(unique(tf_idf), na.rm = TRUE)))) %>%
     values %>%
     map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
@@ -86,129 +88,167 @@ generate_dtms <- function(speeches) {
   return(list(tfidf, dtms))
 }
 
-ft_periods <- ft_speeches %>%
+periods <- speeches %>%
     filter(timeseries != "1957-68") %>%
     filter(timeseries != "1968-78") %>%
     distinct(timeseries) %>%
     pull
-ft_periods_speeches <- vector("list", length(ft_periods))
-names(ft_periods_speeches) <- ft_periods
-for (i in seq_along(ft_periods)) {
-    ft_periods_speeches[[i]] <- ft_speeches %>%
-        filter(timeseries == ft_periods[[i]])
+speeches <- vector("list", length(periods))
+names(speeches) <- periods
+for (i in seq_along(periods)) {
+    speeches[[i]] <- speeches %>%
+        filter(timeseries == periods[[i]])
 }
-ft_periods_speeches[["all"]] <- ft_speeches %>%
-    filter(timeseries %in% ft_periods)
-saveRDS(ft_periods_speeches, here("data/ft_periods_speeches_stopwords.rds"))
+speeches[["all"]] <- speeches %>%
+    filter(timeseries %in% periods)
+saveRDS(speeches, here("data/speeches_stopwords.rds"))
 
-ft_periods_speeches <- readRDS(here("data/ft_periods_speeches_stopwords.rds"))
+speeches <- readRDS(here("data/speeches_stopwords.rds"))
 
-ft_periods_tidy <- ft_periods_speeches  %>%
+tidy <- speeches  %>%
     map(~ unnest_tokens(.x, lemma, text, token = "ngrams", n = 2))
-saveRDS(ft_periods_tidy, here("data/ft_periods_bigrams_stopwords.rds"))
+saveRDS(tidy, here("data/bigrams_stopwords.rds"))
 
-ft_periods_tidy <- readRDS(here("data/ft_periods_bigrams_stopwords.rds"))
-ft_periods_tokens <- ft_periods_tidy %>%
+tidy <- readRDS(here("data/bigrams_stopwords.rds"))
+tokens <- tidy %>%
   map(~ future(count(.x, lemma, doc_id, sort = TRUE))) %>%
   values
-saveRDS(ft_periods_tokens, here("data/ft_periods_bigrams_tokens_stopwords.rds"))
-ft_periods_tfidf <- ft_periods_tokens %>%
+saveRDS(tokens, here("data/bigrams_tokens_stopwords.rds"))
+tfidf <- tokens %>%
     map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
     values
-saveRDS(ft_periods_tfidf, here("data/ft_periods_bigrams_tfidf_stopwords.rds"))
+saveRDS(tfidf, here("data/bigrams_tfidf_stopwords.rds"))
 
-ft_periods_tfidf %>%
+tfidf <- readRDS(here("data/bigrams_tfidf_stopwords.rds"))
+
+tfidf %>%
   map(~ summary(unique(.x$tf_idf, na.rm = TRUE)))
-ft_periods_tfidf %>%
+
+tfidf %>%
   map(~ summary(.x$tf_idf))
 
 
 
-# ft_periods_tokens <- readRDS(here("data/tokens-trigrams-1990-01.rds")) %>%
+# tokens <- readRDS(here("data/tokens-trigrams-1990-01.rds")) %>%
 #   count(lemma, doc_id, sort = TRUE)
-# saveRDS(ft_periods_tokens, here("data/tokens_trigrams_count-1990-01.rds"))
+# saveRDS(tokens, here("data/tokens_trigrams_count-1990-01.rds"))
 
-# ft_periods_tokens <- readRDS(here("data/tokens-trigrams-2001-14.rds")) %>%
+# tokens <- readRDS(here("data/tokens-trigrams-2001-14.rds")) %>%
 #   count(lemma, doc_id, sort = TRUE)
-# saveRDS(ft_periods_tokens, here("data/tokens_trigrams_count-2001-14.rds"))
-# ft_periods_tokens <- readRDS(here("data/tokens-trigrams-2014-20.rds")) %>%
+# saveRDS(tokens, here("data/tokens_trigrams_count-2001-14.rds"))
+# tokens <- readRDS(here("data/tokens-trigrams-2014-20.rds")) %>%
 #   count(lemma, doc_id, sort = TRUE)
-# saveRDS(ft_periods_tokens, here("data/tokens_trigrams_count-2014-20.rds"))
+# saveRDS(tokens, here("data/tokens_trigrams_count-2014-20.rds"))
 
-# ft_periods_tokens <- readRDS(here("data/ft_periods_tokens_bigrams.rds"))
-# look at range of terms in tfidf
-ft_periods_tfidf %>%
+# 
+tokens <- readRDS(here("data/tokens_bigrams.rds"))
+
+tfidf %>%
     map(. %>%
-        filter(tf_idf > mean(unique(tf_idf), na.rm = TRUE)) %>%
+        filter(tf_idf > mean(tf_idf, na.rm = TRUE))
+    )
+
+tfidf %>%
         distinct(lemma, tf_idf) %>%
         arrange(lemma, -tf_idf) %>%
         top_n(-30) %>%
         print(n = 30)
-    )
+
 
     # also filter out the 0.002 most rare terms
     # (of those left) to catch misspellings and errors
     # TODO: Reference?
     map(~ filter(.x, tf_idf < quantile(tf_idf, 0.998)))
 
-ft_periods_tfidf_filter <- ft_periods_tfidf %>%
-    map(~ future(filter(.x, tf_idf > mean(unique(tf_idf), na.rm = TRUE)))) %>%
+tfidf_filter <- tfidf %>%
+    map(~ future(filter(.x, tf_idf > mean(tf_idf, na.rm = TRUE)))) %>%
     values
-ft_periods_dtm <- ft_periods_tfidf_filter %>%
+dtm <- tfidf_filter %>%
     map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
     values
 
 
 
-saveRDS(ft_periods_dtm, here("data/dtm_periods_stopwords_bigrams"))
+saveRDS(dtm, here("data/dtm_periods_stopwords_bigrams"))
 
-ft_periods_dtm <- readRDS(here("data/dtm_periods_stopwords_bigrams"))
+dtm <- readRDS(here("data/dtm_periods_stopwords_bigrams"))
 
-ft_periods_dtm_nosparse <- ft_periods_dtm %>%
-  map(~ future(removeSparseTerms(.x, 0.9999))) %>%
+dtm <- dtm %>%
+  map(~ future(removeSparseTerms(.x, 0.998))) %>%
+  values %>%
+  map(~ future(.x[unique(.x$i), ])) %>%
   values
 
-saveRDS(ft_periods_dtm_nosparse, here("data/dtm_periods_stopwords_nosparse_bigrams"))
+saveRDS(dtm_nosparse, here("data/dtm_periods_stopwords_nosparse_bigrams"))
 
-ft_periods_dtm_nosparse <- readRDS(here("data/dtm_periods_stopwords_nosparse_bigrams"))
+dtm <- readRDS(here("data/dtm_periods_stopwords_nosparse_bigrams")) %>%
+  map(~ .x[unique(.x$i), ])
 
-ft_periods_lda <- ft_periods_dtm %>%
-    map(~ future(LDA(.x, method = "Gibbs", k = 35, control = control ))) %>%
+lda <- dtm %>%
+    map(~ future(LDA(.x, method = "Gibbs", k = 35, control = control))) %>%
     values
 
-saveRDS(ft_periods_lda, here("data/lda-35_periods_bigrams"))
+saveRDS(lda, here("data/lda-35_periods_bigrams"))
 
-ft_periods_docs <- ft_periods_lda %>%
+docs <- lda %>%
     map(~ future(tidy(.x, matrix = "gamma"))) %>%
     values
 
 
-ft_periods_topics <- ft_periods_lda %>%
+topics <- lda %>%
     map(~ future(tidy(.x, matrix = "beta"))) %>%
     values
 
-models_compare <- function(dtm, name) {
+models_compare <- function(dtm, name, max_k, steps, cores) {
   dtm  <- dtm[unique(dtm$i), ]
-  max_K <- 204
-  steps <- 5
   models <- FindTopicsNumber(
       dtm,
-      topics = seq(from = 2, to = max_K, by = steps),
+      topics = seq(from = steps, to = max_k, by = steps),
       metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
       method = "Gibbs",
       control = control,
       verbose = TRUE,
-      return_models = TRUE
+      return_models = TRUE,
+      if(!missing(cores)) {
+        mc.cores = cores
+      }
     )
-  saveRDS(models, here(str_c("data/", name, "_", max_K, "by", steps, ".rds")))
+  saveRDS(models, here(str_c("data/models", name, "_", max_k, "by", steps, ".rds")))
   rm(models)
   gc()
   return(NULL)
 }
 
-imap(ft_periods_dtm_nosparse[-c(1,2)], ~ models_compare(dtm = .x, name = .y))
+imap(dtm, ~ models_compare(
+                    dtm = .x,
+                    name = .y,
+                    max_k = 75,
+                    steps = 5,
+                    cores = 16L))
 
-ft_periods_models <- ft_periods_dtm_nosparse %>%
+read_models <- function(max_k, steps) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("*_", max_k, "by", steps, ".rds"
+              )
+  )
+  models <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(models) <- filenames %>%
+    map(~ str_match(.x, pattern = "models(.*)_\\d+by\\d+.rds")[,2])
+  return(models)
+}
+
+keep_model <- function(models, k) {
+  models %>%
+    map(. %>%
+    filter(topics == 25) %>%
+    select(LDA_model) %>%
+    unlist(use.names = FALSE))
+}
+
+map
+
+models <- dtm_nosparse %>%
     map(~ future(.x[unique(.x$i), ])) %>%
     values %>%
     map(~ FindTopicsNumber(
@@ -222,10 +262,10 @@ ft_periods_models <- ft_periods_dtm_nosparse %>%
       return.models = TRUE
     ))
 
-ft_periods_models <- readRDS(here("data/models_120.rds"))
+models <- readRDS(here("data/models_120.rds"))
 
-models_plot <- ft_edu_models %>%
-    map(~ normalize_topic_numbers(.x)) %>%
+plot_models <- function(models) {
+    map(models, ~ normalize_topic_numbers(.x)) %>%
     bind_rows(.id = "period") %>%
     reshape2::melt(., id.vars = c("topics", "period"), na.rm = TRUE) %>%
     plot_topic_numbers %>%
@@ -236,16 +276,23 @@ models_plot <- ft_edu_models %>%
            units = "cm",
            path = here("fig")
       )
+}
 
 normalize_topic_numbers <- function(values) {
   # Drop models if present, as they won't rescale
   # Also, Deveaud is not useful for this dataset
   values <- values %>% 
-    select(-Deveaud2014)
+     select(-LDA_model, -Deveaud2014)
   # normalize to [0,1]
   columns <- values %>%
     select(-topics) %>%
-    modify(~ scales::rescale(.x, to = c(0, 1), from = range(.x))) 
+    modify(~ scales::rescale(.x, to = c(0, 1), from = range(.x)))
+  invert <- columns %>%
+    select(Griffiths2004) %>%
+    modify(~ (1.0 - .x))
+  columns <- columns %>%
+    select(-Griffiths2004) %>%
+    bind_cols(invert)
   values <- values %>%
     select(topics) %>%
     bind_cols(columns)
@@ -278,24 +325,24 @@ plot_topic_numbers <- function(values) {
 }
 
 
-ft_assignments <- map2(ft_periods_lda, ft_periods_dtm, augment, .x, .y)
+assignments <- map2(lda, dtm, augment, .x, .y)
 
-saveRDS(ft_assignments, here("data/assignments_bigrams_k35.rds"))
+saveRDS(assignments, here("data/assignments_bigrams_k35.rds"))
 
 
 # TODO: I'm writing a shitty and probably slow reimplementatin of map
 #       This is probably ill advised, but seems faster than getting map to work
-ft_periods_top_terms <- vector("list", length(ft_periods))
-names(ft_periods_top_terms) <- ft_periods
-for (i in seq_along(ft_periods)) {
-ft_periods_top_terms[[i]] <- ft_periods_topics[[i]] %>%
+top_terms <- vector("list", length(periods))
+names(top_terms) <- periods
+for (i in seq_along(periods)) {
+top_terms[[i]] <- topics[[i]] %>%
         group_by(topic) %>%
         top_n(15, beta) %>%
         ungroup() %>%
         arrange(topic, -beta)
 }
 
-ft_periods_top_terms <- ft_periods_topics %>%
+top_terms <- topics %>%
   modify(. %>%
         group_by(topic) %>%
         top_n(15, beta) %>%
@@ -303,10 +350,10 @@ ft_periods_top_terms <- ft_periods_topics %>%
         arrange(topic, -beta)
   )
 
-ft_periods_term_plots  <- vector("list", length(ft_periods_top_terms))
-names(ft_periods_term_plots) <- names(ft_periods_top_terms)
-for (i in seq_along(ft_periods_top_terms)) {
-ft_periods_term_plots[[i]] <- ft_periods_top_terms[[i]] %>%
+term_plots  <- vector("list", length(top_terms))
+names(term_plots) <- names(top_terms)
+for (i in seq_along(top_terms)) {
+term_plots[[i]] <- top_terms[[i]] %>%
         mutate(term = reorder_within(term, beta, topic)) %>%
         ggplot(aes(term, beta, fill = factor(topic))) +
         geom_col(show.legend = FALSE) +
@@ -315,12 +362,12 @@ ft_periods_term_plots[[i]] <- ft_periods_top_terms[[i]] %>%
         scale_x_reordered()
 }
 
-saveRDS(ft_periods_term_plots, here("data/plots-bigrams-k35.rds"))
+saveRDS(term_plots, here("data/plots-bigrams-k35.rds"))
 
-paths <- str_c(names(ft_periods_term_plots), "-topicnumbers.pdf")
-pwalk(list(paths, ft_periods_term_plots), ggsave, path = here("fig"), width = 20, height = 40)
+paths <- str_c(names(term_plots), "-topicnumbers.pdf")
+pwalk(list(paths, term_plots), ggsave, path = here("fig"), width = 20, height = 40)
 
-ft_periods_term_plots <- ft_periods_top_terms %>%
+term_plots <- top_terms %>%
   modify(. %>%
         mutate(term = reorder_within(term, beta, topic)) %>%
         ggplot(aes(term, beta, fill = factor(topic))) +
@@ -331,32 +378,29 @@ ft_periods_term_plots <- ft_periods_top_terms %>%
   )
 
 
-topicmodels_json_ldavis <- function(fitted, doc_term){
+topicmodels_json_ldavis <- function(model, dtm){
   require(LDAvis)
   require(slam)
   library(parallel)
   cluster <- makePSOCKcluster(
-                names = 8
+                names = 12
         )
   # Find required quantities
-  phi <- as.matrix(posterior(fitted)$terms)
-  theta <- as.matrix(posterior(fitted)$topics)
+  phi <- as.matrix(posterior(model)$terms)
+  theta <- as.matrix(posterior(model)$topics)
   vocab <- colnames(phi)
-  term_freq <- slam::col_sums(doc_term)
+  term_freq <- slam::col_sums(dtm)
   # Convert to json
   json_lda <- LDAvis::createJSON(phi = phi, theta = theta,
                                  vocab = vocab,
-                                 doc.length = as.vector(table(doc_term$i)),
+                                 doc.length = as.vector(table(dtm$i)),
                                  term.frequency = term_freq,
                                  cluster = cluster)
   return(json_lda)
 }
 
-ft_json <- map2(ft_periods_lda, ft_periods_dtm, topicmodels_json_ldavis)
-
-library(LDAvis)
-
-imap(ft_json, ~ serVis(json = .x, out.dir = str_c(here("vis/", .y)), open.browser = FALSE))
+json <- map2(k25, dtm, topicmodels_json_ldavis)
+imap(json, ~ serVis(json = .x, out.dir = str_c(here("vis/", .y)), open.browser = FALSE))
 
 
 
@@ -365,19 +409,19 @@ imap(ft_json, ~ serVis(json = .x, out.dir = str_c(here("vis/", .y)), open.browse
 edu_topic_numbers <- c(6, 16, 7, 3, 9)
 
 # construct list for 
-ft_edu_docs<- vector("list", length(ft_periods_docs))
+edu_docs<- vector("list", length(docs))
 
-l <- list(topicnum = edu_topic_numbers, edu_docs = ft_edu_docs, docs = ft_periods_docs)
+l <- list(topicnum = edu_topic_numbers, edu_docs = edu_docs, docs = docs)
 
-ft_edu_docs <- pmap(l, function(edu_docs, docs, topicnum) { edu_docs <- filter(docs, topic == topicnum)}) %>%
+edu_docs <- pmap(l, function(edu_docs, docs, topicnum) { edu_docs <- filter(docs, topic == topicnum)}) %>%
 # all docs have a probability of beaing assigned to a topic
 # we only want the 1%
   map(~ filter(.x, gamma > quantile(gamma, 0.97))
-names(ft_edu_docs) <- names(ft_periods_docs)
+names(edu_docs) <- names(docs)
 
-ft_edu_tokens <- map2(ft_periods_tokens, ft_edu_docs, ~ filter(.x, doc_id %in% .y$document))
+edu_tokens <- map2(tokens, edu_docs, ~ filter(.x, doc_id %in% .y$document))
 
-ft_edu_tfidf <- ft_edu_tokens %>%
+edu_tfidf <- edu_tokens %>%
     map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
     values %>%
     # filter out terms that are below the median tf_idf score per corpus
@@ -387,18 +431,18 @@ ft_edu_tfidf <- ft_edu_tokens %>%
     # (of those left) to catch misspellings and errors
     # TODO: Reference?
     map(~ filter(.x, tf_idf < quantile(tf_idf, 0.998)))
-ft_edu_dtm <- ft_edu_tfidf %>%
+edu_dtm <- edu_tfidf %>%
     map(~ future((cast_dtm(.x, doc_id, lemma, n)))) %>%
     values
 
-ft_edu_lda <- ft_edu_dtm %>%
+edu_lda <- edu_dtm %>%
     map(~ future(LDA(.x, method = "Gibbs", k = 15, control = list(seed = 1234, burnin = 500, thin = 300, iter = 3000)))) %>%
     values
-edu_json <- map2(ft_edu_lda, ft_edu_dtm, topicmodels_json_ldavis)
-imap(ft_json, ~ serVis(json = .x, out.dir = str_c(here("vis/edu/", .y)), open.browser = FALSE))
+edu_json <- map2(edu_lda, edu_dtm, topicmodels_json_ldavis)
+imap(json, ~ serVis(json = .x, out.dir = str_c(here("vis/edu/", .y)), open.browser = FALSE))
 
 
-ft_edu_models <- ft_edu_dtm %>%
+edu_models <- edu_dtm %>%
     map(~ FindTopicsNumber(
       .x,
       topics = seq(from = 5, to = 60, by = 5),
