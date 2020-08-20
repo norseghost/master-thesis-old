@@ -14,16 +14,20 @@
 # 01-14 (individualisering, ansvar for egen læring)
 # 14-20 (fokus på unge; voksne falder fra)
 
+ft_metadata <- ft_speeches %>%
+  select(-text) %>%
+  saveRDS(here("data/ft_metadata.rds"))
+
 library(here)
 library(data.table)
 library(tidyverse)
 library(future)
-
+plan(multicore)
 options(future.globals.maxSize= 89128960000)
 
-ft_speeches <- fread(here("data/ft_clean_no_stopwords.csv"))
+ft_speeches <- fread(here("data/ft_clean_stopwords.csv"))
 
-ft_speeches[, timeseries := sapply(Date, (function(x) {
+ft_speeches[, timeseries := future_sapply(Date, (function(x) {
                             case_when(
                                  x < as.Date("1957-05-28") ~ "1953-57",
                                  x < as.Date("1968-02-02") ~ "1957-68",
@@ -35,5 +39,4 @@ ft_speeches[, timeseries := sapply(Date, (function(x) {
                             )}
                         ))]
 
-fwrite(ft_speeches, here("data/ft_clean_no_stopwords_timeseries.csv"))
-
+fwrite(ft_speeches, here("data/ft_clean_stopwords_timeseries.csv"))
