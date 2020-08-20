@@ -47,6 +47,11 @@ windows:
       # synchronize: after
       panes:
         - nvim -S ~/.local/share/nvim/session/thesis
-        - R
+        - ssh -t magni.andersens.xyz 'tmux -u new-session -s code -A'
+  - monitor: ssh -t magni.andersens.xyz 'tmux -u new-session -s monitor -A'
+  - browse:
+      panes:
+        - ranger
+        - ssh -t magni.andersens.xyz 'tmux -u new-session -s browse -A'
   # - server: bundle exec rails s
   # - logs: tail -f log/development.log
