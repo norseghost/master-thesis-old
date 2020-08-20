@@ -140,7 +140,33 @@ tfidf %>%
 #   count(lemma, doc_id, sort = TRUE)
 # saveRDS(tokens, here("data/tokens_trigrams_count-2014-20.rds"))
 
-# 
+read_tokens <- function(ngrams) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("tokens_", ngrams, "_count", ".*.rds")
+  )
+  print(filenames)
+  tokens <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(tokens) <- filenames %>%
+    map(~ str_match(.x, pattern = ".*-(\\d+-\\d+).rds")[,2])
+  return(tokens)
+}
+
+collate_tokens <- function(tokens) {
+  all_tokens <- tokens %>%
+    map(~ bind_cols(.x))
+}
+
+create_tfidfs <- function(tokens, name) {
+  tfidf <- bind_tf_idf(tokens, lemma, doc_id, n)
+  saveRDS(tfidf, here(str_c("data/tfidf_", name, ".rds")))
+  rm(tfidf)
+  gc()
+  return(NULL)
+}
+
+imap(tokens, ~ create_tfidfs(tokens = .x, name = str_c("trigrams_", .y)))
+
 tokens <- readRDS(here("data/tokens_bigrams.rds"))
 
 tfidf %>%
@@ -148,11 +174,13 @@ tfidf %>%
         filter(tf_idf > mean(tf_idf, na.rm = TRUE))
     )
 
-tfidf %>%
+inspect_tfdidf <- function(tfidf) {
+    tfidf %>% map(. %>%
         distinct(lemma, tf_idf) %>%
         arrange(lemma, -tf_idf) %>%
         top_n(-30) %>%
-        print(n = 30)
+        print(n = 30))
+}  
 
 
     # also filter out the 0.002 most rare terms
