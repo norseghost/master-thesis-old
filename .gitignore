@@ -9,6 +9,11 @@ tags
 lit/
 # data is pre-generated, no need to track
 data/
+# visualizations are for data exploration
+vis/
+# runtime dependencies, genreated/fetched as needed
+lib/*.udpipe
+lib/tikzmetrics
 # dont keep non-clean data
 old*
 ## Core latex/pdflatex auxiliary files:
