@@ -8,7 +8,6 @@ library(here)
 library(future)
 library(udpipe)
 options(future.globals.maxSize = 8912896000)
-
 plan(multicore, workers = 8L)
 
 ft_raw <- fread(here("data/folketinget_1953_2019_raw.csv"))
@@ -53,7 +52,7 @@ clean_text <- function(text) {
     tolower %>%
     removeNumbers %>%
     removePunctuation %>%
-    # removeWords(ft_stopwords) %>%
+    removeWords(ft_stopwords) %>%
     lemmatize %>%
     # the corpus contains occurences of hangul character
     # hwalp - 홢 - this is unwanted
@@ -61,11 +60,6 @@ clean_text <- function(text) {
     stripWhitespace
 }
 
-ft_clean <- test %>%
-    group_by(.groups) %>%
-    map(~ future(mutate(.x, text = clean_text(.x[["text"]])))) %>%
-    values %>%
-    ungroup
 
 # set up parallel processing
 library(parallel)
@@ -75,7 +69,7 @@ cluster <- makePSOCKcluster(
 # the cluster needs to se e my stopwords
 clusterExport(
         cl = cluster,
-        varlist = c("lemmatize", "clean_text", "udmodel"),
+        varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
         envir = .GlobalEnv
 )
 #and needs to have the required libraries loaded
@@ -90,7 +84,6 @@ clusterEvalQ(
 
 # apply the cleaning operation in parallel
 # the dataset is already prepared in 100 batches
-test <- as.data.table(ft_raw)
 ft_clean <- ft_raw[, text := parSapply(
                             cluster, .SD[, text], clean_text),
             by = .groups]
