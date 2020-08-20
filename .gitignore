@@ -11,6 +11,9 @@ lit/
 data/
 # visualizations are for data exploration
 vis/
+# png, pdf figures are ephemeral
+fig/*.pdf
+fig/*.png
 # runtime dependencies, genreated/fetched as needed
 lib/*.udpipe
 lib/tikzmetrics
