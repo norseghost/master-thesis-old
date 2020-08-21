@@ -1,11 +1,11 @@
 \part{Metodiske og analytiske overvejelser}\label{part:method}
 
 \epigraph{\itshape
-“Når jeg anvender et ord,” sagde Klumpe-Dumpe temmelig hånligt, “så betyder det lige netop, hvad jeg vil have, det skal betyde - hverken mere eller mindre.”
+“Når jeg anvender et ord,” sagde Klumpe-Dumpe temmelig hånligt, “så betyder det lige netop, hvad jeg vil have, det skal betyde — hverken mere eller mindre.”
 
 “Men spørgsmålet er,” sagde Alice, “om du kan få ordene til at betyde vidt forskellige ting.”
 
-“Spørgsmålet er,” sagde Klumpe-Dumpe, “hvem det er, der bestemmer - det er det, der er det afgørende.”
+“Spørgsmålet er,” sagde Klumpe-Dumpe, “hvem det er, der bestemmer — det er det, der er det afgørende.”
 }{Lewis Carroll, \textit{Bag spejlet, og hvad Alice fandt der} (\citeyear{carrollAliceEventyrlandOg1977})}
 
 \chapter{Den algoritmiske sociologis muligheder og begrensninger}
@@ -24,7 +24,7 @@ Og dagens tæt forbundne informationssamfund har gjort store mængder tekst tilg
 
 \citeauthor{evansMachineTranslationMining2016} benytter sig af en spil-metafor for socialt samhandling og interaktion; hvor der er bred enighed om regler, spillere, hvordan der spilles og vindes.
 Her er tekst en form for abstraheret repræsentation af (dele af) dette spil --- en form for aflejret socialt samspil.
-Ved at se på tekst som repræsentationer af social samhandling, kan man udlede aspekter af det sociale spil der har foregået - menneskers handlinger, holdninger, følelser og viden \autocite[s. 22]{evansMachineTranslationMining2016}.
+Ved at se på tekst som repræsentationer af social samhandling, kan man udlede aspekter af det sociale spil der har foregået — menneskers handlinger, holdninger, følelser og viden \autocite[s. 22]{evansMachineTranslationMining2016}.
 
 I den sociale verden — hvor individer samhandler i relation til sociale strukturer, kulturelle systemer og symboler, samt materielle ressourcer — udspiller der sig flere sociale spil \autocite[s. 23]{evansMachineTranslationMining2016}.
 Jeg tager del i “spillet om uddannelse” --- på metaniveau endda.
@@ -82,6 +82,7 @@ Koden der ligger bag analysen kan deles, og undersøgelser kan gentages og afpr�
 \chapter{Dataindsamling og analyse}\label{chap:data}
 
 Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
+Jævnfør min diskussion i indledningen omkring det deskriptives værdi; vil jeg bestræbe mig på, at gå omhyggelig og systematisk til værks.
 
 \citeauthor{evansMachineTranslationMining2016} beskriver tre niveauer indenfor tekstanalyse \autocite[s. 34]{evansMachineTranslationMining2016}:
 \begin{itemize}
@@ -103,13 +104,21 @@ Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1978 indtil u
 Datasættet\footnote{Typisk kaldet et \textit{korpus} indenfor tekstbehandlingsverdenen} er dannet ved, at hente mødereferaterne i PDF-form fra Folketingstidende, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold, ved hjælp af computerbiblioteket \citetitle{pedersenFolketinget2019} \autocite{pedersenFolketinget2019}.
 Denne samling \textit{dokumenter} består af ord, der skal udledes mening af.
 Ord grupperes som \textit{tokens}, der kan udgøre ét ord; men kan også være to eller flere efterfølgende ord; eller ord der har n afstand mellem hinanden.
-Jeg bruger forskellige arter tokens afhængigt af hvad jeg undersøger.
+Jeg bruger forskellige arter tokens\todo{opmærksomhed på, hvorvidt dette holder} afhængigt af hvad jeg undersøger.
 
 Min undersøgelse er primært på det første af de tre niveauer i tekstanalyse beskrevet ovenfor.
 Jeg ser på tekstens overordnede indhold, og forsøger at drage slutninger omkring kulturelle former for kommunikation.
 Herfra vil jeg undersøge hvilke temaer indenfor uddannelse ses som centrale, og hvordan de italesættes.
 Mit projekt er også primært at klassificere som tekst-mining, idet jeg forsøger mig på udledning af mening fra en samling tekst.
 Alle ord rystes sammen, uden hensyntagen til deres placering i dokumentet\footnote{Typisk kaldet en “Bag of Words” model \autocite[s. 28]{kwartlerTextMiningPractice2017}}; og der udarbejdes matematiske modeller over forholdet mellem ord og dokumenter.
+
+\section{Analyseredskaber og kode}
+
+Jeg programmerer mine bearbejdninger og analyser i R, der er et programmeringssprog specifikt udarbejdet til statistik-analyse.\todo{kilde: hvad er R}.
+R er en moden programmeringsplatform, med et stort pakkebibliotek tilgængeligt — også til tekstanalyse.
+
+Reproducerbare computeranalyser har megen lidt værdi hvis de bagvedliggende mellemregninger ikke er tilgængelige.
+Jeg har derfor en kopi af min kode tilgængeligt på GitHub, til frit brug og offentlig anskuelse \autocite{andersenNorseghostMasterthesis2020}.
 
 \section{Forhåndsbearbejdning af data}\label{sec:preproc}
 
@@ -120,12 +129,12 @@ Tekstmaterialet kan med fordel simplificeres inden analyse, både for at begræn
 For eksempel er ordene “stemme”, “stemte”, “stemmer” alle relaterede til konceptet at stemme.
 Men uden forhåndsbehandling vil disse blive regnet for at være tre forskellige begreber.
 Jeg har derfor brugt et NLP-bibliotek \autocite{strakaUDPipeUFAL2020} til at foretage såkaldt \textit{lemmatization} ved hjælp af syntaktiske analyser \autocite[s. 28]{kwartlerTextMiningPractice2017}.
-Computeren analyserer hvert ord, og udleder grundstammen --- lemma — af det. I eksemplet ovenfor er grundformen “stem” - og vi kan fange alle omtaler af konceptet at stemme.
-Dog vil man her også muligvis tabe noget information - handlede det fx om “en der stemmer”, eller “vi har nu talt stemmer op”?
+Computeren analyserer hvert ord, og udleder grundstammen --- lemma — af det. I eksemplet ovenfor er grundformen “stem” — og vi kan fange alle omtaler af konceptet at stemme.
+Dog vil man her også muligvis tabe noget information — handlede det fx om “en der stemmer”, eller “vi har nu talt stemmer op”?
 “Stemmer” kan også være lyden af mennesker der taler; og ikke, som man kan formode i en folketingskontekst, en kollektiv beslutningsproces.
 
 En anden vej til at reducere kompleksiteten i tekstmaterialet er, at udelukke ord med lav analyseværdi.
-Tal og tegnsætting kan ofte udelukkes - og er blevet det i dette konkrete tilfælde.
+Tal og tegnsætting kan ofte udelukkes — og er blevet det i dette konkrete tilfælde.
 Dermed er sidetal og så videre ikke medregnet; dog med tab af fx. datoer til følge.
 Ord der forekommer meget hyppigt eller meget sjældent vil kunne forvrænge en analyse; og gøre det svært at drage meningsfulde konklusioner.
 
@@ -137,20 +146,40 @@ I stedet for at jeg på egen hånd vurderer, hvilke ord der skal sorteres fra, k
 Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter blot beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
 
 Jeg har, efter en \texttt{tf-idf}\footnote{\textit{text frequency — inverse document frequency} er en beregning der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
-Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score}. vægtning af tokens pr tale, sorteret de tokens fra, der falder under median-værdien\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
+Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score}. vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits-værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
 Dermed har jeg udeladt tokens der forekommer meget hyppigt i min samling korpora.
-For at udelukke ord der forekomme meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.
+For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.\todo{eller fjernet de mindst forekommende termer i dtm?}
 
+Efter jeg har genereret \texttt{tf-idf} værdier for tokens i mine korpora, laver jeg et \textit{document-term matrix} over disse.
+Et document-term matrix er en krydstabel over tokens og dokumenter; hvor der markeres, hvorvidt et token forefindes i et dokument.
+Også her kan datasettets kompleksitet reduceres, ved at fjerne de termer, der ikke findes i ret mange dokumenter.
 
-Det kan dog ikke understreges for meget, at denne forhándsbearbejdning er og vil altid være baseret på forskerskøn.
-Det påligger forskeren, at navigere i de mange muligheder.
+Jeg vil igen understrege, at denne forhándsbearbejdning er og vil altid være baseret på forskerskøn.
+Det er agtpåliggende for forskeren, at navigere i de mange muligheder.
 Forskellige undersøgelsesspørgsmål vil kræve forskellige tilpasninger.
-Det er ikke mere objektivt blot fordi en computer er sat til at arbejde på det!
+Det bliver ikke mere objektivt blot fordi en computer er sat til at arbejde på det!
 
-Metadata er nyttig for at lave klassifikationer og undergrupperinger for analyse.
-Hvem taler, og hvilket part tilhører vedkommende?
-Hvornår er talen fra?
+\subsection{Mit datasæts særegenheder}
 
+En gennemgående udtalelse indenfor databehandling er, at “data er rodete”\todo{kilde: data is messy}.
+For at gøre det ekstra spændende, er de forskellige rå data rodede på hver sin måde.
+For indeværende opgave har jeg bemærket:
+\begin{itemize}
+  \item
+    tekstkonverteringsfejl, fx i form af ord der deles over linjeskift der ikke genkendes; ord der er indlæst med fejlstavelser (ofte til uigenkendelighed)
+  \item
+    gentagne sidehoveder og sidefødder i talerne
+  \item
+    som tidligere nævnt, var en stor del af taler fra før 1975 ca enten ikke til stede; eller også manglede de relevant metadata
+  \item
+    der er meget formalia i et folketingsmøde, hvilket øger forekomsten af enkelte termer (vedtage beslutning, fx)
+  \item
+    dette medfører også, at spredningen af termer over dokumenter er forskøvet ret kraftigt til højre\todo{metodebog: slå op kurveforskydninger}, med mange forholdsvis lave vægtninger — det vil sige; der er mange termer der forekommer i mange dokumenter
+  \item
+    Datasettet er forsynet med et rigt sæt metadata.\todo{er dette for repetativt ift drøftelse af fejlkilder ovenfor?}
+    Metadata er nyttig for at lave klassifikationer og undergrupperinger for analyse.
+    Jeg kan for eksempel se, hvem der taler, og hvilket parti denne tilhører, hvornår talen er fra, og hvilken regeringsperiode det er tale om.
+\end{itemize}
 
 \chapter{Analysestrategi}\label{chap:strategy}
 
@@ -191,7 +220,7 @@ Jeg vil:
       \item
         generere emner på baggrund af tekst-indholdet i de enkelte taler
       \item
-        udvælge emner der ser ud til at omhandle uddannelse generelt og erhvervsuddannelse specifikt
+        udvælge emner der ser ud til at omhandle uddannelse generelt og (eventuelt) erhvervsuddannelse specifikt
       \item
         i disse emner vil jeg, 
         \begin{itemize}
@@ -211,9 +240,9 @@ Forskellige trin i denne plan vil stille forskellige krav til at skabe orden i t
 For eksempel, så vil opdeling i grove kategorier til videre analyse kunne anvende en opdeling i enkelte ord, for at fange overordnede trends.
 En mere granuleret analyse derimod, vil måske hellere se på to eller tre ord sammen; eller inddrage sproglige analyser for at udlede metadata på sprogniveau.
 
-\textit{Unigrams} - et ord af gangen - giver et godt billede af frekvenser. 
+\textit{Unigrams} — et ord af gangen — giver et godt billede af frekvenser.\todo{se på ngrams — dette skal omskrives til faktisk praksis}
 Dette glatter dog kontekst ud.
-“Uddannelse” nævnes måske en del gange - men er man kritisk eller positiv?
+“Uddannelse” nævnes måske en del gange — men er man kritisk eller positiv?
 Jeg benytter denne tilgang i den første, eksplorative undersøgelse; for at beregne antallet emner for videre undersøgelse, sammen med en kort liste stopord.
 
 For næste trin i analysen, hvor jeg vil finde frem til dokumenter der omhandler “uddannelse” på baggrund af de genererede emner fra første trin, foretager jeg analysen med to efterfølgende ord — \textit{bigrams} — og uden stop-ord.
@@ -237,14 +266,14 @@ For at opsummere: jeg vil se på diskurser omkring erhvervsuddannelser siden 197
     \textbf{2014-2020} Reformernes tidsalder
 \end{itemize}
 
-Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder - fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
+Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder — fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
 Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvilsomme, i bedste fald.
 Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen\todo{regering i 1978} og kort efter indførelsen af EFG på landsplan.
 
 Jeg tager udgangspunkt i centrale hendelser i uddannelseshistorisk sammenhæng; og justerer derudover periodernes grænser til at falde sammen med regeringsperioder.
 Dermed har jeg mulighed for, at gennemføre analyser på baggrund af regeringsmagt kontra opposition, fx.
 Dette er ikke den eneste gyldige opdeling.
-Man kunne fx også delt data op i årtier - 59erne, 70erne osv.
+Man kunne fx også delt data op i årtier — 59erne, 70erne osv.
 Dette ville give perioder af ensartet længde, samt at man ikke behøver at tage stilling til hvilke år perioderne skal tilhøre.
 Det ville dog blive sværere at afdække eventuelle diskursændringer omkring specifikke uddannelseshistoriske hændelser.
 
@@ -255,24 +284,30 @@ Mit første skridt vil være, at foretage en grovsortering, for at kunne finde t
 Dette er en uoverskuelig opgave at gøre manuelt.
 Men computeren vil gerne lave denne slags beregninger.
 
-Første trin vil være, at finde antallet emner at søge i; da en LDA-algoritme kræver en forhåndsindstillet mængde.
-
-LDA \autocite{grunTopicmodelsPackageFitting2011}: 
-
-emner (topics) er en distrbution af ord over alle dokumenter
+\subsubsection{LDA}
+Den algoritme jeg benytter mig af i denne del af processen er \texttt{LDA}\todo{uddyb LDA}\footnote{\texttt{LDA} står for \textit{Latent Dirichlet Allocation}
+emner (topics) er en distribution af tokens over alle dokumenter
 
 dokumenter er en distribution af dokumenter over ord
+}, der giver en beregning på, hvor sandsynligt der er, at et token er en del af et givet emne.
+Alle tokens tildeles alle emner, med forskellige.
+Ved at se på, hvilke dokumenter der indeholder tokens med højest vægtning for et givet emne, kan man udarbejde dokumentklynger.
+Hvor mange tokens per emne man medregner vil, igen, være op til forskerskøn.
+Antallet emner til en LDA-algoritme skal dog specificeres på forhånd.
+\footnote{Dette er en såkaldt ikke-superviseret tilgang til tekstanalyse --- andre tilgange baserer sig på, at computerprogrammet ved noget om strukturen af data,m for eksempel ved tilførelse af annotationer inden analyse}.
 
-der gives en beregning på, hvorvidt et ord er en del af et emne
 
-antallet emner til en LDA-algoritme skal specificeres på forhånd.
+LDA \autocite{grunTopicmodelsPackageFitting2011}:
+\subsubsection{Hvor mange emner er relevant?}
+Næste trin i grovsorteringen vil derfor være, at finde antallet emner at analysere ud fra. 
+Dette kan biblioteket \texttt{ldatuning} til R hjælpe med, der kan sammenholde forskellige beregninger\todo{find kildehenvisninger}
+der \footnote{(((kildehenvisninger til disse metoder)))} til udvælgelse af antal emner i et ellers ukendt korpus.
 
-Biblioteket \texttt{ldatuning} kan lave sammenligninger af forskellige metoder, til udvælgelse af antal emner; for at undgå at vælge rent tilfældigt.
+Dernest udvælger jeg et antal emner der virker fornuftigt på baggrund af denne proces, og udforsker indholdet af de forskellige computergenererede emner\footnote{Til denne eksplorative proces tager jeg biblioteket \texttt{LDAvis} i brug. Dette program udarbejder en interaktiv webside, hvor man kan se, hvilke tokens er fremtrædende i hvilke emner. Den interesserede læser kan se mine generede visualisationer på (((KILDE LDAVIS- læg op på blog ))) }.
+Jeg noterer, hvilke emner der eventuelt ser ud til at omhandle uddannelse, og tager disse fra for videre analyse.
 
-\todo{grafer over fordeling af emner}
-\begin{figure}[H]
-\centering
-\input{../fig/models_plot.tex}
-\end{figure}
+\subsection{Generation af emner indenfor uddannelse}
+Med en samling af dokumenter, der, ud fra ovennævnte proces, jeg antager at omhandle uddannelse på den ene eller anden måde, har jeg nu opfyldt målet om, at identificere tekst til videre analyse.
+Jeg gentager nu processen ovenfor med en mindre samling dokumenter, for at se 
 
-Ved at se på kurvene fra disse sammenligninger, flader de ud omkring de 30-50 emner.
+
