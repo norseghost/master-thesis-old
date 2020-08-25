@@ -10,12 +10,12 @@ library(ldatuning)
 library(tikzDevice)
 library(future)
 options(future.globals.maxSize = 9512896000)
-options(tikzDefaultEngine = 'xetex')
-options(tikzMetricsDictionary = here('/lib/tikzmetrics'))
+options(tikzDefaultEngine = "xetex")
+options(tikzMetricsDictionary = here("/lib/tikzmetrics"))
 options(tikzXelatexPackages =
         c(
-          "\\usepackage{tikz}\n"
-          ,"\\usepackage[active,tightpage,xetex]{preview}\n",
+          "\\usepackage{tikz}\n",
+          "\\usepackage[active,tightpage,xetex]{preview}\n",
           "\\usepackage{fontspec,xunicode}\n",
           "\\PreviewEnvironment{pgfpicture}\n",
           "\\setlength\\PreviewBorder{0pt}\n")
@@ -27,7 +27,6 @@ thin <- 300
 iter <- 3000
 n <- 2
 sparse_treshold <- 0.998
-
 control <- list(
             seed = seed,
             burnin = burnin,
