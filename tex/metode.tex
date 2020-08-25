@@ -33,13 +33,14 @@ De politikere, hvis taler kommer igennem møllen af algoritmer, er deltagende i 
 \citeauthor{evansComputationSociologicalImagination2019} henviser til, at formen og genren af tekst har indflydelse på hvilke sociale træk aflejres i den, og at de elementer af det sociale spil der kan udledes, afhænger af, hvor tæt forbunde de sociale træk er til teksten (\citeyear[s. 23f]{evansMachineTranslationMining2016}). 
 En SMS-samtale vil kunne gå for at være repræsentativt, eller sågar dækkende, for den overordnede sociale kontekst; hvor en formel, akademisk udlægning til en vis grad holder forskerens personlighed udenfor indholdet.
 
-For dette speciales vedkommende, hvor teksten er referater af folketingstaler, vil jeg antage, at afstanden til det spil, der foregår på den politiske arena er forholdsvis kort. \todo{evt komme med eksempler på hvad/hvordan det politiske spil kan kendetegnes?}
+For dette speciales vedkommende, hvor teksten er referater af folketingstaler, vil jeg antage, at afstanden til det spil, der foregår på den politiske arena er forholdsvis kort.
 Derved ser jeg gode muligheder for, at kunne danne indsigter i det politiske spil i min analyse.
 
 Klumpe-Dumpe antydede, at det er centralt at være den der bestemmer, for at kunne give ord og begreber en særlig betydning.
 Nu er den grundlæggende betydning af ordet \textit{uddannelse} nok ikke særlig flydende over de seneste 4 årtier.
 Den historiske gennemgang i del II viser dog, at de aspekter af begrebet der har haft størst vægt politisk, har ændret sig over tid.
-For at bygge spil-metaforen ud; så har de aktører, der har haft ledende positioner i spillet, haft mulighed for at påvirke brættet og reglerne; og de andre spillere har fulgt med for ikke at falde fra.
+For at bygge spil-metaforen ud \footnote{Denne udlægning meget frit inspireret af en Bourdieusk fremstilling af magtkampe i et givet felt \autocite[kap.
+1]{bourdieuFieldCulturalProduction2004}}; så har de aktører, der har haft ledende positioner i spillet, haft mulighed for at påvirke brættet og reglerne; og de andre spillere har fulgt med for ikke at falde fra.
 
 \section{Begrænsninger og faldgruber}
 
@@ -54,9 +55,9 @@ Algoritmens resultater kan ikke være bedre end de data der bliver tilført den\
 I tillæg er der til- og fravalg blandt udvælgelse af data og algoritmer der til en vis grad er overladt til forskerens skøn.
 Mine egne overvejelser herom vil følge løbende i denne del af specialet.
 
-I forlængelse af, at computerens resultater er afhængige af god datakvalitet; kan der også forekomme fejlkilder i dataindsamling og -generering.
-En tidlig gennemgang af datagrundlaget for dette speciale viste for eksempel, at der tydeligt var en mangel på tidlige taler i det indsamlede materiale, i forhold til hvad der er tilgængeligt på folketingstidende.dk.
-Der vil også være artefakter i data efter klargøring til behandling --- fejloversættelser fra PDF og andre uregelmæssigheder.
+I forlængelse af, at computerens resultater er afhængige af god datakvalitet; kan der også forekomme fejlkilder i dataindsamling og -generering\footnote{
+En tidlig gennemgang af datagrundlaget for dette speciale viste for eksempel, at der tydeligt var en mangel på tidlige taler i det indsamlede materiale, i forhold til hvad der er tilgængeligt på folketingstidende.dk}.
+Der vil også kunne forekomme artefakter i data efter klargøring til behandling --- for eksempel fejloversættelser fra PDF og andre uregelmæssigheder.
 Dette skal der også tages højde for under databehandlingen.
 
 Når tekst behandles som data, vil der også være noget information der går tabt.
@@ -75,9 +76,8 @@ De seneste års udviklinger indenfor analyseteknologier kan også udlede mening 
 Derudover, så giver den store stigning i data i tekstform muligheder for, at inddrage stadig mere komplekse sociale spil i vores analyser — fx ved at undersøge og sammenligne tendenser og ændringer over tid \autocite{evansMachineTranslationMining2016}.
 Og udover tekstbehandling kan computeranalyser af registerdata med videre generere nye forklaringsmodeller og analyseprincipper for vores sociale hverdag \autocite{evansComputationSociologicalImagination2019}.
 
-
 En yderligere styrke ved computerbaseret tekstanalyse er, at undersøgelserne er reproducerbare \autocite[s. 13]{kwartlerTextMiningPractice2017}.
-Koden der ligger bag analysen kan deles, og undersøgelser kan gentages og afprøves uafhængigt \footnote{Koden bag dette speciale er i øvrigt offentligt tilgængeligt på GitHub \autocite{andersenNorseghostMasterthesis2020}.}.
+Koden der ligger bag analysen kan deles, og undersøgelser kan gentages og afprøves uafhængigt.
 
 \chapter{Dataindsamling og analyse}\label{chap:data}
 
@@ -114,11 +114,11 @@ Alle ord rystes sammen, uden hensyntagen til deres placering i dokumentet\footno
 
 \section{Analyseredskaber og kode}
 
-Jeg programmerer mine bearbejdninger og analyser i R, der er et programmeringssprog specifikt udarbejdet til statistik-analyse.\todo{kilde: hvad er R}.
+Jeg programmerer mine bearbejdninger og analyser i R, der er et programmeringssprog specifikt udarbejdet til statistik-analyse\autocite{therfoundationWhat}.
 R er en moden programmeringsplatform, med et stort pakkebibliotek tilgængeligt — også til tekstanalyse.
 
 Reproducerbare computeranalyser har megen lidt værdi hvis de bagvedliggende mellemregninger ikke er tilgængelige.
-Jeg har derfor en kopi af min kode tilgængeligt på GitHub, til frit brug og offentlig anskuelse \autocite{andersenNorseghostMasterthesis2020}.
+Jeg har derfor en kopi af min kode tilgængeligt på GitHub, til frit brug og offentlig anskuelse \autocite{andersenNorseghostMasterthesis2020}, i bedste Open Data-tradition.
 
 \section{Forhåndsbearbejdning af data}\label{sec:preproc}
 
@@ -140,22 +140,26 @@ Ord der forekommer meget hyppigt eller meget sjældent vil kunne forvrænge en a
 
 En meget anvendt teknik er at sortere såkaldte \textit{stopord} fra.
 Der findes generelle lister over ord der, på bagrund af formodet lav analyseværdi, kan filtreres ud af dokumenterne inden analyse.
-Men disse lister vil ikke kunne fange domænespecifikke ord af denne karakter; og der er også risiko for, at udelukke mulige meningsfulde analyser på forhånd,\autocite[s. 27]{manningIntroductionInformationRetrieval2008}.
+Men disse lister vil ikke kunne fange domænespecifikke ord af denne karakter; og der er også risiko for, at udelukke mulige meningsfulde analyser på forhånd,\autocite[s. 27]{manningIntroductionInformationRetrieval2008}\footnote{Jeg vender tilbage til stopord;
+og deres analytiske anvendelighed, i del IV.}.
 I folketingstalerne omtales regeringen og ministre fx forholdsvis oftere end i daglig tale.
-I stedet for at jeg på egen hånd vurderer, hvilke ord der skal sorteres fra, kan jeg også her tage en computers evner til at tælle i brug.
-Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter blot beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
+I stedet for — eller i tillæg til — at jeg på egen hånd vurderer, hvilke ord der skal sorteres fra, kan jeg også her tage en computers evner til at tælle i brug.
+Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter “blot” beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
 
 Jeg har, efter en \texttt{tf-idf}\footnote{\textit{text frequency — inverse document frequency} er en beregning der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
-Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score}. vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits-værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
-Dermed har jeg udeladt tokens der forekommer meget hyppigt i min samling korpora.
-For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.\todo{eller fjernet de mindst forekommende termer i dtm?}
+  Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score \autocite[s. 29]{silge2017text}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits-værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
+Dermed har jeg udeladt tokens der forekommer meget hyppigt i min samling korpora, og vil have lav værdi i forhold til at adskille dokumenter fra hinanden.
+For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.
 
 Efter jeg har genereret \texttt{tf-idf} værdier for tokens i mine korpora, laver jeg et \textit{document-term matrix} over disse.
 Et document-term matrix er en krydstabel over tokens og dokumenter; hvor der markeres, hvorvidt et token forefindes i et dokument.
-Også her kan datasettets kompleksitet reduceres, ved at fjerne de termer, der ikke findes i ret mange dokumenter.
+Også her kan datasættets kompleksitet reduceres, ved at fjerne de termer, der ikke findes i ret mange dokumenter.
 
-Jeg vil igen understrege, at denne forhándsbearbejdning er og vil altid være baseret på forskerskøn.
-Det er agtpåliggende for forskeren, at navigere i de mange muligheder.
+Som nævnt ovenfor, er en konsekvens af brug af disse teknikker en udviskning af grænseværdier og tab af data i yderpositioner.
+En overdreven ihærdighed i anvendelse kan bidrage til, en upålidelig analyse i sidste ende.
+
+Jeg vil derfor igen understrege, at denne forhándsbearbejdning er og vil altid være baseret på forskerskøn i forhold til det konkrete datasæt.
+Det er agtpåliggende for forskeren, at navigere i de mange muligheder — for eksempel, ved at prøve forskellige grenseværdier og se, hvilke analytiske muligheder der åbnes op eller udelukkes.
 Forskellige undersøgelsesspørgsmål vil kræve forskellige tilpasninger.
 Det bliver ikke mere objektivt blot fordi en computer er sat til at arbejde på det!
 
@@ -163,7 +167,11 @@ Det bliver ikke mere objektivt blot fordi en computer er sat til at arbejde på 
 
 En gennemgående udtalelse indenfor databehandling er, at “data er rodete”\todo{kilde: data is messy}.
 For at gøre det ekstra spændende, er de forskellige rå data rodede på hver sin måde.
-For indeværende opgave har jeg bemærket:
+For indeværende opgave er data overvejende pænt forberedt, og forsynet med et rigt sæt metadata.
+Metadata er nyttig for at lave klassifikationer og undergrupperinger for analyse.
+Jeg kan for eksempel se, hvem der taler, og hvilket parti denne tilhører, hvornår talen er fra, og hvilken regeringsperiode det er tale om.
+
+Dog har jeg bemærket:
 \begin{itemize}
   \item
     tekstkonverteringsfejl, fx i form af ord der deles over linjeskift der ikke genkendes; ord der er indlæst med fejlstavelser (ofte til uigenkendelighed)
@@ -174,11 +182,9 @@ For indeværende opgave har jeg bemærket:
   \item
     der er meget formalia i et folketingsmøde, hvilket øger forekomsten af enkelte termer (vedtage beslutning, fx)
   \item
-    dette medfører også, at spredningen af termer over dokumenter er forskøvet ret kraftigt til højre\todo{metodebog: slå op kurveforskydninger}, med mange forholdsvis lave vægtninger — det vil sige; der er mange termer der forekommer i mange dokumenter
+    dette medfører også, at spredningen af termer over dokumenter er forskøvet ret kraftigt til venstre, med mange forholdsvis lave vægtninger for \texttt{tf-idf} — det vil sige; der er mange termer der forekommer i mange dokumenter
   \item
-    Datasettet er forsynet med et rigt sæt metadata.\todo{er dette for repetativt ift drøftelse af fejlkilder ovenfor?}
-    Metadata er nyttig for at lave klassifikationer og undergrupperinger for analyse.
-    Jeg kan for eksempel se, hvem der taler, og hvilket parti denne tilhører, hvornår talen er fra, og hvilken regeringsperiode det er tale om.
+    denne forholdsvis store homogenietet betyder, at overvejelser omkring skæringspunkter og grænseværdier er svære at kvalificere programmatisk\footnote{Jeg uddyber dette med eksempler i mit analyseafsnit}
 \end{itemize}
 
 \chapter{Analysestrategi}\label{chap:strategy}
@@ -212,6 +218,8 @@ Jeg vil også bevæge mig i mellem de overordnede niveauer efter \autocite{evans
 Jeg vil:
 
 \begin{itemize}
+
+
   \item
     dele data op i perioder
   \item
@@ -234,7 +242,7 @@ Jeg vil:
     \end{itemize}
 \end{itemize}
 
-\subsection{Forhåndsbehandling af tekst}
+\subsection{Tekst bliver data}
 
 Forskellige trin i denne plan vil stille forskellige krav til at skabe orden i tekstmaterialet, for at gøre den anvendelig til analyserbare data.
 For eksempel, så vil opdeling i grove kategorier til videre analyse kunne anvende en opdeling i enkelte ord, for at fange overordnede trends.
@@ -268,7 +276,7 @@ For at opsummere: jeg vil se på diskurser omkring erhvervsuddannelser siden 197
 
 Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder — fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
 Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvilsomme, i bedste fald.
-Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen\todo{regering i 1978} og kort efter indførelsen af EFG på landsplan.
+Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen Anker Jørgensen III, og kort efter indførelsen af EFG på landsplan.
 
 Jeg tager udgangspunkt i centrale hendelser i uddannelseshistorisk sammenhæng; og justerer derudover periodernes grænser til at falde sammen med regeringsperioder.
 Dermed har jeg mulighed for, at gennemføre analyser på baggrund af regeringsmagt kontra opposition, fx.
@@ -285,29 +293,23 @@ Dette er en uoverskuelig opgave at gøre manuelt.
 Men computeren vil gerne lave denne slags beregninger.
 
 \subsubsection{LDA}
-Den algoritme jeg benytter mig af i denne del af processen er \texttt{LDA}\todo{uddyb LDA}\footnote{\texttt{LDA} står for \textit{Latent Dirichlet Allocation}
-emner (topics) er en distribution af tokens over alle dokumenter
-
-dokumenter er en distribution af dokumenter over ord
-}, der giver en beregning på, hvor sandsynligt der er, at et token er en del af et givet emne.
-Alle tokens tildeles alle emner, med forskellige.
+Den algoritme jeg benytter mig af i denne del af processen er \texttt{LDA}\footnote{\texttt{LDA} står for \textit{Latent Dirichlet Allocation}, og er beskrevet af \citeauthor{bleiLatentDirichletAllocation2003} (\citeyear{bleiLatentDirichletAllocation2003}). Kort fortalt: Dokumenter består af en blanding emner --- for eksempel “uddannelse”, “indvandring”, “sundhed”; og emner er en blanding tokens --- for eksempel “skolevalg”, “videregående”, “ungdom” for emnet “uddannelse”. Tokens kan godt gå igen i emner; men med forskellig vægtning og forskellige ord omkring sig \autocite[s. 86]{silge2017text}
+}
+der giver en beregning på, hvor sandsynligt der er, at et token er en del af et givet emne.
+Alle tokens tildeles alle emner, med forskellige scores per emne.
 Ved at se på, hvilke dokumenter der indeholder tokens med højest vægtning for et givet emne, kan man udarbejde dokumentklynger.
 Hvor mange tokens per emne man medregner vil, igen, være op til forskerskøn.
-Antallet emner til en LDA-algoritme skal dog specificeres på forhånd.
-\footnote{Dette er en såkaldt ikke-superviseret tilgang til tekstanalyse --- andre tilgange baserer sig på, at computerprogrammet ved noget om strukturen af data,m for eksempel ved tilførelse af annotationer inden analyse}.
+Antallet emner til en LDA-algoritme skal dog specificeres på forhånd.\footnote{Dette er en såkaldt ikke-superviseret tilgang til tekstanalyse --- andre tilgange baserer sig på, at computerprogrammet ved noget om strukturen af data, for eksempel ved tilførelse af annotationer inden analyse}.
 
-
-LDA \autocite{grunTopicmodelsPackageFitting2011}:
 \subsubsection{Hvor mange emner er relevant?}
 Næste trin i grovsorteringen vil derfor være, at finde antallet emner at analysere ud fra. 
-Dette kan biblioteket \texttt{ldatuning} til R hjælpe med, der kan sammenholde forskellige beregninger\todo{find kildehenvisninger}
-der \footnote{(((kildehenvisninger til disse metoder)))} til udvælgelse af antal emner i et ellers ukendt korpus.
+Dette kan biblioteket \texttt{ldatuning} til R hjælpe med, der kan sammenholde forskellige beregninger til udvælgelse af antal emner i et ellers ukendt korpus\autocite{nikitaSelectNumberTopics2016}.
 
-Dernest udvælger jeg et antal emner der virker fornuftigt på baggrund af denne proces, og udforsker indholdet af de forskellige computergenererede emner\footnote{Til denne eksplorative proces tager jeg biblioteket \texttt{LDAvis} i brug. Dette program udarbejder en interaktiv webside, hvor man kan se, hvilke tokens er fremtrædende i hvilke emner. Den interesserede læser kan se mine generede visualisationer på (((KILDE LDAVIS- læg op på blog ))) }.
-Jeg noterer, hvilke emner der eventuelt ser ud til at omhandle uddannelse, og tager disse fra for videre analyse.
+Dernest udvælger jeg et antal emner der virker fornuftigt på baggrund af denne proces, og udforsker indholdet af de forskellige computergenererede emner\footnote{Til denne eksplorative proces tager jeg biblioteket \texttt{LDAvis} i brug. Dette program udarbejder en interaktiv webside, hvor man kan se, hvilke tokens er fremtrædende i hvilke emner \autocite{sievertCpsievertLDAvis2020}. Den interesserede læser kan se mine generede visualisationer på (((KILDE LDAVIS- læg op på blog )))}.
+Jeg noterer, hvilke emner der eventuelt ser ud til at omhandle uddannelse, og tager dokumenter fra disse fra for videre analyse.
 
 \subsection{Generation af emner indenfor uddannelse}
 Med en samling af dokumenter, der, ud fra ovennævnte proces, jeg antager at omhandle uddannelse på den ene eller anden måde, har jeg nu opfyldt målet om, at identificere tekst til videre analyse.
-Jeg gentager nu processen ovenfor med en mindre samling dokumenter, for at se 
+Jeg gentager nu processen ovenfor med en mindre samling dokumenter, for at se om der er emner at udlede indenfor disse.
 
 
