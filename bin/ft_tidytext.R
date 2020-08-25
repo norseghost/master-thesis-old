@@ -1,6 +1,7 @@
 # tidytext.R
 # exploratory data analysis using the tidytext packages
 
+library(data.table)
 library(tidyverse)
 library(tidytext)
 library(tm)
@@ -8,6 +9,7 @@ library(here)
 library(topicmodels)
 library(ldatuning)
 library(tikzDevice)
+library(udpipe)
 library(future)
 options(future.globals.maxSize = 9512896000)
 options(tikzDefaultEngine = "xetex")
@@ -33,9 +35,70 @@ control <- list(
             thin = thin,
             iter = iter)
 
+### TEXT PREPROCESSING BLOCK
+# TODO: Rewrite using tidyverse/future packages?
+speeches <- fread(here("data/folketinget_1953_2019_raw.csv"))
 
-speeches <- read_csv(here("data/clean_no_stopwords_timeseries.csv"))
-
+# prepare udpipe for lemmatization
+udmodel <- udpipe_download_model(
+    language = "danish",
+    model_dir = here("lib"),
+    overwrite = FALSE
+)
+# lemmatize text for future tokenization
+lemmatize <- function(text) {
+    dt <- udpipe_annotate(
+        object = udpipe_load_model(udmodel$file_model),
+        x = text,
+        # tokenizer = "horizontal",
+        tagger = "default",
+        parser = "none",
+        trace = 0
+    ) %>% as.data.table
+    lemmata <- dt %>%
+        select(lemma) %>%
+        unlist %>%
+        str_c(collapse = " ")
+    return(lemmata)
+}
+# wrapper function to perform text cleanup steps
+clean_text <- function(text) {
+    text %>%
+    tolower %>%
+    removeNumbers %>%
+    removePunctuation %>%
+    removeWords(ft_stopwords) %>%
+    lemmatize %>%
+    # the corpus contains occurences of hangul character
+    # hwalp - 홢 - this is unwanted
+    str_remove_all(., "홢") %>%
+    stripWhitespace
+}
+# set up parallel processing
+library(parallel)
+cluster <- makePSOCKcluster(
+                names = 8
+        )
+# the cluster needs to see my stopwords
+clusterExport(
+        cl = cluster,
+        varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
+        envir = .GlobalEnv
+)
+#and needs to have the required libraries loaded
+clusterEvalQ(
+    cl = cluster, {
+        library(tm)
+        library(tidyverse)
+        library(udpipe)
+        library(data.table)
+    }
+)
+# apply the cleaning operation in parallel
+# the dataset is already prepared in 100 batches
+speeches <- speeches[, text := parSapply(
+                            cluster, .SD[, text], clean_text),
+            by = .groups]
 # Generate a set of Document-Term Matrices from the folketinget dataset
 # input:
 # - a folketinget tibble, modified to add a 'timeseries' field
