@@ -99,12 +99,39 @@ clusterEvalQ(
 speeches <- speeches[, text := parSapply(
                             cluster, .SD[, text], clean_text),
             by = .groups]
+
+### CORPORA SPLITTING
+# group speeches according to 
+# - parliamentary periods
+# - as maps to generalized trends in
+#   Danish educational policy
+
+# Periods:
+# 53-57 (ny lærlingelov,vekseluddannelse)
+# 57-68 (udvidelse af lærlingekonceptet)
+# 68-78 (EFG)
+# 78-90 (Haarder, U91, EUD, EUX)
+# 90-01 (uddannelse til alle, markedsorientering, selvstyre)
+# 01-14 (individualisering, ansvar for egen læring)
+# 14-20 (fokus på unge; voksne falder fra)
+speeches[, timeseries := future_sapply(Date, (function(x) {
+                            case_when(
+                                 x < as.Date("1957-05-28") ~ "1953-57",
+                                 x < as.Date("1968-02-02") ~ "1957-68",
+                                 x < as.Date("1978-08-30") ~ "1968-78",
+                                 x < as.Date("1990-12-18") ~ "1978-90",
+                                 x < as.Date("2001-11-27") ~ "1990-01",
+                                 x < as.Date("2014-02-03") ~ "2001-14",
+                                 x > as.Date("2014-02-03") ~ "2014-20"
+                            )}
+                        ))]
+
 # Generate a set of Document-Term Matrices from the folketinget dataset
 # input:
 # - a folketinget tibble, modified to add a 'timeseries' field
 #   (see bin/periods.R)
-# TODO: incorporate periods code into this codefile
-generate_dtms <- function(speeches) {
+# TODO: rewrite to just call serializer functions below
+pipeline <- function(speeches, n, sparse_threshold) {
   # there are errors in the folketinget dataset that makes documents
   # pre 1978 ish suspect -- remove these
   speeches <- speeches %>%
