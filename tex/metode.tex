@@ -16,6 +16,11 @@ Ord har kun den mening, vi I fællesskab lægger i dem.
 Denne mening er ikke nødvendigvis statisk, og nye fænomener nødvendiggør også til tider nye begreber.
 
 Et sådant forholdsvist nyt fænomen er computerbehandling af tekst.
+I dette kapitel vil jeg først gennemgå denne del af den algoritmiske sociologi i grove træk.
+Jeg vil derefter beskrive metodens faldgruber og begrænsninger; fulgt op af hvilke muligheder denne tilgang til sociologien åbner op for.
+
+\section{Hvad er computerbehandling af tekst?}
+
 Dette går gerne under betegnelser som “Natural Language Processing” — eller NLP\footnote{Ej at forveksle med den anden NLP; “NeuroLinguistic Programming”}, eller tekstmining\footnote{Der er semantiske forskelle i disse samlebegreber; men de er ikke gensidigt udelukkende}.
 Muligheden for, at lade computerprogrammer og algoritmer tygge sig igennem store mængder tekst har ikke kun ført til, at Google og Facebook ved mere om dig en din familie.
 Den har også banet vej for, en ny måde at gøre sociologi på — den “algoritmiske sociologi” (eng. “computational sociology”) \autocite{evansComputationSociologicalImagination2019}.
@@ -83,6 +88,7 @@ Koden der ligger bag analysen kan deles, og undersøgelser kan gentages og afpr�
 
 Jeg vi i det følgende beskrive mit datagrundlag, min behandling af dette; og hvilke betydninger dette har for min analyse.
 Jævnfør min diskussion i indledningen omkring det deskriptives værdi; vil jeg bestræbe mig på, at gå omhyggelig og systematisk til værks.
+Jeg undlader dog, for læsbarhedens skyld, at dykke ned i de konkrete formler og sandsynlighedsberegninger der ligger bag ved de anvendte algoritmer.
 
 \citeauthor{evansMachineTranslationMining2016} beskriver tre niveauer indenfor tekstanalyse \autocite[s. 34]{evansMachineTranslationMining2016}:
 \begin{itemize}
@@ -101,7 +107,7 @@ Jævnfør min diskussion i indledningen omkring det deskriptives værdi; vil jeg
 \end{itemize}
 
 Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1978 indtil ultimo 2019.
-Datasættet\footnote{Typisk kaldet et \textit{korpus} indenfor tekstbehandlingsverdenen} er dannet ved, at hente mødereferaterne i PDF-form fra Folketingstidende, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navm og partiforhold, ved hjælp af computerbiblioteket \citetitle{pedersenFolketinget2019} \autocite{pedersenFolketinget2019}.
+Datasættet\footnote{Typisk kaldet et \textit{korpus} indenfor tekstbehandlingsverdenen} er dannet ved, at hente mødereferaterne i PDF-form fra Folketingstidende, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navn og partiforhold, ved hjælp af computerbiblioteket \citetitle{pedersenFolketinget2019} \autocite{pedersenFolketinget2019}.
 Denne samling \textit{dokumenter} består af ord, der skal udledes mening af.
 Ord grupperes som \textit{tokens}, der kan udgøre ét ord; men kan også være to eller flere efterfølgende ord; eller ord der har n afstand mellem hinanden.
 Jeg bruger forskellige arter tokens\todo{opmærksomhed på, hvorvidt dette holder} afhængigt af hvad jeg undersøger.
@@ -109,7 +115,7 @@ Jeg bruger forskellige arter tokens\todo{opmærksomhed på, hvorvidt dette holde
 Min undersøgelse er primært på det første af de tre niveauer i tekstanalyse beskrevet ovenfor.
 Jeg ser på tekstens overordnede indhold, og forsøger at drage slutninger omkring kulturelle former for kommunikation.
 Herfra vil jeg undersøge hvilke temaer indenfor uddannelse ses som centrale, og hvordan de italesættes.
-Mit projekt er også primært at klassificere som tekst-mining, idet jeg forsøger mig på udledning af mening fra en samling tekst.
+Mit projekt er også primært at klassificere som \textit{tekst-mining}, idet jeg forsøger mig på udledning af mening fra en samling tekst.
 Alle ord rystes sammen, uden hensyntagen til deres placering i dokumentet\footnote{Typisk kaldet en “Bag of Words” model \autocite[s. 28]{kwartlerTextMiningPractice2017}}; og der udarbejdes matematiske modeller over forholdet mellem ord og dokumenter.
 
 \section{Analyseredskaber og kode}
@@ -147,7 +153,7 @@ I stedet for — eller i tillæg til — at jeg på egen hånd vurderer, hvilke 
 Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter “blot” beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
 
 Jeg har, efter en \texttt{tf-idf}\footnote{\textit{text frequency — inverse document frequency} er en beregning der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
-  Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score \autocite[s. 29]{silge2017text}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits-værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
+  Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score \autocite[s. 29]{silge2017text}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits\ værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
 Dermed har jeg udeladt tokens der forekommer meget hyppigt i min samling korpora, og vil have lav værdi i forhold til at adskille dokumenter fra hinanden.
 For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.
 
@@ -165,7 +171,7 @@ Det bliver ikke mere objektivt blot fordi en computer er sat til at arbejde på 
 
 \subsection{Mit datasæts særegenheder}
 
-En gennemgående udtalelse indenfor databehandling er, at “data er rodete”\todo{kilde: data is messy}.
+En gennemgående udtalelse indenfor databehandling er, at “data er rodete”\footnote{Se fx \citeauthor{wickhamTidyData2014}, (\citeyear{wickhamTidyData2014}) for en R-centreret tilgang til at imødekomme dette fænomen.}.
 For at gøre det ekstra spændende, er de forskellige rå data rodede på hver sin måde.
 For indeværende opgave er data overvejende pænt forberedt, og forsynet med et rigt sæt metadata.
 Metadata er nyttig for at lave klassifikationer og undergrupperinger for analyse.
@@ -248,17 +254,17 @@ Forskellige trin i denne plan vil stille forskellige krav til at skabe orden i t
 For eksempel, så vil opdeling i grove kategorier til videre analyse kunne anvende en opdeling i enkelte ord, for at fange overordnede trends.
 En mere granuleret analyse derimod, vil måske hellere se på to eller tre ord sammen; eller inddrage sproglige analyser for at udlede metadata på sprogniveau.
 
-\textit{Unigrams} — et ord af gangen — giver et godt billede af frekvenser.\todo{se på ngrams — dette skal omskrives til faktisk praksis}
+\textit{Unigrams} — et ord af gangen — giver et godt billede af frekvenser.
 Dette glatter dog kontekst ud.
 “Uddannelse” nævnes måske en del gange — men er man kritisk eller positiv?
 Jeg benytter denne tilgang i den første, eksplorative undersøgelse; for at beregne antallet emner for videre undersøgelse, sammen med en kort liste stopord.
 
-For næste trin i analysen, hvor jeg vil finde frem til dokumenter der omhandler “uddannelse” på baggrund af de genererede emner fra første trin, foretager jeg analysen med to efterfølgende ord — \textit{bigrams} — og uden stop-ord.
+For næste trin i analysen, hvor jeg vil finde frem til dokumenter der omhandler “uddannelse” på baggrund af de genererede emner fra første trin, foretager jeg analysen med to efterfølgende ord — \textit{bigrams}.
 Dermed bibeholdes noget kontekst i de videre analyser.
-
+Jeg vil udforske mit datasæt både med og uden stopord, for at se hvilken tilgang er mest givende for mine videre analyser.
 
 \subsection{Perioder}\label{sec:periods}
-Jeg ønsker at se og sammenligne udvikling i diskurser omkring erhvervs- og ungdomsuddanelser over tid.
+Jeg ønsker at se og sammenligne udvikling i diskurser omkring erhvervsrettede og akademisk orienterede ungdomsuddannelser over tid.
 Derfor nødvendigt vælger jeg at dele data ind i perioder til sammenligning.
 
 For at opsummere: jeg vil se på diskurser omkring erhvervsuddannelser siden 1978, inddelt i følgende perioder:
@@ -275,13 +281,13 @@ For at opsummere: jeg vil se på diskurser omkring erhvervsuddannelser siden 197
 \end{itemize}
 
 Som nævnt ovenfor, viste de første gennemgange af data, at mængden af taler fra før 1978 var meget lille i forhold til de efterfølgende perioder — fx knap 9000 i perioden 1956-68 og omkring 130 000 taler fra 1968-78.
-Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvilsomme, i bedste fald.
+Denne forskel i omfang vil gøre eventuelle statistiske sammenligninger meget tvivlsomme, i bedste fald.
 Jeg starter derfor mine undersøgelser fra 30. august 1978, hvilket er tiltrædelsesdato for regeringen Anker Jørgensen III, og kort efter indførelsen af EFG på landsplan.
 
-Jeg tager udgangspunkt i centrale hendelser i uddannelseshistorisk sammenhæng; og justerer derudover periodernes grænser til at falde sammen med regeringsperioder.
+Jeg tager udgangspunkt i centrale hendelser i uddannelses\~historisk sammenhæng; og justerer derudover periodernes grænser til at falde sammen med regeringsperioder.
 Dermed har jeg mulighed for, at gennemføre analyser på baggrund af regeringsmagt kontra opposition, fx.
 Dette er ikke den eneste gyldige opdeling.
-Man kunne fx også delt data op i årtier — 59erne, 70erne osv.
+Man kunne fx også delt data op i årtier — 59erne, 70erne og så videre.
 Dette ville give perioder af ensartet længde, samt at man ikke behøver at tage stilling til hvilke år perioderne skal tilhøre.
 Det ville dog blive sværere at afdække eventuelle diskursændringer omkring specifikke uddannelseshistoriske hændelser.
 
@@ -293,7 +299,7 @@ Dette er en uoverskuelig opgave at gøre manuelt.
 Men computeren vil gerne lave denne slags beregninger.
 
 \subsubsection{LDA}
-Den algoritme jeg benytter mig af i denne del af processen er \texttt{LDA}\footnote{\texttt{LDA} står for \textit{Latent Dirichlet Allocation}, og er beskrevet af \citeauthor{bleiLatentDirichletAllocation2003} (\citeyear{bleiLatentDirichletAllocation2003}). Kort fortalt: Dokumenter består af en blanding emner --- for eksempel “uddannelse”, “indvandring”, “sundhed”; og emner er en blanding tokens --- for eksempel “skolevalg”, “videregående”, “ungdom” for emnet “uddannelse”. Tokens kan godt gå igen i emner; men med forskellig vægtning og forskellige ord omkring sig \autocite[s. 86]{silge2017text}
+Den algoritme jeg benytter mig af i denne del af processen er \texttt{LDA}\footnote{\texttt{LDA} står for \textit{Latent Dirichlet Allocation}, og er beskrevet af \citeauthor{bleiLatentDirichletAllocation2003} (\citeyear{bleiLatentDirichletAllocation2003}). Kort fortalt: Dokumenter består af en blanding emner --- for eksempel “uddannelse”, “indvandring”, “sundhed”; og emner er en blanding tokens --- for eksempel “skolevalg”, “videregående”, “ungdom” for emnet “uddannelse”. Tokens kan godt gå igen i emner; men med forskellig vægtning og forskellige ord omkring sig \autocite[s. 86]{silgeTextMiningTidy2017}
 }
 der giver en beregning på, hvor sandsynligt der er, at et token er en del af et givet emne.
 Alle tokens tildeles alle emner, med forskellige scores per emne.
@@ -305,11 +311,22 @@ Antallet emner til en LDA-algoritme skal dog specificeres på forhånd.\footnote
 Næste trin i grovsorteringen vil derfor være, at finde antallet emner at analysere ud fra. 
 Dette kan biblioteket \texttt{ldatuning} til R hjælpe med, der kan sammenholde forskellige beregninger til udvælgelse af antal emner i et ellers ukendt korpus\autocite{nikitaSelectNumberTopics2016}.
 
-Dernest udvælger jeg et antal emner der virker fornuftigt på baggrund af denne proces, og udforsker indholdet af de forskellige computergenererede emner\footnote{Til denne eksplorative proces tager jeg biblioteket \texttt{LDAvis} i brug. Dette program udarbejder en interaktiv webside, hvor man kan se, hvilke tokens er fremtrædende i hvilke emner \autocite{sievertCpsievertLDAvis2020}. Den interesserede læser kan se mine generede visualisationer på (((KILDE LDAVIS- læg op på blog )))}.
+Derefter udvælger jeg et antal emner der virker fornuftigt på baggrund af denne proces, og udforsker indholdet af de forskellige computergenererede emner\footnote{Til denne eksplorative proces tager jeg biblioteket \texttt{LDAvis} i brug. Dette program udarbejder en interaktiv webside, hvor man kan se, hvilke tokens er fremtrædende i hvilke emner \autocite{sievertCpsievertLDAvis2020}. Den interesserede læser kan se mine generede visualisationer på (((KILDE LDAVIS- læg op på blog )))}.
 Jeg noterer, hvilke emner der eventuelt ser ud til at omhandle uddannelse, og tager dokumenter fra disse fra for videre analyse.
 
 \subsection{Generation af emner indenfor uddannelse}
 Med en samling af dokumenter, der, ud fra ovennævnte proces, jeg antager at omhandle uddannelse på den ene eller anden måde, har jeg nu opfyldt målet om, at identificere tekst til videre analyse.
 Jeg gentager nu processen ovenfor med en mindre samling dokumenter, for at se om der er emner at udlede indenfor disse.
 
+\subsubsection{Dokumenterne indenfor uddannelse udforskes}
+Forudsat den ovenstående proces er vellykket, har jeg nu en lidt mere overskuelig samling dokumenter, der i større eller mindre grad omhandler uddannelse.
+Dette mindre korpus vil jeg udforske videre; med henvisning til mine undersøgelsesspørgsmål fra specialets del I.
 
+En del af mine spørgsmål omhandler politiske holdninger over tid. Til at udforske denne dimension vil jeg anvende \texttt{Wordfish}-algoritmen efter \citeauthor{slapinScalingModelEstimating2008} (\citeyear{slapinScalingModelEstimating2008}; som implementeret i biblioteket \texttt{austin} for R \autocite{loweAustinPackageDoing2019}.
+
+\chapter{Undersøgelsen i en pædagogisk-sociologisk kontekst}\label{chap:edusoc}
+\todo{uddyb denne del af metoden}
+
+Alt dette arbejde skal også have et formål.
+Jeg vil sammenholde mine undersøgelsesspørgsmål med de trends der er beskrevet i del II.
+Jeg vil især holde øje med i hvilket omfang, der er samsvar med de uddannelsespolitiske beslutninger\todo{lave dette til et undersøgelsesspm?} der fremgår af de historiske opgørelser, og de aktuelle politiske debatter.
