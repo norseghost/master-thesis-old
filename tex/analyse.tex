@@ -1,12 +1,45 @@
 \part{Analyse}\label{part:analysis}
+\todo{find smarte citater - noget med politikeres afslappede holdninger til fakta? eller noget med erkendelse og ny viden?}
+
+\chapter{At beskrive den sociale virkelighed}
+
+I denne del af specialet vil jeg præsentere resultaterne for mine undersøgelser, samt redegøre for de blindgyder og nulresultater jeg måtte løbe ind i undervejs.
+
+\chapter{indskrænkning af emner til undersøgelse}
+
+Jeg begynder med, at udarbejde et tf-idf objekt pr korpus; der er blevet forhåndsbehandlet og klargjort - dog uden stopord.
+Dette filtreres ved, at udelukke ord der falder under gennemsnitsværdien;\todo{inkludere kodeeksempler?} og ved derefter at udelukke ord der er i de øverste to promille af forekomst.
+
+Derefter foretager jeg en sammenligning af forskellige modeller for beregning af det optimale emner for videre analyse:
 
 \begin{figure}[H]
 \centering
-\input{../fig/models_plot.tex}
-\caption{Differentiering mellem emner for forskellige antal emner}
+\input{../fig/models.tex}
+\caption{Differentiering mellem emner for forskellige antal emner; bigrams og ingen stopord. }
 \end{figure}
 
-Ved at se på kurvene fra disse sammenligninger, flader de ud omkring de 30-50 emner.
-\ldots
+Ved at se på kurvene fra disse sammenligninger, begynder kurvene at flade ud omkring de 30-50 emner.
+Der er en meget grund kurve inden den begynder at bevæge sig opad igen.
+Vælger emner for undersøgelse ud fra “albueleds-princippet” - der hvor kurven begynder at bukke sig brat.
+I dette eksempel er det omkring $K = 35$.
+Illustreret af perioden 1990 til 2000 giver dette følgende emner, repræsenteret af de 15 hyppigste termer pr emne:
 
-forestiller mig grafer og tabeller der siger noget om noget
+\begin{figure}[H]
+\centering
+\input{../fig/1990-01-topicnumbers.tex}
+\caption{oversigt over hyppigst forekommende ord pr emne}
+\end{figure}
+
+
+Der er en gruppering (emne ??) der ser ud til at omhandle uddannelse.
+Det viser sig, at de manglende stopord gav mange emner omhandlende administrivia. For at øge informationstætheden forsøger jeg en ny runde; denne gang med en række generelle plus nogle domænespecifikke stopord\footnote{for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets GitHub-repositorie.}.
+
+Dette giver følgende spredning:
+
+\begin{figure}[H]
+\centering
+\input{../fig/models.tex}
+\caption{Differentiering mellem emner for forskellige antal emner; bigrams og stopord. }
+\end{figure}
+
+
