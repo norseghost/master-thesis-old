@@ -1,11 +1,28 @@
 \part{Analyse}\label{part:analysis}
-\todo{find smarte citater - noget med politikeres afslappede holdninger til fakta? eller noget med erkendelse og ny viden?}
-
+\begin{epigraphs}
+\qitem{\itshape
+“Jo, hvis dét skal kaldes Fakta, saa benægter a Fakta!”
+}{folketingsmedlem Søren Kjær, i debat med Carl Steen Andersen Bille}
+\qitem{\itshape
+  et citat mere — noget med ekspertlede og 
+}{klog person}
+\end{epigraphs}
 \chapter{At beskrive den sociale virkelighed}
 
-I denne del af specialet vil jeg præsentere resultaterne for mine undersøgelser, samt redegøre for de blindgyder og nulresultater jeg måtte løbe ind i undervejs.
 
-\chapter{indskrænkning af emner til undersøgelse}
+Denne opgave tager udgangspunkt i, at der antages at være en intersubjektiv social virkelighed, og det er muligt at undersøge denne.
+Jeg læner mig videre op af et socialkonstruktionistisk verdensbillede; hvor denne sociale verden er i kontinuerlig tilblivelse i en kollektiv samskabelsesproces \todo{kilde socialkonstruktionisme}.
+Ikke dermed sagt, at der altid er enighed omkring konturene af denne samskabte sociale virkelighed — heller ikke i politik.
+Dette understreges, måske lidt kækt, af Søren Kjær på titelbladet for denne del af specialet.
+Der er et spil der skal spilles; og præmien er en vis form for indflydelse over, hvordan den sociale verden skal fortolkes og forståes.
+Citatet fra \todo{hvem siger dette} understreger, styres politikere i høj grad af deres holdninger til den sociale verden når de forholder sig til den — også når det gælder uddannelse.
+
+Jeg vil nu præsentere resultaterne for mine undersøgelser, samt redegøre for de blindgyder og nulresultater jeg måtte løbe ind i undervejs.
+I løbet af min analyse, håber jeg at kunne få øje på noget af det \textit{subjektive} i den intersubjektive samskabelse af den sociale virkelighed.
+
+Jeg vil arbejde mig igennem “trappen” fra del III; og undervejs forøge at belyse mine undersøgelsesspørgsmål efterhånden som der dukker noget op; så at sige.\todo{fæl sætning}
+
+\chapter{Indskrænkning af dokumenter til undersøgelse}
 
 Jeg begynder med, at udarbejde et tf-idf objekt pr korpus; der er blevet forhåndsbehandlet og klargjort - dog uden stopord.
 Dette filtreres ved, at udelukke ord der falder under gennemsnitsværdien;\todo{inkludere kodeeksempler?} og ved derefter at udelukke ord der er i de øverste to promille af forekomst.
@@ -21,10 +38,11 @@ Derefter foretager jeg en sammenligning af forskellige modeller for beregning af
 Ved at se på kurvene fra disse sammenligninger, begynder kurvene at flade ud omkring de 30-50 emner.
 Der er en meget grund kurve inden den begynder at bevæge sig opad igen.
 Vælger emner for undersøgelse ud fra “albueleds-princippet” - der hvor kurven begynder at bukke sig brat.
-I dette eksempel er det omkring $K = 35$.
+I dette eksempel er det omkring 35 emner.
 Illustreret af perioden 1990 til 2000 giver dette følgende emner, repræsenteret af de 15 hyppigste termer pr emne:
 
 \begin{figure}[H]
+  \small
 \centering
 \input{../fig/1990-01-topicnumbers.tex}
 \caption{oversigt over hyppigst forekommende ord pr emne}
@@ -32,7 +50,7 @@ Illustreret af perioden 1990 til 2000 giver dette følgende emner, repræsentere
 
 
 Der er en gruppering (emne ??) der ser ud til at omhandle uddannelse.
-Det viser sig, at de manglende stopord gav mange emner omhandlende administrivia. For at øge informationstætheden forsøger jeg en ny runde; denne gang med en række generelle plus nogle domænespecifikke stopord\footnote{for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets GitHub-repositorie.}.
+Det viser sig, at de manglende stopord gav mange emner omhandlende administrivia. For at se om jeg kan øge informationstætheden forsøger jeg en ny runde; denne gang med en række generelle plus nogle domænespecifikke stopord\footnote{for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets GitHub-repositorie.}.
 
 Dette giver følgende spredning:
 
@@ -42,4 +60,32 @@ Dette giver følgende spredning:
 \caption{Differentiering mellem emner for forskellige antal emner; bigrams og stopord. }
 \end{figure}
 
+Her kan man se, at det “optimale” antal emner for denne behandling af teksten ligger mellem ???.
+
+Ved udtræk af modellen for ??? emner, får jeg emner repræsenteret af følgende termer:
+
+\chapter{Analyse af de udvalgte dokumenter}
+
+Jeg har nu en samling dokumenter, der ser ud til, at kunne omhandle uddannelse.
+Disse trækkes ud til videre analyse.
+Først vil jeg se, hvilke termer der er gennemgående i dokumenterne, med en ordoptælling.
+Derefter vil jeg undersøge, hvorvidt der er emner at trække ud indenfor disse dokumenter.
+Jeg vil derefter køre en analyse, der har til sigte at afdække partipolitiske positioner over dette subset.
+
+\section{Gennemgående termer for hver periode}
+
+\begin{figure}
+  \caption{De 20 mest omtalte termer for de udvalgte dokumenter, fordelt over de definerede analyseperioder.} 
+\end{figure}
+
+\subsection{Hvilke begreber er kendetegnende for de politiske fløje}
+\todo{hvordan dele op i fløje}
+
+\section{Emner indenfor uddannelse}
+
+\section{Partipolitiske positioner}
+
+Ordoptellingen ovenfor er en noget simplistisk tilgang til at afdække partipolitiske positioner.
+Der er udarbejdet konkrete algoritmer for at undersøge dette.
+Jeg vil benytte mig af den før omtalte \texttt{wordfish}-algoritme \autocite{slapinScalingModelEstimating2008}.
 
