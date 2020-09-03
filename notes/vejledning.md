@@ -77,3 +77,11 @@ Hvor meget nævnes fx eud?
 
 Bigrams/trigrams - for nemmere at operationalisere
 
+
+# 
+
+metakommunkation/læservejleding
+
+rød tråd gennemgående
+
+støtte op ad tidligere forskning; se trends
