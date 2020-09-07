@@ -522,6 +522,43 @@ topicmodels_json_ldavis <- function(model, dtm){
 json <- map2(k25, dtm, topicmodels_json_ldavis)
 imap(json, ~ serVis(json = .x, out.dir = str_c(here("vis/", .y)), open.browser = FALSE))
 
+assignments <- map2(lda, dtm, augment, .x, .y)
+
+
+lda_to_docs <- function(lda) {
+    tidy(lda, matrix = "gamma")
+}
+
+lda_to_topics <- function(lda) {
+    tidy(lda, matrix = "beta")
+}
+
+topics <- map(ldas, ~ lda_to_topics(.x))
+
+get_top_terms <- function(topics){
+  topics %>%
+    group_by(topic) %>%
+    top_n(15, beta) %>%
+    ungroup() %>%
+    arrange(topic, -beta)
+}
+
+top_terms <- map(topics, ~ get_top_terms(.x))
+
+plot_terms <- function(term_list) {
+  term_list %>%
+      mutate(term = reorder_within(term, beta, topic)) %>%
+      ggplot(aes(term, beta, fill = factor(topic))) +
+      geom_col(show.legend = FALSE) +
+      facet_wrap(~ topic, scales = "free", ncol = 3) +
+      coord_flip() +
+      scale_x_reordered()
+}
+
+term_plots <- map(top_terms, ~ plot_terms(.x))
+
+paths <- str_c(names(term_plots), "-topicnumbers.tex")
+pwalk(list(paths, term_plots), ggsave, path = here("fig"), width = 20, height = 40, device = tikz, standAlone = FALSE)
 
 
 # topics pertainig to education, as determined by visual inspection
