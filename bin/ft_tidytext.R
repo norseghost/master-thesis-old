@@ -358,10 +358,10 @@ read_models <- function(max_k, steps) {
   return(models)
 }
 
-keep_model <- function(models, k) {
+get_ldamodels <- function(models, k) {
   models %>%
     map(. %>%
-    filter(topics == 25) %>%
+    filter(topics == k) %>%
     select(LDA_model) %>%
     unlist(use.names = FALSE))
 }
