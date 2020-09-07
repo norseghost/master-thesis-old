@@ -444,59 +444,20 @@ plot_topic_numbers <- function(values) {
   return(p)
 }
 
-
-assignments <- map2(lda, dtm, augment, .x, .y)
-
-saveRDS(assignments, here("data/assignments_bigrams_k35.rds"))
-
-
-# TODO: I'm writing a shitty and probably slow reimplementatin of map
-#       This is probably ill advised, but seems faster than getting map to work
-top_terms <- vector("list", length(periods))
-names(top_terms) <- periods
-for (i in seq_along(periods)) {
-top_terms[[i]] <- topics[[i]] %>%
-        group_by(topic) %>%
-        top_n(15, beta) %>%
-        ungroup() %>%
-        arrange(topic, -beta)
+plot_models <- function(models, name = "models") {
+    map(models, ~ normalize_topic_numbers(.x)) %>%
+    bind_rows(.id = "period") %>%
+    reshape2::melt(., id.vars = c("topics", "period"), na.rm = TRUE) %>%
+    plot_topic_numbers %>%
+    ggsave(
+           filename = str_c(name, ".tex"),
+           width = 4,
+           height = 3,
+           path = here("fig"),
+           device = tikz,
+           standAlone = FALSE
+    )
 }
-
-top_terms <- topics %>%
-  modify(. %>%
-        group_by(topic) %>%
-        top_n(15, beta) %>%
-        ungroup() %>%
-        arrange(topic, -beta)
-  )
-
-term_plots  <- vector("list", length(top_terms))
-names(term_plots) <- names(top_terms)
-for (i in seq_along(top_terms)) {
-term_plots[[i]] <- top_terms[[i]] %>%
-        mutate(term = reorder_within(term, beta, topic)) %>%
-        ggplot(aes(term, beta, fill = factor(topic))) +
-        geom_col(show.legend = FALSE) +
-        facet_wrap(~ topic, scales = "free", ncol = 5) +
-        coord_flip() +
-        scale_x_reordered()
-}
-
-saveRDS(term_plots, here("data/plots-bigrams-k35.rds"))
-
-paths <- str_c(names(term_plots), "-topicnumbers.pdf")
-pwalk(list(paths, term_plots), ggsave, path = here("fig"), width = 20, height = 40)
-
-term_plots <- top_terms %>%
-  modify(. %>%
-        mutate(term = reorder_within(term, beta, topic)) %>%
-        ggplot(aes(term, beta, fill = factor(topic))) +
-        geom_col(show.legend = FALSE) +
-        facet_wrap(~ topic, scales = "free") +
-        coord_flip() +
-        scale_x_reordered()
-  )
-
 
 topicmodels_json_ldavis <- function(model, dtm){
   require(LDAvis)
