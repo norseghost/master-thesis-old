@@ -72,12 +72,13 @@ lemmatize <- function(text) {
     return(lemmata)
 }
 # wrapper function to perform text cleanup steps
-clean_text <- function(text) {
+clean_text <- function(text, use_stopwords = FALSE) {
     text %>%
     tolower %>%
     removeNumbers %>%
     removePunctuation %>%
-    removeWords(ft_stopwords) %>%
+    execute_if(use_stopwords,
+      removeWords(ft_stopwords)) %>%
     lemmatize %>%
     # the corpus contains occurences of hangul character
     # hwalp - 홢 - this is unwanted
@@ -116,25 +117,29 @@ speeches <- speeches[, text := parSapply(
 # - as maps to generalized trends in
 #   Danish educational policy
 
-# Periods:
-# 53-57 (ny lærlingelov,vekseluddannelse)
-# 57-68 (udvidelse af lærlingekonceptet)
-# 68-78 (EFG)
-# 78-90 (Haarder, U91, EUD, EUX)
-# 90-01 (uddannelse til alle, markedsorientering, selvstyre)
-# 01-14 (individualisering, ansvar for egen læring)
-# 14-20 (fokus på unge; voksne falder fra)
-speeches[, timeseries := future_sapply(Date, (function(x) {
-                            case_when(
-                                 x < as.Date("1957-05-28") ~ "1953-57",
-                                 x < as.Date("1968-02-02") ~ "1957-68",
-                                 x < as.Date("1978-08-30") ~ "1968-78",
-                                 x < as.Date("1990-12-18") ~ "1978-90",
-                                 x < as.Date("2001-11-27") ~ "1990-01",
-                                 x < as.Date("2014-02-03") ~ "2001-14",
-                                 x > as.Date("2014-02-03") ~ "2014-20"
-                            )}
-                        ))]
+split_corpora  <- function(folketinget) {
+  ### CORPORA SPLITTING
+  # group speeches according to 
+  # - parliamentary periods
+  # - as maps to generalized trends in
+  #   Danish educational policy
+
+  folketinget[, timeseries := future_sapply(Date, (function(x) {
+    case_when(
+       x < as.Date("1957-05-28") ~ "1953-57", # 53-57 (ny lærlingelov,vekseluddannelse)
+       x < as.Date("1968-02-02") ~ "1957-68", # 57-68 (udvidelse af lærlingekonceptet)
+       x < as.Date("1978-08-30") ~ "1968-78", # 68-78 (EFG)
+       x < as.Date("1990-12-18") ~ "1978-90", # 78-90 (Haarder, U91, EUD, EUX)
+       x < as.Date("2001-11-27") ~ "1990-01", # 90-01 (uddannelse til alle, markedsorientering, selvstyre)
+       x < as.Date("2014-02-03") ~ "2001-14", # 01-14 (individualisering, ansvar for egen læring)
+       x > as.Date("2014-02-03") ~ "2014-20"  # 14-20 (fokus på unge; voksne falder fra)
+
+    )}
+  ))]
+}
+
+
+
 
 # Generate a set of Document-Term Matrices from the folketinget dataset
 # input:
