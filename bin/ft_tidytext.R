@@ -128,8 +128,7 @@ speeches[, timeseries := future_sapply(Date, (function(x) {
 
 # Generate a set of Document-Term Matrices from the folketinget dataset
 # input:
-# - a folketinget tibble, modified to add a 'timeseries' field
-#   (see bin/periods.R)
+# - a preprocessed folketinget tibble, modified to add a 'timeseries' field
 # TODO: rewrite to just call serializer functions below
 pipeline <- function(speeches, n, sparse_threshold) {
   # there are errors in the folketinget dataset that makes documents
@@ -148,7 +147,7 @@ pipeline <- function(speeches, n, sparse_threshold) {
       corpora[[i]] <- speeches %>%
           filter(timeseries == periods[[i]])
   }
-  # add a 'all' dtm too, as a control
+  # add a 'all' corpus too, as a control 
   corpora[["all"]] <- speeches %>%
       filter(timeseries %in% periods)
   tfidf <- corpora %>%
@@ -165,7 +164,7 @@ pipeline <- function(speeches, n, sparse_threshold) {
     # the filter settings here are derived from inspecting the raw tf_idf
     # the cutoff is derived from the mean of all unique tf_idf scores
     # to raise the floor quite a bit
-    map(~ future(filter(.x, tf_idf > mean(unique(tf_idf), na.rm = TRUE)))) %>%
+    map(~ future(filter_tfidf(.x))) %>%
     values %>%
     map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
     values %>%
@@ -176,7 +175,7 @@ pipeline <- function(speeches, n, sparse_threshold) {
     # this won't do
     # only empty rows will be non-unique
     # so ditch them (preserving row order)
-    dtm[unique(dtm$i), ]
+    .[unique(.$i), ]
   return(list(tfidf, dtms))
 }
 
