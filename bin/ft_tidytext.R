@@ -113,8 +113,7 @@ clean_corpus <- function(folketinget) {
               by = .groups]
 }
 
-split_corpora  <- function(folketinget) {
-  ### CORPORA SPLITTING
+group_corpora  <- function(folketinget) {
   # group speeches according to 
   # - parliamentary periods
   # - as maps to generalized trends in
