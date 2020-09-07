@@ -195,42 +195,12 @@ speeches[["all"]] <- speeches %>%
     filter(timeseries %in% periods)
 saveRDS(speeches, here("data/speeches_stopwords.rds"))
 
-speeches <- readRDS(here("data/speeches_stopwords.rds"))
-
-tidy <- speeches  %>%
-    map(~ unnest_tokens(.x, lemma, text, token = "ngrams", n = 2))
-saveRDS(tidy, here("data/bigrams_stopwords.rds"))
-
-tidy <- readRDS(here("data/bigrams_stopwords.rds"))
-tokens <- tidy %>%
-  map(~ future(count(.x, lemma, doc_id, sort = TRUE))) %>%
-  values
-saveRDS(tokens, here("data/bigrams_tokens_stopwords.rds"))
-tfidf <- tokens %>%
-    map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
-    values
-saveRDS(tfidf, here("data/bigrams_tfidf_stopwords.rds"))
-
-tfidf <- readRDS(here("data/bigrams_tfidf_stopwords.rds"))
-
-tfidf %>%
-  map(~ summary(unique(.x$tf_idf, na.rm = TRUE)))
-
-tfidf %>%
-  map(~ summary(.x$tf_idf))
-
-
-
-# tokens <- readRDS(here("data/tokens-trigrams-1990-01.rds")) %>%
-#   count(lemma, doc_id, sort = TRUE)
-# saveRDS(tokens, here("data/tokens_trigrams_count-1990-01.rds"))
-
-# tokens <- readRDS(here("data/tokens-trigrams-2001-14.rds")) %>%
-#   count(lemma, doc_id, sort = TRUE)
-# saveRDS(tokens, here("data/tokens_trigrams_count-2001-14.rds"))
-# tokens <- readRDS(here("data/tokens-trigrams-2014-20.rds")) %>%
-#   count(lemma, doc_id, sort = TRUE)
-# saveRDS(tokens, here("data/tokens_trigrams_count-2014-20.rds"))
+# The size of the corpora makes linear processing
+# of all of them RAM intensive
+# helper functions to serialize to/from disk,
+# with consistent naming
+#
+# [tidy|tokens|tfidf|dtm|models]_{ngrams}_{identifier}_{corpus}.rds
 
 read_tokens <- function(ngrams) {
   filenames <- list.files(
