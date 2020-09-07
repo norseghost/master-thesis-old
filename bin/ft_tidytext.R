@@ -520,7 +520,10 @@ topicmodels_json_ldavis <- function(model, dtm){
 }
 
 json <- map2(k25, dtm, topicmodels_json_ldavis)
-imap(json, ~ serVis(json = .x, out.dir = str_c(here("vis/", .y)), open.browser = FALSE))
+imap(json, ~ serVis(
+                json = .x, 
+                out.dir = str_c(here("vis/", .y)),
+                open.browser = FALSE))
 
 assignments <- map2(lda, dtm, augment, .x, .y)
 
