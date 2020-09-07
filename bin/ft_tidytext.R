@@ -45,6 +45,15 @@ udmodel <- udpipe_download_model(
     model_dir = here("lib"),
     overwrite = FALSE
 )
+# I'll probably want more stopwords later
+# after some exploratory analysis
+# but wait! Stopwords counter-indicatd for certain analysis
+ft_stopwords <- c(
+    readLines(here("lib/stopwords.txt")),
+    readLines(
+        "https://raw.githubusercontent.com/stopwords-iso/stopwords-da/master/stopwords-da.txt",
+        warn = FALSE)
+)
 # lemmatize text for future tokenization
 lemmatize <- function(text) {
     dt <- udpipe_annotate(
