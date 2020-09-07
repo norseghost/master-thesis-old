@@ -319,11 +319,14 @@ topics <- lda %>%
     map(~ future(tidy(.x, matrix = "beta"))) %>%
     values
 
-models_compare <- function(dtm, name, max_k, steps, cores) {
+models_compare <- function(dtm, name, min_k, max_k, steps, cores) {
   dtm  <- dtm[unique(dtm$i), ]
+  if(missing(min_k)) {
+    min_k <- steps
+  }
   models <- FindTopicsNumber(
       dtm,
-      topics = seq(from = steps, to = max_k, by = steps),
+      topics = seq(from = min_k, to = max_k, by = steps),
       metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
       method = "Gibbs",
       control = control,
@@ -333,7 +336,9 @@ models_compare <- function(dtm, name, max_k, steps, cores) {
         mc.cores = cores
       }
     )
-  saveRDS(models, here(str_c("data/models", name, "_", max_k, "by", steps, ".rds")))
+  saveRDS(models, here(str_c(
+            "data/models_", name, "_", min_k,
+            "to", max_k, "by", steps, ".rds")))
   rm(models)
   gc()
   return(NULL)
