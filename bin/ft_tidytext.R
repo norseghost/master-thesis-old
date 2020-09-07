@@ -133,7 +133,15 @@ group_corpora  <- function(folketinget) {
   ))]
 }
 
-
+split_corpora <- function(ft_grp) {
+  # there are errors in the folketinget dataset that makes documents
+  # pre 1978 ish suspect -- remove these
+  ft_grp %>%
+    filter(!timeseries %in% c("1957-68", "1968-78")) %>%
+    split(timeseries)
+  ft_grp[["all"]] <- ft_grp %>%
+      filter(timeseries %in% periods) 
+}
 
 
 # Generate a set of Document-Term Matrices from the folketinget dataset
