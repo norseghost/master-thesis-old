@@ -339,12 +339,13 @@ models_compare <- function(dtm, name, max_k, steps, cores) {
   return(NULL)
 }
 
-imap(dtm, ~ models_compare(
+imap(dtms, ~ models_compare(
                     dtm = .x,
-                    name = .y,
+                    name = str_c("bigrams_stopwords_quantile", .y),
+                    min_k = 5,
                     max_k = 75,
-                    steps = 5,
-                    cores = 16L))
+                    steps = 10,
+                    cores = 4L))
 
 read_models <- function(ngrams, max_k, steps) {
   filenames <- list.files(
