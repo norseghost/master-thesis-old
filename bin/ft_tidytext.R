@@ -353,38 +353,6 @@ get_ldamodels <- function(models, k) {
     unlist(use.names = FALSE))
 }
 
-map
-
-models <- dtm_nosparse %>%
-    map(~ future(.x[unique(.x$i), ])) %>%
-    values %>%
-    map(~ FindTopicsNumber(
-      .x,
-      topics = seq(from = 2, to = 204, by = 5),
-      metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
-      method = "Gibbs",
-      control = control,
-      verbose = TRUE,
-      mc.cores = 8L,
-      return.models = TRUE
-    ))
-
-models <- readRDS(here("data/models_120.rds"))
-
-plot_models <- function(models) {
-    map(models, ~ normalize_topic_numbers(.x)) %>%
-    bind_rows(.id = "period") %>%
-    reshape2::melt(., id.vars = c("topics", "period"), na.rm = TRUE) %>%
-    plot_topic_numbers %>%
-    ggsave(
-           filename="edu_models_plot.pdf",
-           width=15,
-           height=15, 
-           units = "cm",
-           path = here("fig")
-      )
-}
-
 normalize_topic_numbers <- function(values) {
   # Drop models if present, as they won't rescale
   # Also, Deveaud is not useful for this dataset
