@@ -290,10 +290,15 @@ generate_dtms <- function(tfidf) {
     cast_dtm(tfidf, doc_id, lemma, n)
 }
 
-
-topics <- lda %>%
-    map(~ future(tidy(.x, matrix = "beta"))) %>%
-    values
+filter_dtm <- function(dtm) {
+  dtm %>%
+    # this removes terms that do not occur in the upper
+    # two per mille of documents
+    # NOTE: given the particularities of this dataset, this may
+    #       reduce complexity overmuch
+    removeSparseTerms(0.998) %>%
+    .[unique(.$i), ]
+}
 
 models_compare <- function(dtm, name, min_k, max_k, steps, cores) {
   dtm  <- dtm[unique(dtm$i), ]
