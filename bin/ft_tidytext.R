@@ -275,40 +275,17 @@ inspect_tfdidf <- function(tfidf) {
 }  
 
 
+filter_tfidf <- function(tfidf) {
+  tfidf %>%
+    # cut off terms with a tfidf value under the mean
+    # of all tfidf values
+    # to eliminate very common terms
+    filter(tf_idf > mean(tf_idf, na.rm = TRUE)) %>%
     # also filter out the 0.002 most rare terms
     # (of those left) to catch misspellings and errors
     # TODO: Reference?
-    map(~ filter(.x, tf_idf < quantile(tf_idf, 0.998)))
-
-tfidf_filter <- tfidf %>%
-    map(~ future(filter(.x, tf_idf > mean(tf_idf, na.rm = TRUE)))) %>%
-    values
-dtm <- tfidf_filter %>%
-    map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
-    values
-
-
-
-saveRDS(dtm, here("data/dtm_periods_stopwords_bigrams"))
-
-dtm <- readRDS(here("data/dtm_periods_stopwords_bigrams"))
-
-dtm <- dtm %>%
-  map(~ future(removeSparseTerms(.x, 0.998))) %>%
-  values %>%
-  map(~ future(.x[unique(.x$i), ])) %>%
-  values
-
-saveRDS(dtm_nosparse, here("data/dtm_periods_stopwords_nosparse_bigrams"))
-
-dtm <- readRDS(here("data/dtm_periods_stopwords_nosparse_bigrams")) %>%
-  map(~ .x[unique(.x$i), ])
-
-lda <- dtm %>%
-    map(~ future(LDA(.x, method = "Gibbs", k = 35, control = control))) %>%
-    values
-
-saveRDS(lda, here("data/lda-35_periods_bigrams"))
+    filter(tf_idf < quantile(tf_idf, 0.998))
+}
 
 generate_dtms <- function(tfidf) {
     cast_dtm(tfidf, doc_id, lemma, n)
