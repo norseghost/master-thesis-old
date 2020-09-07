@@ -256,24 +256,44 @@ create_tfidfs <- function(tokens, name) {
   gc()
   return(NULL)
 }
+read_tfidfs <- function(ngrams) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("tfidf_", ngrams, ".*.rds")
+  )
+  tfidfs <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(tfidfs) <- filenames %>%
+    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+).rds")[, 2])
+  return(tfidfs)
+}
 
 imap(tokens, ~ create_tfidfs(tokens = .x, name = str_c("trigrams_", .y)))
 
-tokens <- readRDS(here("data/tokens_bigrams.rds"))
-
-tfidf %>%
-    map(. %>%
-        filter(tf_idf > mean(tf_idf, na.rm = TRUE))
-    )
-
-inspect_tfdidf <- function(tfidf) {
-    tfidf %>% map(. %>%
+inspect_tfidf <- function(tfidf) {
+  print("Summary over unique tf_idf values")
+  tfidf %>%
+    select(tf_idf) %>%
+    unique(na.rm = TRUE) %>%
+    summary %>%
+    print
+  print("Summary over all tf_idf values")
+  tfidf %>%
+    select(tf_idf) %>%
+    summary %>%
+    print
+  print("30 most common terms")
+  tfidf %>%
         distinct(lemma, tf_idf) %>%
         arrange(lemma, -tf_idf) %>%
         top_n(-30) %>%
-        print(n = 30))
-}  
-
+        print(n = 30)
+  print("30 least common terms")
+  tfidf %>%
+        distinct(lemma, tf_idf) %>%
+        arrange(lemma, -tf_idf) %>%
+        top_n(30) %>%
+        print(n = 30)
+}
 
 filter_tfidf <- function(tfidf) {
   tfidf %>%
