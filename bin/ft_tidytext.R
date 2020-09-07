@@ -85,37 +85,33 @@ clean_text <- function(text, use_stopwords = FALSE) {
     str_remove_all(., "홢") %>%
     stripWhitespace
 }
-# set up parallel processing
-library(parallel)
-cluster <- makePSOCKcluster(
-                names = 8
-        )
-# the cluster needs to see my stopwords
-clusterExport(
-        cl = cluster,
-        varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
-        envir = .GlobalEnv
-)
-#and needs to have the required libraries loaded
-clusterEvalQ(
-    cl = cluster, {
-        library(tm)
-        library(tidyverse)
-        library(udpipe)
-        library(data.table)
-    }
-)
-# apply the cleaning operation in parallel
-# the dataset is already prepared in 100 batches
-speeches <- speeches[, text := parSapply(
-                            cluster, .SD[, text], clean_text),
-            by = .groups]
-
-### CORPORA SPLITTING
-# group speeches according to 
-# - parliamentary periods
-# - as maps to generalized trends in
-#   Danish educational policy
+clean_corpus <- function(folketinget) {
+  # this operation is eminently parallelizable
+  library(parallel)
+  cluster <- makePSOCKcluster(
+                  names = 8
+          )
+  # the cluster needs to see my stopwords
+  clusterExport(
+          cl = cluster,
+          varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
+          envir = .GlobalEnv
+  )
+  #and needs to have the required libraries loaded
+  clusterEvalQ(
+      cl = cluster, {
+          library(tm)
+          library(tidyverse)
+          library(udpipe)
+          library(data.table)
+      }
+  )
+  # apply the cleaning operation in parallel
+  # the dataset is already prepared in 100 batches
+  folketinget[, text := parSapply(
+                              cluster, .SD[, text], clean_text),
+              by = .groups]
+}
 
 split_corpora  <- function(folketinget) {
   ### CORPORA SPLITTING
