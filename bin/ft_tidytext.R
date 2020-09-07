@@ -564,49 +564,29 @@ pwalk(list(paths, term_plots), ggsave, path = here("fig"), width = 20, height = 
 # topics pertainig to education, as determined by visual inspection
 #TODO: named list instead?
 edu_topic_numbers <- c(6, 16, 7, 3, 9)
-
+ldas <- readRDS(here("data/lda-35_periods_bigrams"))
+dtms <- readRDS(here("data/dtm_bigrams"))
+docs <- map(ldas, ~ lda_to_docs(.x))
+corpora <- readRDS(here("data/tokens_bigrams.rds"))
 # construct list for 
-edu_docs<- vector("list", length(docs))
+edu_docs <- vector("list", length(docs))
 
 l <- list(topicnum = edu_topic_numbers, edu_docs = edu_docs, docs = docs)
-
 edu_docs <- pmap(l, function(edu_docs, docs, topicnum) { edu_docs <- filter(docs, topic == topicnum)}) %>%
 # all docs have a probability of beaing assigned to a topic
-# we only want the 1%
-  map(~ filter(.x, gamma > quantile(gamma, 0.97))
+# we only want the 3%
+  map(~ filter(.x, gamma > quantile(gamma, 0.97)))
 names(edu_docs) <- names(docs)
 
-edu_tokens <- map2(tokens, edu_docs, ~ filter(.x, doc_id %in% .y$document))
+get_edu_corpora <- function(corpus, doc_ids) {
+  corpus %>%
+  filter(doc_id %in% doc_ids)
+}
 
-edu_tfidf <- edu_tokens %>%
-    map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
-    values %>%
-    # filter out terms that are below the median tf_idf score per corpus
-    # doi://10.18637/jss.v040.i13 for rationale,
-    map(~ filter(.x, tf_idf > median(tf_idf, na.rm = TRUE))) %>%
-    # also filter out the 0.002 most rare terms
-    # (of those left) to catch misspellings and errors
-    # TODO: Reference?
-    map(~ filter(.x, tf_idf < quantile(tf_idf, 0.998)))
-edu_dtm <- edu_tfidf %>%
-    map(~ future((cast_dtm(.x, doc_id, lemma, n)))) %>%
-    values
+edu_corpora <- map2(corpora, edu_docs, ~                   
+                    get_edu_corpora(corpus = .x,
+                                    doc_ids = .y$document))
 
-edu_lda <- edu_dtm %>%
-    map(~ future(LDA(.x, method = "Gibbs", k = 15, control = list(seed = 1234, burnin = 500, thin = 300, iter = 3000)))) %>%
-    values
-edu_json <- map2(edu_lda, edu_dtm, topicmodels_json_ldavis)
-imap(json, ~ serVis(json = .x, out.dir = str_c(here("vis/edu/", .y)), open.browser = FALSE))
+edu_tfidfs <- map(edu_corpora, ~  bind_tf_idf(.x, lemma, doc_id, n))
 
-
-edu_models <- edu_dtm %>%
-    map(~ FindTopicsNumber(
-      .x,
-      topics = seq(from = 5, to = 60, by = 5),
-      metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
-      method = "Gibbs",
-      control = list(seed = 1234),
-      verbose = TRUE,
-      mc.cores = 8
-    ))
-
+edu_dtms <- map(edu_tfidfs, ~ generate_dtms(.x)) 
