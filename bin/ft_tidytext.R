@@ -310,9 +310,9 @@ lda <- dtm %>%
 
 saveRDS(lda, here("data/lda-35_periods_bigrams"))
 
-docs <- lda %>%
-    map(~ future(tidy(.x, matrix = "gamma"))) %>%
-    values
+generate_dtms <- function(tfidf) {
+    cast_dtm(tfidf, doc_id, lemma, n)
+}
 
 
 topics <- lda %>%
