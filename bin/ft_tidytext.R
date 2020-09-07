@@ -205,7 +205,7 @@ saveRDS(speeches, here("data/speeches_stopwords.rds"))
 read_tokens <- function(ngrams) {
   filenames <- list.files(
               path = here("data/"),
-              pattern = str_c("tokens_", ngrams, "_count", ".*.rds")
+              pattern = str_c("tokens_", ngrams, ".*.rds")
   )
   print(filenames)
   tokens <- map(filenames, ~readRDS(here(str_c("data/", .x))))
