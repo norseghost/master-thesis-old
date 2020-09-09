@@ -44,7 +44,7 @@ control <- list(
 preprocess <- function(raw_speeches) {
   raw_speeches %>%
     clean_corpus %>%
-    grup_corpora %>%
+    group_corpora %>%
     split_corpora
 }
 
