@@ -91,10 +91,10 @@ udmodel <- udpipe_download_model(
     model_dir = here("lib"),
     overwrite = FALSE
 )
-# I'll probably want more stopwords later
+# I'll maybe want more stopwords later
 # after some exploratory analysis
-# but wait! Stopwords counter-indicatd for certain analysis
-ft_stopwords <- c(
+# but wait! Stopwords counter-indicated for certain analysis
+stopwords <- c(
     readLines(here("lib/stopwords.txt")),
     readLines(
         "https://raw.githubusercontent.com/stopwords-iso/stopwords-da/master/stopwords-da.txt",
@@ -123,7 +123,7 @@ clean_text <- function(text, use_stopwords = FALSE) {
     removeNumbers %>%
     removePunctuation %>%
     execute_if(use_stopwords,
-      removeWords(ft_stopwords)) %>%
+      removeWords(stopwords)) %>%
     lemmatize %>%
     # the corpus contains occurences of hangul character
     # hwalp - 홢 - this is unwanted
@@ -132,6 +132,7 @@ clean_text <- function(text, use_stopwords = FALSE) {
 }
 clean_corpus <- function(folketinget) {
   # this operation is eminently parallelizable
+  # wrap the wrapper to do so
   library(parallel)
   cluster <- makePSOCKcluster(
                   names = 8
@@ -139,7 +140,7 @@ clean_corpus <- function(folketinget) {
   # the cluster needs to see my stopwords
   clusterExport(
           cl = cluster,
-          varlist = c("ft_stopwords", "lemmatize", "clean_text", "udmodel"),
+          varlist = c("stopwords", "lemmatize", "clean_text", "udmodel"),
           envir = .GlobalEnv
   )
   #and needs to have the required libraries loaded
