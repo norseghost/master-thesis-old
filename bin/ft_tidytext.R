@@ -29,12 +29,57 @@ burnin <- 500
 thin <- 300
 iter <- 3000
 n <- 2
-sparse_treshold <- 0.998
+#global ID for for this round of processing
+identifier <- "changeme"
+treshold <- 0.998
+min_k <- 5
+max_k <- 75
+steps <- 10
 control <- list(
             seed = seed,
             burnin = burnin,
             thin = thin,
             iter = iter)
+
+preprocess <- function(raw_speeches) {
+  raw_speeches %>%
+    clean_corpus %>%
+    grup_corpora %>%
+    split_corpora
+}
+
+pipeline <- function(proc_speeches) {
+  imap(proc_speeches ~ write_ngrams(
+    corpus = .x,
+    ngrams = ngrams,
+    name = identifier,
+    period = .y))
+  tokens <- read_ngrams(name = identifier)
+  imap(tokens, ~ write_tfidfs(
+      corpus = .x,
+      name = identifier,
+      period = .y))
+  tfidfs <- read_tfidfs(name = identifier)
+  dtms <- tfidf %>%
+    map(~ future(filter_tfidf(.x))) %>%
+    values %>%
+    map(~ future(generate_dtms(.x))) %>%
+    values
+  imap(dtms, ~ models_compare(
+                    dtm = .x,
+                    period = .y,
+                    name = identifier,
+                    min_k = min_k,
+                    max_k = max_k,
+                    steps = 10,
+                    cores = 8L))
+  models <- read_models(
+                    name = identifier,
+                    min_k = min_k,
+                    max_k = max_k,
+                    steps = 10)
+  return(list(tfidfs = tfidfs, dtms = dtms, models = models))
+}
 
 ### TEXT PREPROCESSING BLOCK
 # TODO: Rewrite using tidyverse/future packages?
