@@ -136,12 +136,20 @@ group_corpora  <- function(folketinget) {
 split_corpora <- function(ft_grp) {
   # there are errors in the folketinget dataset that makes documents
   # pre 1978 ish suspect -- remove these
-  ft_grp %>%
-    filter(!timeseries %in% c("1957-68", "1968-78")) %>%
-    split(timeseries)
-  ft_grp[["all"]] <- ft_grp %>%
-      filter(timeseries %in% periods) 
-}
+  ft_grp <- ft_grp %>%
+    filter(!timeseries %in% c("1957-68", "1968-78"))
+  ft_split <- ft_grp %>%
+    group_by(timeseries)
+  ft_names <- ft_split %>%
+    group_keys
+  ft_split <- ft_split %>%
+    group_split(keep = FALSE) %>%
+    # this is rather cryptic, but it returns the first column of the
+    # grouping variable - the periods outlined above
+    setNames(ft_names[[1]])
+  ft_split[["all"]] <- ft_grp 
+  return(ft_split)
+ }
 
 
 # Generate a set of Document-Term Matrices from the folketinget dataset
