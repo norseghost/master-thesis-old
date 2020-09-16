@@ -476,12 +476,12 @@ plot_models <- function(models, name = "models") {
     )
 }
 
-topicmodels_json_ldavis <- function(model, dtm){
+topicmodels_json_ldavis <- function(model, dtm, name, k, period){
   require(LDAvis)
   require(slam)
   library(parallel)
   cluster <- makePSOCKcluster(
-                names = 12
+                names = 1
         )
   # Find required quantities
   phi <- as.matrix(posterior(model)$terms)
@@ -493,14 +493,34 @@ topicmodels_json_ldavis <- function(model, dtm){
                                  vocab = vocab,
                                  doc.length = as.vector(table(dtm$i)),
                                  term.frequency = term_freq,
-                                 cluster = cluster)
-  return(json_lda)
+                                 cluster = cluster,
+                                 reorder.topics = TRUE)
+  saveRDS(json_lda, here(str_c("data/json_", name, "_k", k, "_", period, ".rds")))
 }
-
-json <- map2(k25, dtm, topicmodels_json_ldavis)
-imap(json, ~ serVis(
+l <- list(model = ldas, dtm = dtms, period = names(ldas), name = identifier, k = k)
+pmap(l, ~
+     topicmodels_json_ldavis(
+              model = ..1,
+              dtm = ..2,
+              period = ..3,
+              name = ..4,
+              k = ..5
+     ))
+read_json <- function(name, k) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("json_", name, "_k", k, "_", ".*.rds"
+              )
+  )
+  jsons <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(jsons) <- filenames %>%
+    map_chr(~ str_match(.x, pattern = str_c("json_", name, "_k", k,  "_", "(.*).rds"))[,2]) 
+  return(jsons)
+}
+jsons <- read_json(name = identifier, k = k)
+imap(jsons, ~ serVis(
                 json = .x, 
-                out.dir = str_c(here("vis/", .y)),
+                out.dir = here(str_c("vis/", identifier, "/", .y)),
                 open.browser = FALSE))
 
 assignments <- map2(lda, dtm, augment, .x, .y)
