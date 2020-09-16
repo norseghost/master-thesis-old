@@ -567,6 +567,150 @@ get_edu_corpora <- function(corpus, doc_ids) {
 edu_corpora <- map2(corpora, edu_docs, ~                   
                     get_edu_corpora(corpus = .x,
                                     doc_ids = .y$document))
+edu_corpora <- edu_corpora %>%
+  map(~ inner_join(.x, metadata, by = doc_id))
+
+edu_by_govt <- split_by_govt(edu_corpora$all)
+
+edu_by_block <- map(edu_corpora, ~ split_by_block(.x))
+
+edu_block_tfidfs  <- map(edu_by_block, ~ map(.x, ~ bind_tf_idf(.x, lemma, doc_id, n)))
+
+edu_block_dtms  <- map(edu_block_tfidfs, ~ map(.x, ~ generate_dtms((filter_tfidf(.x, treshold)))))
+
+### WORDFISH
+# using the austin package
+
+# we need to convert DocumentTerm matrices to WordFrequency matrices
+edu_block_wfms  <- map(edu_block_dtms, ~ map(.x, ~ as.wfm(.x)))
+
+# This can be memory intensive, so serialize to disk along the way
+write_wfms <- function(wfms, name, period) {
+    saveRDS(wfms, here(str_c("data/wfm_", name = identifier, "_", period, '.rds')))
+}
+imap(edu_block_wfms, ~ write_wfms(
+     wfms = .x,
+     name = identifier,
+     period = .y))
+
+read_wfm <- function(name) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("fish_", name, ".*.rds")
+  )
+
+# trim wfm to remove seldom-occuring tokens
+trim_wfm <- function(wfm, min.count=5, min.doc = 5) {
+  wfm <- trim(wfm, min.count = min.count, min.doc = min.doc )
+  # this can lead to columns summing to 0
+  wfm[,colSums(wfm != 0) != 0] 
+}
+
+order_wfm <- function(wfm) {
+  wfm <- wfm[,order(as.integer(colnames(wfm)))]
+}
+
+
+fish <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(fish) <- filenames %>%
+    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+|all).rds")[, 2])
+  return(fish)
+}
+write_wordfish <- function(wfms, name, period) {
+  wfms %>%
+    map(~ wordfish(.x)) %>%
+    saveRDS(., here("data/fish_", name = identifier, "_", period))
+}
+
+imap(fish, ~ write_wordfish(
+     fish = .x,
+     name = str_c(identifier, "_2014-20"),
+     period = .y))
+
+read_wordfish <- function(name) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("fish_", name, ".*.rds")
+  )
+  fish <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(fish) <- filenames %>%
+    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+|all).rds")[, 2])
+  return(fish)
+}
+
+
+write_plot_fish <- function(fish, name, period) {
+  fish <- as_tibble(fish) %>%
+    select(`Rød Blok`, `Blå Blok`)
+  plots <- imap(fish, ~ ggplot_fish(coef(.x), plot_title = .y ))
+  p <- plot_grid(plotlist=plots) %>%
+  save_plot(
+           filename = str_c("coef_", name, "_", period, ".tex"),
+           ncol = 2,
+           path = here("fig"),
+           device = tikz,
+           standAlone = FALSE
+    )
+}
+
+#' ggPlot the Word Parameters From a Wordfish Model
+#' 
+#' Plots sorted beta and optionally also psi parameters from a Wordfish model
+#' Rewritten to use ggplot2 by Martin Andersen
+#' 
+#' 
+#' @param x a fitted Wordfish model
+#' @param pch Default is to use small dots to plot positions
+#' @param psi whether to plot word fixed effects
+#' @param ... Any extra graphics parameters to pass in
+#' @return A plot of sorted beta and optionally psi parameters.
+#' @author Will Lowe
+#' @author Martin Andersen
+#' @seealso \code{\link{wordfish}}
+#' @importFrom methods is
+#' @importFrom ggplot2 dotchart text plot
+#' @export
+#' @method ggplot_fish
+ggplot_fish <- function(x, psi=TRUE, plot_title = "placeholder", ...){
+
+  if (!is(x, "coef.wordfish"))
+    stop("First argument must be coefficients from a Wordfish model")
+
+  if (is.null(x$docs))
+    stop(paste("Plotting word parameters in the multinomial parameterization",
+               "probably won't\n  be very informative.  Try plotting the value",
+               "of coef(model, form='poisson')"))
+  if(!missing(plot_title)) {
+    plot_title <- plot_title
+  }
+
+  words <- x$words
+  words["token"] <- rownames(words)
+  words <- as_tibble(words)
+  if (!psi) {
+    ggplot(words, aes(x = beta)) +
+           geom_dotplot()
+  } else {
+    ggplot(data = words, aes(x = beta, y = psi)) +
+           geom_point() +
+           xlab("Beta") +
+           ylab("Psi") +
+           geom_label(data = top_n(words, 5, beta),
+                      aes(label = token)
+           ) +
+           geom_label(data = top_n(words, 5, -beta),
+                      aes(label = token)
+           ) +
+           geom_label(data = top_n(words, 5, psi),
+                      aes(label = token)
+           ) +
+           ggtitle(plot_title)
+  }
+}
+
+map(fish, ~ write_plot_fish(fish = fish,
+                           name = "edu_test",
+                           period = "2014-20"))
 
 edu_tfidfs <- map(edu_corpora, ~  bind_tf_idf(.x, lemma, doc_id, n))
 edu_dtms <- map(edu_tfidfs, ~ generate_dtms(.x))
