@@ -569,5 +569,59 @@ edu_corpora <- map2(corpora, edu_docs, ~
                                     doc_ids = .y$document))
 
 edu_tfidfs <- map(edu_corpora, ~  bind_tf_idf(.x, lemma, doc_id, n))
+edu_dtms <- map(edu_tfidfs, ~ generate_dtms(.x))
+
+### METADATA WORK
+# All filtering/coercion/massaging happens to bare metadata
+# the text is... quite voluminous
+metadata <- readRDS(here('data/speeches_metadata.rds'))
+
+# fix transcription errors and inconsistencies
+clean_parties <- function(metadata) {
+  metadata <- metadata %>%
+    mutate(Parti = str_remove_all(Parti, "(?:20px - |x - |- |Det )")) %>%
+    mutate(Parti = str_replace(Parti, "Atassut", "Atássut")) %>%
+    mutate(Parti = str_replace(Parti, "Tjódveldisflokkurin", "Tjóðveldisflokkurin")) %>%
+    mutate(Parti = str_replace(Parti, "Tjóðveldi$", "Tjóðveldisflokkurin")) %>%
+    mutate(Parti = str_replace(Parti, "Socialdemorkatiet", "Socialdemokratiet")) %>%
+    mutate(Parti = str_replace(Parti, "Socialdemokraterne", "Socialdemokratiet")) %>%
+    mutate(Parti = str_replace(Parti, "Centrumdemokraterne", "Centrum-Demokraterne"))
+}
+
+get_political <- function(metadata) {
+  metadata %>%
+    clean_parties %>%
+    # Erring on the side of inclusivity
+    # Some more centrist parties may have issue
+    mutate(Blok = factor(case_when(
+        Parti %in% c(
+            "Dansk Folkeparti",
+            "Liberal Alliance",
+            "Venstre",
+            "Konservative Folkeparti",
+            "Kristeligt Folkeparti",
+            "Ny Alliance",
+            "Centrum-Demokraterne",
+            "Fremskridtspartiet",
+            "De Uafhængige",
+            "Liberalt Centrum",
+            "Nye Borgerlige",
+            "Retsforbundet"
+            ) ~ "Blå Blok",
+        Parti %in% c(
+            "Alternativet",
+            "Enhedslisten",
+            "Radikale Venstre",
+            "Socialdemokraterne",
+            "Socialistisk Folkeparti",
+            "Danmarks Kommunistiske Parti",
+            "Venstresocialisterne",
+            "Fælles Kurs"
+            ) ~ "Rød Blok",
+        # this isn't entirely accurate 
+        # unafilliated members are also picked up
+        TRUE ~ "Grønland/Færøerne"
+    ), levels = c("Rød Blok", "Grønland/Færøerne", "Blå Blok")))
+}
 
 edu_dtms <- map(edu_tfidfs, ~ generate_dtms(.x)) 
