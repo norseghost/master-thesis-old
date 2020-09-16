@@ -624,4 +624,11 @@ get_political <- function(metadata) {
     ), levels = c("Rød Blok", "Grønland/Færøerne", "Blå Blok")))
 }
 
-edu_dtms <- map(edu_tfidfs, ~ generate_dtms(.x)) 
+split_by_govt <- function(metadata) {
+  metadata %>%
+    split(.$Period)
+}
+split_by_block <- function(metadata) {
+  metadata %>%
+    split(.$Blok)
+}
