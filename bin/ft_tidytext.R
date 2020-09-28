@@ -44,11 +44,13 @@ seed <- 1234
 # iter <- 3000
 n <- 2
 #global ID for for this round of processing
-identifier <- "changeme"
+identifier <- "bigrams_no_stopwords"
 treshold <- 0.998
 min_k <- 5
-max_k <- 75
+max_k <- 125
 steps <- 10
+k <- 35
+n <- 2
 control <- list(
                 seed = seed
                 # burnin = burnin,
