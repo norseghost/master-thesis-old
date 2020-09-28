@@ -211,9 +211,13 @@ group_corpora  <- function(folketinget) {
 }
 
 split_corpora <- function(ft_grp) {
-  # there are errors in the folketinget dataset that makes documents
-  # pre 1978 ish suspect -- remove these
+  # FIXME: I can get the same effect with group_by in the functions
+  #        below; which would even let me parameterize and use the
+  #        same code if I wanted a different basis for generating
+  #        subcorpora.
   ft_grp <- ft_grp %>%
+  # there are errors in the folketinget dataset that makes documents
+  # pre 1 "bigrams_no_stopwords_extra_filtered"978 ish suspect -- remove these
     filter(!timeseries %in% c("1957-68", "1968-78"))
   ft_split <- ft_grp %>%
     group_by(timeseries)
@@ -224,78 +228,10 @@ split_corpora <- function(ft_grp) {
     # this is rather cryptic, but it returns the first column of the
     # grouping variable - the periods outlined above
     setNames(ft_names[[1]])
-  ft_split[["all"]] <- ft_grp 
+  ft_split[["all"]] <- ft_grp
   return(ft_split)
  }
 
-
-# Generate a set of Document-Term Matrices from the folketinget dataset
-# input:
-# - a preprocessed folketinget tibble, modified to add a 'timeseries' field
-# TODO: rewrite to just call serializer functions below
-pipeline <- function(speeches, n, sparse_threshold) {
-  # there are errors in the folketinget dataset that makes documents
-  # pre 1978 ish suspect -- remove these
-  speeches <- speeches %>%
-    filter(timeseries != "1957-68") %>%
-    filter(timeseries != "1968-78")
-  # TODO: this is basically a group_by, right?
-  periods <- speeches %>%
-    distinct(timeseries) %>%
-    pull
-  # TODO: And I think this is a terribad implementation of split()
-  corpora <- vector("list", length(periods))
-  names(corpora) <- periods
-  for (i in seq_along(periods)) {
-      corpora[[i]] <- speeches %>%
-          filter(timeseries == periods[[i]])
-  }
-  # add a 'all' corpus too, as a control 
-  corpora[["all"]] <- speeches %>%
-      filter(timeseries %in% periods)
-  tfidf <- corpora %>%
-    # unnest tokens using tidytext
-    # TODO: add centralized config for n, token etc
-    map(~ unnest_tokens(.x, lemma, text, token = "ngrams", n = 2)) %>%
-    # add token fields
-    map(~ future(count(.x, lemma, doc_id, sort = TRUE))) %>%
-    values %>%
-    # generate a tf_idf
-    map(~ future(bind_tf_idf(.x, lemma, doc_id, n))) %>%
-    values
-  dtms <- tfidf %>%
-    # the filter settings here are derived from inspecting the raw tf_idf
-    # the cutoff is derived from the mean of all unique tf_idf scores
-    # to raise the floor quite a bit
-    map(~ future(filter_tfidf(.x))) %>%
-    values %>%
-    map(~ future(cast_dtm(.x, doc_id, lemma, n))) %>%
-    values %>%
-    # also these
-    map(~ future(removeSparseTerms(.x, 0.9999))) %>%
-    values %>%
-    # the removal of sparse terms creates empty rows
-    # this won't do
-    # only empty rows will be non-unique
-    # so ditch them (preserving row order)
-    .[unique(.$i), ]
-  return(list(tfidf, dtms))
-}
-
-periods <- speeches %>%
-    filter(timeseries != "1957-68") %>%
-    filter(timeseries != "1968-78") %>%
-    distinct(timeseries) %>%
-    pull
-speeches <- vector("list", length(periods))
-names(speeches) <- periods
-for (i in seq_along(periods)) {
-    speeches[[i]] <- speeches %>%
-        filter(timeseries == periods[[i]])
-}
-speeches[["all"]] <- speeches %>%
-    filter(timeseries %in% periods)
-saveRDS(speeches, here("data/speeches_stopwords.rds"))
 
 # The size of the corpora makes linear processing
 # of all of them RAM intensive
