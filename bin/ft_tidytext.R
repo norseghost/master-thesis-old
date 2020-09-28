@@ -789,10 +789,12 @@ metadata <- readRDS(here('data/speeches_metadata.rds'))
 # fix transcription errors and inconsistencies
 clean_parties <- function(metadata) {
   metadata <- metadata %>%
+    mutate(Parti = replace_na(Parti, "ikke angivet")) %>%
     mutate(Parti = str_remove_all(Parti, "(?:20px - |x - |- |Det )")) %>%
     mutate(Parti = str_replace(Parti, "Atassut", "Atássut")) %>%
     mutate(Parti = str_replace(Parti, "Tjódveldisflokkurin", "Tjóðveldisflokkurin")) %>%
     mutate(Parti = str_replace(Parti, "Tjóðveldi$", "Tjóðveldisflokkurin")) %>%
+    mutate(Parti = str_replace(Parti, "Javnadarflokkurin$", "Javnaðarflokkurin")) %>%
     mutate(Parti = str_replace(Parti, "Socialdemorkatiet", "Socialdemokratiet")) %>%
     mutate(Parti = str_replace(Parti, "Socialdemokraterne", "Socialdemokratiet")) %>%
     mutate(Parti = str_replace(Parti, "Centrumdemokraterne", "Centrum-Demokraterne"))
