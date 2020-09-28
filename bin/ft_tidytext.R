@@ -521,17 +521,18 @@ plot_terms <- function(top_terms, topics = c(2, 13, 24, 35, 17, 29)) {
 
 ### DENDROGRAM
 # plotting cluster relationships
-model_to_dend <- function(model) {
-  topics <- lda_to_topics(model)
-  topic_labels <- get_top_terms(topics, 1)$term
-  dendro <- as.matrix(posterior(model)$terms) %>%
+model_to_clust <- function(model) {
+  clust <- as.matrix(posterior(model)$terms) %>%
     CalcHellingerDist %>%
     as.dist %>%
-    hclust("ward.D") %>%
-    as.dendrogram
+    hclust("ward.D")
 }
 
-plot_topic_cluster <- function(dendro) {
+plot_topic_cluster <- function(clust) {
+  topics <- lda_to_topics(model)
+  topic_labels <- get_top_terms(topics, 1)$term
+  clust %>%
+    as.dendrogram %>%
     set_labels(topic_labels) %>%
     set("labels_to_character") %>%
     set("branches_k_color", value = 6:1, k = 6) %>%
