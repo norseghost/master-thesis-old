@@ -39,9 +39,9 @@ options(tikzLualatexPackages =
 theme_minimal()
 plan(multicore)
 seed <- 1234
-burnin <- 500
-thin <- 300
-iter <- 3000
+# burnin <- 500
+# thin <- 300
+# iter <- 3000
 n <- 2
 #global ID for for this round of processing
 identifier <- "changeme"
@@ -50,10 +50,11 @@ min_k <- 5
 max_k <- 75
 steps <- 10
 control <- list(
-            seed = seed,
-            burnin = burnin,
-            thin = thin,
-            iter = iter)
+                seed = seed
+                # burnin = burnin,
+                # thin = thin,
+                # iter = iter
+)
 
 preprocess <- function(raw_speeches) {
   raw_speeches %>%
