@@ -596,27 +596,9 @@ edu <- edu %>%
 ### WORDFISH
 # using the austin package
 
-# we need to convert DocumentTerm matrices to WordFrequency matrices
-edu_block_wfms  <- map(edu_block_dtms, ~ map(.x, ~ as.wfm(.x)))
-
-# This can be memory intensive, so serialize to disk along the way
-write_wfms <- function(wfms, name, period) {
-    saveRDS(wfms, here(str_c("data/wfm_", name = identifier, "_", period, '.rds')))
-}
-imap(edu_block_wfms, ~ write_wfms(
-     wfms = .x,
-     name = identifier,
-     period = .y))
-
-read_wfm <- function(name) {
-  filenames <- list.files(
-              path = here("data/"),
-              pattern = str_c("fish_", name, ".*.rds")
-  )
-
 # trim wfm to remove seldom-occuring tokens
 trim_wfm <- function(wfm, min.count=5, min.doc = 5) {
-  wfm <- trim(wfm, min.count = min.count, min.doc = min.doc )
+  wfm <- trim(wfm, min.count = min.count, min.doc = min.doc)
   # this can lead to columns summing to 0
   wfm[,colSums(wfm != 0) != 0] 
 }
