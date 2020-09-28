@@ -25,16 +25,18 @@ library(tidytext)
 
 
 options(future.globals.maxSize = 9512896000)
-options(tikzDefaultEngine = "xetex")
+options(tikzDefaultEngine = "luatex")
 options(tikzMetricsDictionary = here("/lib/tikzmetrics"))
-options(tikzXelatexPackages =
+options(tikzLualatexPackages =
         c(
           "\\usepackage{tikz}\n",
-          "\\usepackage[active,tightpage,xetex]{preview}\n",
-          "\\usepackage{fontspec,xunicode}\n",
+          "\\usepackage[active,tightpage,psfixbb]{preview}\n",
+          "\\usepackage{fontspec}\n",
           "\\PreviewEnvironment{pgfpicture}\n",
-          "\\setlength\\PreviewBorder{0pt}\n")
+          "\\setlength\\PreviewBorder{0pt}\n"
         )
+)
+theme_minimal()
 plan(multicore)
 seed <- 1234
 burnin <- 500
