@@ -259,13 +259,14 @@ read_ngrams <- function(name) {
   print(filenames)
   tokens <- map(filenames, ~readRDS(here(str_c("data/", .x))))
   names(tokens) <- filenames %>%
-    map(~ str_match(.x, pattern = ".*-(\\d+-\\d+).rds")[,2])
+    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+).rds")[,2])
   return(tokens)
 }
 
+# WIP - some sets of ngrams are too big far all tokens at once
 collate_tokens <- function(tokens) {
-  all_tokens <- tokens %>%
-    map(~ bind_cols(.x))
+  tokens %>%
+    bind_rows
 }
 
 create_tfidfs <- function(tokens, name) {
