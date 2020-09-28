@@ -316,6 +316,7 @@ filter_tfidf <- function(tfidf, treshold) {
 }
 
 generate_dtms <- function(tfidf) {
+  cat(str_c("Generating dtm...\n"))
     cast_dtm(tfidf, doc_id, lemma, n)
 }
 
@@ -325,7 +326,7 @@ filter_dtm <- function(dtm) {
     # two per mille of documents
     # NOTE: given the particularities of this dataset, this may
     #       reduce complexity overmuch
-    removeSparseTerms(0.998) %>%
+    removeSparseTerms(0.99999) %>%
     .[unique(.$i), ]
 }
 
