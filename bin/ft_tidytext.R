@@ -440,7 +440,7 @@ topicmodels_json_ldavis <- function(model, dtm, name, k, period){
   require(slam)
   library(parallel)
   cluster <- makePSOCKcluster(
-                names = 1
+                names = 8
         )
   # Find required quantities
   phi <- as.matrix(posterior(model)$terms)
@@ -456,6 +456,7 @@ topicmodels_json_ldavis <- function(model, dtm, name, k, period){
                                  reorder.topics = TRUE)
   saveRDS(json_lda, here(str_c("data/json_", name, "_k", k, "_", period, ".rds")))
 }
+
 l <- list(model = ldas, dtm = dtms, period = names(ldas), name = identifier, k = k)
 pmap(l, ~
      topicmodels_json_ldavis(
