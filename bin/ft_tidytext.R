@@ -66,35 +66,42 @@ preprocess <- function(raw_speeches) {
 }
 
 pipeline <- function(proc_speeches) {
-  imap(proc_speeches ~ write_ngrams(
+  imap(proc_speeches, ~ write_ngrams(
     corpus = .x,
-    ngrams = ngrams,
+    n = n,
     name = identifier,
     period = .y))
   tokens <- read_ngrams(name = identifier)
   imap(tokens, ~ write_tfidfs(
-      corpus = .x,
+      tokens = .x,
       name = identifier,
       period = .y))
   tfidfs <- read_tfidfs(name = identifier)
-  dtms <- tfidf %>%
-    map(~ future(filter_tfidf(.x))) %>%
+  dtms <- tfidfs %>%
+    map(~ future(filter_tfidf(.x, treshold))) %>%
     values %>%
     map(~ future(generate_dtms(.x))) %>%
     values
+  saveRDS(dtms, here(str_c("data/dtms_", identifier, ".rds")))
   imap(dtms, ~ models_compare(
                     dtm = .x,
                     period = .y,
                     name = identifier,
                     min_k = min_k,
                     max_k = max_k,
-                    steps = 10,
-                    cores = 8L))
+                    steps = steps,
+                    cores = 12L))
   models <- read_models(
                     name = identifier,
                     min_k = min_k,
                     max_k = max_k,
-                    steps = 10)
+                    steps = steps)
+  plot_models(
+            mdels = models,
+            name = identifier,
+            min_k = min_k,
+            max_k = max_k,
+            steps = steps)
   return(list(tfidfs = tfidfs, dtms = dtms, models = models))
 }
 
