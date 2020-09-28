@@ -330,7 +330,7 @@ filter_dtm <- function(dtm) {
     .[unique(.$i), ]
 }
 
-models_compare <- function(dtm, name, min_k, max_k, steps, cores) {
+models_compare <- function(dtm, name, period, min_k, max_k, steps, cores) {
   dtm  <- dtm[unique(dtm$i), ]
   if(missing(min_k)) {
     min_k <- steps
@@ -348,7 +348,7 @@ models_compare <- function(dtm, name, min_k, max_k, steps, cores) {
       }
     )
   saveRDS(models, here(str_c(
-            "data/models_", name, "_", min_k,
+            "data/models_", name, "_", period, "_", min_k,
             "to", max_k, "by", steps, ".rds")))
   rm(models)
   gc()
