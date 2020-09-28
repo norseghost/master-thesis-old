@@ -623,111 +623,163 @@ wordfish_corpus <- function(corpus, timeperiod, group, n) {
   }
 }
 
-
-fish <- map(filenames, ~readRDS(here(str_c("data/", .x))))
-  names(fish) <- filenames %>%
-    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+|all).rds")[, 2])
-  return(fish)
+corpus_to_fish <- function(corpus, group, n) {
+  cat(str_c("Collating tokens on group: ", group, "\n"))
+  corpus %>%
+    select(text, all_of(group)) %>%
+    group_by(across({{ group }})) %>%
+    summarize(text = paste(text, collapse = " ")) %>%
+    unnest_tokens(lemma, text, token = "ngrams", n = n) %>%
+    count(lemma, across({{ group }}), sort = TRUE) %>%
+    bind_tf_idf(lemma, {{ group }}, n) %>%
+    cast_dtm({{ group }}, lemma, n) %>%
+    as.wfm %>%
+    trim_wfm(min.count = 5, min.doc = 0) %>%
+    wordfish
 }
-write_wordfish <- function(wfms, name, period) {
-  wfms %>%
-    map(~ wordfish(.x)) %>%
-    saveRDS(., here("data/fish_", name = identifier, "_", period))
+
+write_coef_fishlist_plot <- function(fishlist, name) {
+  plots <- imap(fishlist, ~ ggplot_coef_fish(coef(.x), plot_title = .y))
+  p <- plot_grid(plotlist = plots,
+           ncol = 2,
+           align = "vh"
+           )
+  save_coef_plot(p, str_c("list_", name))
 }
 
-imap(fish, ~ write_wordfish(
-     fish = .x,
-     name = str_c(identifier, "_2014-20"),
-     period = .y))
+write_coef_plot <- function(p, name) {
+  save_coef_plot(p, name)
+}
 
-read_wordfish <- function(name) {
-  filenames <- list.files(
-              path = here("data/"),
-              pattern = str_c("fish_", name, ".*.rds")
+save_coef_plot <- function(p, name) {
+  filename <- str_c("coef_", name, ".tex")
+  ggsave(p,
+            filename = filename,
+            path = here("fig"),
+            device = tikz,
+            standAlone = FALSE
   )
-  fish <- map(filenames, ~readRDS(here(str_c("data/", .x))))
-  names(fish) <- filenames %>%
-    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+|all).rds")[, 2])
-  return(fish)
+  system2(command = "sed", args= (c("-i",
+                                    "s:coef:../fig/coef:g",
+                                    here(str_c("fig/", filename))
+                                    )
+  )
+  )
 }
 
 
-write_plot_fish <- function(fish, name, period) {
-  fish <- as_tibble(fish) %>%
-    select(`Rød Blok`, `Blå Blok`)
-  plots <- imap(fish, ~ ggplot_fish(coef(.x), plot_title = .y ))
-  p <- plot_grid(plotlist=plots) %>%
-  save_plot(
-           filename = str_c("coef_", name, "_", period, ".tex"),
-           nrow = 2,
-           path = here("fig"),
+coef_fish_to_tibble <- function(fish) {
+  words <- coef(fish)$words
+  words["token"] <- rownames(words)
+  words <- as_tibble(words)
+}
+
+plot_constructor <- function(words, beta, psi) {
+  p <- ggplot(data = words, aes(x = beta, y = psi))
+}
+
+plot_coef_fish <- function(fish, psi = TRUE) {
+  # if (!psi) {
+  #   ggplot(words, aes(x = beta)) +
+  #     geom_point()
+  # }
+  # if(length(fish) < 12) {
+  #   fishlist <- TRUE
+  #   words <- fish %>%
+  #     map(~ coef_fish_to_tibble(.x)) %>%
+  #     bind_rows(.id = "period")
+  #    img_plot <- plot_constructor(words, beta, psi) +
+  #      facet_wrap(vars(period), nrow = 2)
+  # } else {
+    words <- coef_fish_to_tibble(fish) %>%
+      mutate(period = "1978-2020")
+    img_plot <- plot_constructor(words, beta, psi)
+  # }
+  img_plot <- img_plot +
+    geom_point() +
+    theme_void() +
+    theme(strip.text = element_blank())
+    ggsave(img_plot,
+           filename = "tmp.svg",
+           path = here("tmp/"),
+           device = svg
+    )
+  plot_img <- image_read("tmp/tmp.svg")
+  p <- plot_constructor(words, beta, psi) +
+    annotation_custom(rasterGrob(plot_img,
+                                 width = unit(1, "npc"),
+                                 height = unit(1, "npc")),
+                      -Inf, Inf, -Inf, Inf) +
+    xlab("Venstre-højre fordeling") +
+    ylab("Ordenes fordeling")
+  # if(fishlist) {
+  #   p <- p  +
+  #      facet_wrap(vars(period), nrow = 2)
+  # }
+  p <- p +
+  geom_label_repel(data = top_n(words, 5, beta),
+                  aes(label = token)
+                  ) +
+  geom_label_repel(data = top_n(words, 5, -beta),
+                  aes(label = token)
+                  ) +
+  geom_label_repel(data = top_n(words, 5, psi),
+                  aes(label = token)
+                  )
+  return(text_plot)
+}
+
+get_wordfish_terms <- function(fish, para, n, desc = TRUE) {
+  fish %>%
+    top_n(n, para) 
+}
+
+summarize_fish <- function(x) {
+  # create a tibble of wordfish summaries
+    if (!is(x, "wordfish"))
+    stop("First argument must be a wordfish model")
+    fish_summary <- rownames_to_column(summary(x)$scores, var = "Gruppe")  %>% as_tibble
+}
+periods_fishlist <- function(fishlist) {
+  fishlist %>%
+    map(~ summarize_fish(.x)) %>%
+    bind_rows(.id = "Periode")
+}
+
+plot_fishlist <- function(fishlist_periods) {
+  ggplot(data = fishlist_periods, aes(y = Estimate, x = Periode, group = Gruppe)) +
+    geom_line(aes(color = Gruppe)) +
+    geom_point() +
+    theme(legend.position = "bottom") +
+    theme(legend.title = element_blank()) +
+    theme(legend.text = element_text(size = rel(0.8))) =
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
+blocs <- c(
+           "Rød Blok",
+           "Centrum",
+           "Blå Blok",
+           "ikke angivet")
+parties <- c(
+             "Enhedslisten",
+             "Socialdemokratiet",
+             "Socialistisk Folkeparti",
+             "Dansk Folkeparti",
+             "Venstre",
+             "Konservative Folkeparti",
+             "Radikale Venstre")
+write_wordfish_timeseries_plot <- function(fishlist, filters, name) {
+  fishlist <- periods_fishlist(fishlist)
+  filter(fishlist, Gruppe %in% filters) %>%
+    plot_fishlist %>%
+    ggsave(filename = here(str_c("fig/wordfish_", name, ".tikz")),
            device = tikz,
-           width = 3
+           width = 5,
+           height = 4,
            standAlone = FALSE
     )
 }
-
-#' ggPlot the Word Parameters From a Wordfish Model
-#' 
-#' Plots sorted beta and optionally also psi parameters from a Wordfish model
-#' Rewritten to use ggplot2 by Martin Andersen
-#' 
-#' 
-#' @param x a fitted Wordfish model
-#' @param pch Default is to use small dots to plot positions
-#' @param psi whether to plot word fixed effects
-#' @param ... Any extra graphics parameters to pass in
-#' @return A plot of sorted beta and optionally psi parameters.
-#' @author Will Lowe
-#' @author Martin Andersen
-#' @seealso \code{\link{wordfish}}
-#' @importFrom methods is
-#' @importFrom ggplot2 dotchart text plot
-#' @export
-#' @method ggplot_fish
-ggplot_fish <- function(x, psi=TRUE, plot_title = "placeholder", ...){
-
-  if (!is(x, "coef.wordfish"))
-    stop("First argument must be coefficients from a Wordfish model")
-
-  if (is.null(x$docs))
-    stop(paste("Plotting word parameters in the multinomial parameterization",
-               "probably won't\n  be very informative.  Try plotting the value",
-               "of coef(model, form='poisson')"))
-  if(!missing(plot_title)) {
-    plot_title <- plot_title
-  }
-
-  words <- x$words
-  words["token"] <- rownames(words)
-  words <- as_tibble(words)
-  if (!psi) {
-    ggplot(words, aes(x = beta)) +
-           geom_dotplot()
-  } else {
-    ggplot(data = words, aes(x = beta, y = psi)) +
-           geom_point() +
-           xlab("Beta") +
-           ylab("Psi") +
-           geom_label(data = top_n(words, 5, beta),
-                      aes(label = token)
-           ) +
-           geom_label(data = top_n(words, 5, -beta),
-                      aes(label = token)
-           ) +
-           geom_label(data = top_n(words, 5, psi),
-                      aes(label = token)
-           ) +
-           ggtitle(plot_title)
-  }
-}
-
-map(fish, ~ write_plot_fish(fish = fish,
-                           name = "edu_test",
-                           period = "2014-20"))
-
-edu_tfidfs <- map(edu_corpora, ~  bind_tf_idf(.x, lemma, doc_id, n))
-edu_dtms <- map(edu_tfidfs, ~ generate_dtms(.x))
 
 ### METADATA WORK
 # All filtering/coercion/massaging happens to bare metadata
