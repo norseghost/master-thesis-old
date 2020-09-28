@@ -603,8 +603,24 @@ trim_wfm <- function(wfm, min.count=5, min.doc = 5) {
   wfm[,colSums(wfm != 0) != 0] 
 }
 
-order_wfm <- function(wfm) {
-  wfm <- wfm[,order(as.integer(colnames(wfm)))]
+# need to remove the per-period grouping now,
+# to allow for more creative grouping later
+wordfish_corpus <- function(corpus, timeperiod, group, n) {
+  # unnest and clean up metadata, unselecting the 'all' group
+  cat("cleaning corpus metadata\n")
+  corpus <- corpus[corpus != "all"] %>%
+    bind_rows %>%
+    get_political
+  if(!missing(group)) {
+    cat(str_c("Group ", group, " detected\n"))
+    split(corpus, corpus[timeperiod]) %>%
+      map(. %>%
+          corpus_to_fish({{ group }}, n)
+        ) }
+  else {
+    cat(str_c("No group detected. Mapping to ", timeperiod, "\n"))
+    corpus_to_fish(corpus, {{ timeperiod }}, n)
+  }
 }
 
 
