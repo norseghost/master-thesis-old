@@ -806,34 +806,50 @@ get_political <- function(metadata) {
     # Erring on the side of inclusivity
     # Some more centrist parties may have issue
     mutate(Blok = factor(case_when(
-        Parti %in% c(
-            "Dansk Folkeparti",
-            "Liberal Alliance",
-            "Venstre",
-            "Konservative Folkeparti",
-            "Kristeligt Folkeparti",
-            "Ny Alliance",
-            "Centrum-Demokraterne",
-            "Fremskridtspartiet",
-            "De Uafhængige",
-            "Liberalt Centrum",
-            "Nye Borgerlige",
-            "Retsforbundet"
-            ) ~ "Blå Blok",
-        Parti %in% c(
-            "Alternativet",
-            "Enhedslisten",
-            "Radikale Venstre",
-            "Socialdemokraterne",
-            "Socialistisk Folkeparti",
-            "Danmarks Kommunistiske Parti",
-            "Venstresocialisterne",
-            "Fælles Kurs"
-            ) ~ "Rød Blok",
-        # this isn't entirely accurate 
-        # unafilliated members are also picked up
-        TRUE ~ "Grønland/Færøerne"
-    ), levels = c("Rød Blok", "Grønland/Færøerne", "Blå Blok")))
+                                   Parti %in% c(
+                                                "Dansk Folkeparti",
+                                                "Venstre",
+                                                "Konservative Folkeparti",
+                                                "Fremskridtspartiet",
+                                                "De Uafhængige",
+                                                "Nye Borgerlige"
+                                                ) ~ "Blå Blok",
+                                   Parti %in% c(
+                                                "Alternativet",
+                                                "Enhedslisten",
+                                                "Socialdemokratiet",
+                                                "Socialistisk Folkeparti",
+                                                "Danmarks Kommunistiske Parti",
+                                                "Venstresocialisterne",
+                                                "Fælles Kurs"
+                                                ) ~ "Rød Blok",
+                                   Parti %in% c(
+                                                "Uden for partierne",
+                                                "Kristeligt Folkeparti",
+                                                "Centrum-Demokraterne",
+                                                "Radikale Venstre",
+                                                "Ny Alliance",
+                                                "Liberal Alliance",
+                                                "Retsforbundet",
+                                                "Liberalt Centrum"
+                                                ) ~ "Centrum",
+                                   # this isn't entirely accurate 
+                                   # unafilliated members are also picked up
+                                   Parti %in% c(
+                                                "Javnaðarflokkurin",
+                                                "Tjóðveldisflokkurin",
+                                                "Fólkaflokkurin",
+                                                "Sambandsflokkurin",
+                                                "Atássut",
+                                                "Siumut",
+                                                "Inuit Ataqatigiit"
+                                                ) ~ "Grønland/Færøerne",
+                                   Parti == "ikke angivet" ~ "ikke angivet",
+                                   ), levels = c("Rød Blok",
+                                   "Blå Blok",
+                                   "Centrum",
+                                   "Grønland/Færøerne",
+                                   "ikke angivet")))
 }
 
 split_by_govt <- function(metadata) {
@@ -843,4 +859,15 @@ split_by_govt <- function(metadata) {
 split_by_block <- function(metadata) {
   metadata %>%
     split(.$Blok)
+}
+
+
+ggsave_to_variable <- function(p, width = 10, height = 10, dpi = 300) {
+  pixel_width <- (width  * dpi) / 2.54
+  pixel_height <- (height * dpi) / 2.54
+  img <- magick::image_graph(pixel_width, pixel_height, res = dpi)
+  on.exit(utils::capture.output({
+    grDevices::dev.off()}))
+  plot(p)
+  return(img)
 }
