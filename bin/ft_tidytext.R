@@ -355,15 +355,7 @@ models_compare <- function(dtm, name, period, min_k, max_k, steps, cores) {
   return(NULL)
 }
 
-imap(dtms, ~ models_compare(
-                    dtm = .x,
-                    name = str_c("bigrams_stopwords_quantile", .y),
-                    min_k = 5,
-                    max_k = 75,
-                    steps = 10,
-                    cores = 4L))
-
-read_models <- function(ngrams, max_k, steps) {
+read_models <- function(name, min_k, max_k, steps) {
   filenames <- list.files(
               path = here("data/"),
               pattern = str_c("models_", name, "_(\\d+|all).*_", min_k, "to",  max_k, "by", steps, ".rds"
@@ -390,16 +382,16 @@ normalize_topic_numbers <- function(values) {
   # Drop models if present, as they won't rescale
   # Also, Deveaud is not useful for this dataset
   values <- values %>% 
-     select(-LDA_model, -Deveaud2014)
+     select(-LDA_model)
   # normalize to [0,1]
   columns <- values %>%
     select(-topics) %>%
     modify(~ scales::rescale(.x, to = c(0, 1), from = range(.x)))
   invert <- columns %>%
-    select(Griffiths2004) %>%
+    select(Griffiths2004, Deveaud2014) %>%
     modify(~ (1.0 - .x))
   columns <- columns %>%
-    select(-Griffiths2004) %>%
+    select(-Griffiths2004, -Deveaud2014) %>%
     bind_cols(invert)
   values <- values %>%
     select(topics) %>%
