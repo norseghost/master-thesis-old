@@ -238,12 +238,23 @@ split_corpora <- function(ft_grp) {
 # helper functions to serialize to/from disk,
 # with consistent naming
 #
-# [tidy|tokens|tfidf|dtm|models]_{ngrams}_{identifier}_{corpus}.rds
+# TODO: this seems like a place where functionals might be useful
+#
+# [tokens|tfidf|dtm|models]_{ngrams}_{identifier}_{corpus}.rds
 
-read_tokens <- function(ngrams) {
+write_ngrams <- function(corpus, ngrams, name, period) {
+  cat(str_c("writing tokens\n"))
+  tokens <- unnest_tokens(corpus, lemma, text, token = "ngrams", n = ngrams)
+  counted <- count(tokens, lemma, doc_id, sort = TRUE)
+  saveRDS(counted, here(str_c("data/tokens_", name, "_n", n, "_", period, ".rds")))
+  rm(tokens, counted)
+  gc()
+  return(NULL)
+}
+read_ngrams <- function(name) {
   filenames <- list.files(
               path = here("data/"),
-              pattern = str_c("tokens_", ngrams, ".*.rds")
+              pattern = str_c("tokens_", name, "_n", n, ".*.rds")
   )
   print(filenames)
   tokens <- map(filenames, ~readRDS(here(str_c("data/", .x))))
