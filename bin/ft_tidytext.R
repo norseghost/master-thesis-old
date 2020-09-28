@@ -400,39 +400,35 @@ normalize_topic_numbers <- function(values) {
 
 plot_topic_numbers <- function(values) {
   # standard plot-
-  p <- ggplot(values, aes_string(x = "topics", y = "value", group = "variable"))
-  p <- p + facet_grid(period ~ .)
-  p <- p + geom_line()
-  p <- p + geom_point(aes_string(shape = "variable"), size = 3)
-  p <- p + guides(size = FALSE, shape = guide_legend(title = "Målefunktion"))
-  p <- p + facet_grid(period ~ .)
-  p <- p + scale_x_continuous(breaks = values$topics)
-  p <- p + labs(x = "Antal emner", y = NULL)
-  p <- p + theme_bw() %+replace% theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.major.x = element_line(colour = "grey70"),
-    panel.grid.minor.x = element_blank(),
-    legend.key = element_blank(),
-    strip.text.y = element_text(angle = 90)
-  )
-  # move strip block to left side
-  g <- ggplotGrob(p)
-  g$layout[g$layout$name == "strip-right", c("l", "r")] <- 3
-  grid::grid.newpage()
-  grid::grid.draw(g)
-  return(p)
+  values %>% ggplot(aes(x = topics, y = value, group = variable)) +
+    facet_grid(period ~ .) +
+    geom_line(linetype = "dashed") +
+    geom_point(aes(shape = variable), size = 3) +
+    scale_x_continuous(breaks = values$topics) +
+    guides(shape = guide_legend(title="Målefunktion")) +
+    labs(x = "Antal emner", y = NULL) +
+    theme_bw() %+replace% theme(
+          legend.position = "bottom",
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.x = element_line(colour = "grey70"),
+          panel.grid.minor.x = element_blank(),
+          panel.background = element_blank(),
+          legend.key = element_blank(),
+          strip.text.y = element_text(angle = 90)
+    )
 }
 
-plot_models <- function(models, name = "models") {
+plot_models <- function(models, name, period, min_k, max_k, steps) {
     map(models, ~ normalize_topic_numbers(.x)) %>%
     bind_rows(.id = "period") %>%
-    reshape2::melt(., id.vars = c("topics", "period"), na.rm = TRUE) %>%
+    pivot_longer(!c(period, topics), names_to = "variable", values_to = "value") %>%
     plot_topic_numbers %>%
     ggsave(
-           filename = str_c(name, ".tex"),
-           width = 4,
-           height = 3,
+           filename = str_c("models_", name, "_", min_k,
+            "to", max_k, "by", steps,  ".tex"),
+           width = 5,
+           height = 8,
            path = here("fig"),
            device = tikz,
            standAlone = FALSE
