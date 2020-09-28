@@ -555,21 +555,28 @@ save_topic_cluster_plot <- function(p, name) {
            )
 }
 
-# topics pertainig to education, as determined by visual inspection
-#TODO: named list instead?
+# topics pertaining to education per analysis period,
+# as determined by visual inspection
+# TODO: named list instead?
+# TODO: Cannot handle more than one topic per period
+# FIXME: quite monstrous code, actually
 edu_topic_numbers <- c(6, 16, 7, 3, 9)
+# read in required data
+# subject to change
 ldas <- readRDS(here("data/lda-35_periods_bigrams"))
-dtms <- readRDS(here("data/dtm_bigrams"))
+ldas <- ldas[order(names(ldas))]
 docs <- map(ldas, ~ lda_to_docs(.x))
-corpora <- readRDS(here("data/tokens_bigrams.rds"))
-# construct list for 
+corpora <- readRDS(here("data/speeches_with_periods.rds"))
+# construct list for education docs
 edu_docs <- vector("list", length(docs))
 
 l <- list(topicnum = edu_topic_numbers, edu_docs = edu_docs, docs = docs)
-edu_docs <- pmap(l, function(edu_docs, docs, topicnum) { edu_docs <- filter(docs, topic == topicnum)}) %>%
-# all docs have a probability of beaing assigned to a topic
-# we only want the 3%
-  map(~ filter(.x, gamma > quantile(gamma, 0.97)))
+edu_docs <- pmap(l, 
+                 function(edu_docs, docs, topicnum) {
+                   edu_docs <- filter(docs, topic == topicnum)}) %>%
+                  # all docs have a probability of being assigned to a topic
+                  # we only want the 3% most likely
+                  map(~ filter(.x, gamma > quantile(gamma, prob = 1 - 3/100)))
 names(edu_docs) <- names(docs)
 
 get_edu_corpora <- function(corpus, doc_ids) {
@@ -577,19 +584,14 @@ get_edu_corpora <- function(corpus, doc_ids) {
   filter(doc_id %in% doc_ids)
 }
 
-edu_corpora <- map2(corpora, edu_docs, ~                   
-                    get_edu_corpora(corpus = .x,
+edu <- map2(corpora, edu_docs,
+                    ~get_edu_corpora(corpus = .x,
                                     doc_ids = .y$document))
-edu_corpora <- edu_corpora %>%
+# do we need metadata?
+metadata <- readRDS(here("data/speeches_metadata.rds"))
+edu <- edu %>%
   map(~ inner_join(.x, metadata, by = doc_id))
 
-edu_by_govt <- split_by_govt(edu_corpora$all)
-
-edu_by_block <- map(edu_corpora, ~ split_by_block(.x))
-
-edu_block_tfidfs  <- map(edu_by_block, ~ map(.x, ~ bind_tf_idf(.x, lemma, doc_id, n)))
-
-edu_block_dtms  <- map(edu_block_tfidfs, ~ map(.x, ~ generate_dtms((filter_tfidf(.x, treshold)))))
 
 ### WORDFISH
 # using the austin package
