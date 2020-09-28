@@ -498,10 +498,10 @@ lda_to_topics <- function(lda) {
 
 topics <- map(ldas, ~ lda_to_topics(.x))
 
-get_top_terms <- function(topics){
+get_top_terms <- function(topics, number) {
   topics %>%
     group_by(topic) %>%
-    top_n(15, beta) %>%
+    top_n(number, beta) %>%
     ungroup() %>%
     arrange(topic, -beta)
 }
