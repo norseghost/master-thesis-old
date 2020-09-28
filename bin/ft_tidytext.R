@@ -519,11 +519,41 @@ plot_terms <- function(top_terms, topics = c(2, 13, 24, 35, 17, 29)) {
     scale_x_reordered()
 }
 
-term_plots <- map(top_terms, ~ plot_terms(.x))
+### DENDROGRAM
+# plotting cluster relationships
+model_to_dend <- function(model) {
+  topics <- lda_to_topics(model)
+  topic_labels <- get_top_terms(topics, 1)$term
+  dendro <- as.matrix(posterior(model)$terms) %>%
+    CalcHellingerDist %>%
+    as.dist %>%
+    hclust("ward.D") %>%
+    as.dendrogram
+}
 
-paths <- str_c(names(term_plots), "-topicnumbers.tex")
-pwalk(list(paths, term_plots), ggsave, path = here("fig"), width = 20, height = 40, device = tikz, standAlone = FALSE)
+plot_topic_cluster <- function(dendro) {
+    set_labels(topic_labels) %>%
+    set("labels_to_character") %>%
+    set("branches_k_color", value = 6:1, k = 6) %>%
+    # sort() %>%     # highlight_branches_col
+    set("by_labels_branches_lwd", value = c(19, 23, 1), type = "all")
+  ggd <- as.ggdend(dendro)
+  p <- ggplot(ggd, horiz = TRUE)
+  # +
+   #  scale_y_reverse(expand = c(0.2, 0)) +
+   #  coord_polar(start = 0)
+}
 
+save_topic_cluster_plot <- function(p, name) {
+  p %>%
+    ggsave(filename = str_c("cluster_", name, ".tex"),
+           path = here("fig/"),
+           width = 5,
+           height = 7,
+           device = tikz,
+           standAlone = FALSE
+           )
+}
 
 # topics pertainig to education, as determined by visual inspection
 #TODO: named list instead?
