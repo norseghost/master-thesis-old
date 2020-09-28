@@ -1,17 +1,29 @@
 # tidytext.R
 # exploratory data analysis using the tidytext packages
 
-library(data.table)
-library(tidyverse)
-library(tidytext)
 library(tm)
 library(here)
+library(textmineR)
 library(topicmodels)
 library(ldatuning)
 library(tikzDevice)
 library(udpipe)
 library(austin)
+library(cowplot)
 library(future)
+library(ggrepel)
+library(ggdendro)
+library(dendextend)
+library(grid)
+library(gridExtra)
+library(magick)
+library(png)
+library(xtable)
+library(data.table)
+library(tidyverse)
+library(tidytext)
+
+
 options(future.globals.maxSize = 9512896000)
 options(tikzDefaultEngine = "xetex")
 options(tikzMetricsDictionary = here("/lib/tikzmetrics"))
@@ -666,9 +678,10 @@ write_plot_fish <- function(fish, name, period) {
   p <- plot_grid(plotlist=plots) %>%
   save_plot(
            filename = str_c("coef_", name, "_", period, ".tex"),
-           ncol = 2,
+           nrow = 2,
            path = here("fig"),
            device = tikz,
+           width = 3
            standAlone = FALSE
     )
 }
