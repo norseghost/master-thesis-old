@@ -366,12 +366,15 @@ imap(dtms, ~ models_compare(
 read_models <- function(ngrams, max_k, steps) {
   filenames <- list.files(
               path = here("data/"),
-              pattern = str_c("models_", ngrams, ".*_", max_k, "by", steps, ".rds"
+              pattern = str_c("models_", name, "_(\\d+|all).*_", min_k, "to",  max_k, "by", steps, ".rds"
               )
   )
+  cat("found models:\n")
+  map(filenames, ~ cat(str_c(.x, "\n")))
   models <- map(filenames, ~readRDS(here(str_c("data/", .x))))
   names(models) <- filenames %>%
-    map(~ str_match(.x, pattern = str_c("models_", ngrams, "_", "(.*)_\\d+by\\d+.rds"))[,2])
+    map(~ str_match(.x, 
+          pattern = str_c("models_", name, "_", "(.*)_\\d+to\\d+by\\d+.rds"))[, 2])
   return(models)
 }
 
