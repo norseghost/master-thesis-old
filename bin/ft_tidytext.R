@@ -191,13 +191,20 @@ group_corpora  <- function(folketinget) {
 
   folketinget[, timeseries := future_sapply(Date, (function(x) {
     case_when(
-       x < as.Date("1957-05-28") ~ "1953-57", # 53-57 (ny lærlingelov,vekseluddannelse)
-       x < as.Date("1968-02-02") ~ "1957-68", # 57-68 (udvidelse af lærlingekonceptet)
-       x < as.Date("1978-08-30") ~ "1968-78", # 68-78 (EFG)
-       x < as.Date("1990-12-18") ~ "1978-90", # 78-90 (Haarder, U91, EUD, EUX)
-       x < as.Date("2001-11-27") ~ "1990-01", # 90-01 (uddannelse til alle, markedsorientering, selvstyre)
-       x < as.Date("2014-02-03") ~ "2001-14", # 01-14 (individualisering, ansvar for egen læring)
-       x > as.Date("2014-02-03") ~ "2014-20"  # 14-20 (fokus på unge; voksne falder fra)
+      # 53-57 (ny lærlingelov,vekseluddannelse)
+      x < as.Date("1957-05-28") ~ "1953-57",
+      # 57-68 (udvidelse af lærlingekonceptet)
+      x < as.Date("1968-02-02") ~ "1957-68",
+      # 68-78 (EFG)
+      x < as.Date("1978-08-30") ~ "1968-78",
+      # 78-90 (Haarder, U91, EUD, EUX)
+      x < as.Date("1990-12-18") ~ "1978-90",
+      # 90-01 (uddannelse til alle, markedsorientering, selvstyre)
+      x < as.Date("2001-11-27") ~ "1990-01",
+      # 01-14 (individualisering, ansvar for egen læring)
+      x < as.Date("2014-02-03") ~ "2001-14",
+      # 14-20 (fokus på unge; voksne falder fra)
+      x > as.Date("2014-02-03") ~ "2014-20"
 
     )}
   ))]
