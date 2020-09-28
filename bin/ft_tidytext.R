@@ -508,14 +508,15 @@ get_top_terms <- function(topics){
 
 top_terms <- map(topics, ~ get_top_terms(.x))
 
-plot_terms <- function(term_list) {
-  term_list %>%
-      mutate(term = reorder_within(term, beta, topic)) %>%
-      ggplot(aes(term, beta, fill = factor(topic))) +
-      geom_col(show.legend = FALSE) +
-      facet_wrap(~ topic, scales = "free", ncol = 3) +
-      coord_flip() +
-      scale_x_reordered()
+plot_terms <- function(top_terms, topics = c(2, 13, 24, 35, 17, 29)) {
+  term %>%
+    filter(topic %in% topics) %>%
+    mutate(term = reorder_within(term, beta, topic)) %>%
+    ggplot(aes(term, beta, fill = factor(topic))) +
+    geom_col(show.legend = false) +
+    facet_wrap(~ topic, scales = "free", ncol = 3) +
+    coord_flip() +
+    scale_x_reordered()
 }
 
 term_plots <- map(top_terms, ~ plot_terms(.x))
