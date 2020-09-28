@@ -269,25 +269,25 @@ collate_tokens <- function(tokens) {
     bind_rows
 }
 
-create_tfidfs <- function(tokens, name) {
+write_tfidfs <- function(tokens, name, period) {
+# edu_collated <- map(edu_block, ~(create_collated_corpora, "Blok"))
+  cat(str_c("writing tfidfs\n"))
   tfidf <- bind_tf_idf(tokens, lemma, doc_id, n)
-  saveRDS(tfidf, here(str_c("data/tfidf_", name, ".rds")))
-  rm(tfidf)
-  gc()
-  return(NULL)
-}
-read_tfidfs <- function(ngrams) {
-  filenames <- list.files(
-              path = here("data/"),
-              pattern = str_c("tfidf_", ngrams, ".*.rds")
-  )
-  tfidfs <- map(filenames, ~readRDS(here(str_c("data/", .x))))
-  names(tfidfs) <- filenames %>%
-    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+).rds")[, 2])
-  return(tfidfs)
+  saveRDS(tfidf, str_c("data/tfidf_", name, "_", period, ".rds"))
 }
 
-imap(tokens, ~ create_tfidfs(tokens = .x, name = str_c("trigrams_", .y)))
+read_tfidfs <- function(name) {
+  cat(str_c("reading tfidfs\n"))
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("tfidf_", name, ".*.rds")
+  )
+  print(filenames)
+  tfidfs <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  names(tfidfs) <- filenames %>%
+    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+|all).rds")[, 2])
+  return(tfidfs)
+}
 
 inspect_tfidf <- function(tfidf) {
   print("Summary over unique tf_idf values")
@@ -301,21 +301,9 @@ inspect_tfidf <- function(tfidf) {
     select(tf_idf) %>%
     summary %>%
     print
-  print("30 most common terms")
-  tfidf %>%
-        distinct(lemma, tf_idf) %>%
-        arrange(lemma, -tf_idf) %>%
-        top_n(-30) %>%
-        print(n = 30)
-  print("30 least common terms")
-  tfidf %>%
-        distinct(lemma, tf_idf) %>%
-        arrange(lemma, -tf_idf) %>%
-        top_n(30) %>%
-        print(n = 30)
 }
 
-filter_tfidf <- function(tfidf) {
+filter_tfidf <- function(tfidf, treshold) {
   tfidf %>%
     # cut off terms with a tfidf value under the mean
     # of all tfidf values
@@ -324,7 +312,7 @@ filter_tfidf <- function(tfidf) {
     # also filter out the 0.002 most rare terms
     # (of those left) to catch misspellings and errors
     # TODO: Reference?
-    filter(tf_idf < quantile(tf_idf, 0.998))
+    filter(tf_idf < quantile(tf_idf, treshold))
 }
 
 generate_dtms <- function(tfidf) {
