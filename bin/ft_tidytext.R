@@ -562,24 +562,39 @@ model_to_clust <- function(model) {
     hclust("ward.D")
 }
 
-plot_topic_cluster <- function(clust) {
+clust_to_dendro <- function(clust) {
   topics <- lda_to_topics(model)
-  topic_labels <- get_top_terms(topics, 1)$term
-  clust %>%
+  topic_labels <- get_top_terms(topics, 1)$term %>%
+    modify(~ paste("  ", .x, sep = ""))
+  dendro <- clust %>%
     as.dendrogram %>%
     set_labels(topic_labels) %>%
-    set("labels_to_character") %>%
+    set("labels_cex", 0.7) %>%
+    # set("labels_to_character") %>%
     set("branches_k_color", value = 6:1, k = 6) %>%
     # sort() %>%     # highlight_branches_col
     set("by_labels_branches_lwd", value = c(19, 23, 1), type = "all")
-  ggd <- as.ggdend(dendro)
-  p <- ggplot(ggd, horiz = TRUE)
-  # +
-   #  scale_y_reverse(expand = c(0.2, 0)) +
-   #  coord_polar(start = 0)
 }
 
-save_topic_cluster_plot <- function(p, name) {
+save_topic_cluster_plot <- function(dendro, name = TRUE) {
+  # TODO: tried building this programmatically
+  #       but it turns parts of the string into subdirectories
+  filename = "fig/cluster_edu_test.tex"
+  tikz(filename, width = 5, height = 5)
+  par(mar = c(2,2,2,10))
+  plot(dendro, horiz = TRUE, axes = FALSE)
+  dev.off()
+}
+
+# FIXME: the ggplot version still cuts off the plot labels
+save_topic_cluster_plot <- function(dendro, name) {
+  ggd <- as.ggdend(dendro, horiz = TRUE)
+  p <- ggplot(ggd, horiz = TRUE)
+  # + +
+    # prevent labels being chopped off
+  p <- p + theme(plot.margin = margin(0, 2, 0, 0, "in"))
+   #  scale_y_reverse(expand = c(0.2, 0)) +
+   #  coord_polar(start = 0)
   p %>%
     ggsave(filename = str_c("cluster_", name, ".tex"),
            path = here("fig/"),
