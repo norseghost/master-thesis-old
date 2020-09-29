@@ -663,16 +663,26 @@ parties <- c(
 
 # need to remove the per-period grouping now,
 # to allow for more creative grouping later
-wordfish_corpus <- function(corpus, timeperiod, group, n) {
+wordfish_corpus <- function(corpus, timeperiod, group, n, filters, filter_col) {
   # unnest and clean up metadata, unselecting the 'all' group
   cat("cleaning corpus metadata\n")
   corpus <- corpus[corpus != "all"] %>%
     bind_rows %>%
     get_political
-  # TODO: add filter for unwanted rows in the resulting list
-  #       For instance, the Greenland and Faroese parties are not
-  #       all that relevant for the larger analysis
-  if(!missing(group)) {
+  if(!missing(filters)) {
+  # add filter for unwanted rows in the resulting list
+  # For instance, the Greenland and Faroese parties are not
+  # all that relevant for the larger analysis
+    cat("filtering\n")
+    corpus <- corpus  %>%
+      # turn group variable to a symbol
+      # then unquote it
+      # stupid black magic syntax
+      # TODO: rewrite using .data[[group]] syntax
+      #       ?dplyr_data_masking
+      #       or dplyr::across
+      filter(!!sym(filter_col) %in% filters)
+  }  if(!missing(group)) {
     cat(str_c("Group ", group, " detected\n"))
     split(corpus, corpus[timeperiod]) %>%
       map(. %>%
