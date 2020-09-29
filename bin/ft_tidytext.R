@@ -721,15 +721,58 @@ coef_fish_to_tibble <- function(fish) {
   words <- as_tibble(words)
 }
 
-get_coef_terms <- function(coef_tibble, n) {
+get_coef_terms <- function(coef_tibble, n = 10) {
+  n <- n
   top_bot <- list(
-    top = ~top_n(.x, n),
-    bot = ~top_n(.x, -n)
+    top = ~slice_max(.x, n = n),
+    bot = ~slice_min(.x, n = n)
   )
-  coef_tibble %>%
-    summarise(
-      across(c(beta, psi), top_bot)
-    )
+  # FIXME: this is fugly amounts of repetition
+  #        Can't get my head around how to do this the dplyr way
+  #        so let's brute-force it for now
+  max_psi <- coef_tibble %>%
+    group_by(across(period)) %>%
+    slice_max(psi, n = n) %>%
+    select(period, token) %>%
+    summarise(neutral = paste(token, collapse = ", "))
+  min_psi <- coef_tibble %>%
+    group_by(across(period)) %>%
+    slice_min(psi, n = n) %>%
+    select(period, token) %>%
+    summarise(neutral = paste(token, collapse = ", "))
+  max_beta <- coef_tibble %>%
+    group_by(across(period)) %>%
+    slice_max(beta, n = n) %>%
+    select(period, token) %>%
+    summarise(right = paste(token, collapse = ", "))
+  min_beta <- coef_tibble %>%
+    group_by(across(period)) %>%
+    slice_min(beta, n = n) %>%
+    select(period, token) %>%
+    summarise(left = paste(token, collapse = ", "))
+  terms <- inner_join(max_beta, min_beta) %>%
+    inner_join(max_psi)
+}
+
+write_term_xtable <- function(coef_terms, name) {
+  coef_terms <- coef_terms %>%
+    rename("Periode" = period,
+           "Venstreladede begreber" = left,
+           "Højreladede begreber" = right,
+           "Værdineutrale begreber" = neutral
+           )
+  t <- xtable(coef_terms,
+              caption = "Oversigt over begrebsvægtning efter en \textit{wordfish} beregning over analyseperioderne",
+              label = "tab:lrterms"
+  )
+  print(t,
+        type = "latex",
+        include.rownames = FALSE,
+        booktabs = TRUE,
+        table.placement = NULL,
+        latex.environments = NULL,
+        filename = here(str_c("fig/table_coef_terms_", identifier, ".tex"))
+  )
 }
 
 coef_fishlist <- function(fishlist) {
