@@ -509,14 +509,31 @@ get_top_terms <- function(topics, number) {
 top_terms <- map(topics, ~ get_top_terms(.x))
 
 plot_terms <- function(top_terms, topics = c(2, 13, 24, 35, 17, 29)) {
-  term %>%
+  top_terms %>%
     filter(topic %in% topics) %>%
     mutate(term = reorder_within(term, beta, topic)) %>%
     ggplot(aes(term, beta, fill = factor(topic))) +
-    geom_col(show.legend = false) +
+    geom_col(show.legend = FALSE) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.ticks = element_blank(),
+    ) +
     facet_wrap(~ topic, scales = "free", ncol = 3) +
     coord_flip() +
-    scale_x_reordered()
+    scale_x_reordered() +
+    xlab("Begreber for udvalgte emner") +
+    ylab("Begrebernes vægtning for emnet")
+}
+
+save_terms_plot <- function(p, name) {
+  p %>%
+    ggsave(filename = str_c("terms_", name, ".tex"),
+           path = here("fig/"),
+           width = 7,
+           height = 7,
+           device = tikz,
+           standAlone = FALSE
+           )
 }
 
 ### DENDROGRAM
