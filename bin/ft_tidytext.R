@@ -695,6 +695,23 @@ coef_fish_to_tibble <- function(fish) {
   words <- as_tibble(words)
 }
 
+get_coef_terms <- function(coef_tibble, n) {
+  top_bot <- list(
+    top = ~top_n(.x, n),
+    bot = ~top_n(.x, -n)
+  )
+  coef_tibble %>%
+    summarise(
+      across(c(beta, psi), top_bot)
+    )
+}
+
+coef_fishlist <- function(fishlist) {
+  fishlist %>%
+   map(~ coef_fish_to_tibble(.x)) %>% 
+   bind_rows(.id = "period")
+}
+
 summarize_fish <- function(x) {
   # create a tibble of wordfish summaries
     if (!is(x, "wordfish"))
@@ -787,11 +804,6 @@ save_coef_plot <- function(p, name) {
 }
 write_coef_plot <- function(p, name) {
   save_coef_plot(p, name)
-}
-
-get_wordfish_terms <- function(fish, para, n, desc = TRUE) {
-  fish %>%
-    top_n(n, para) 
 }
 
 plot_fishlist <- function(fishlist_periods) {
