@@ -656,6 +656,9 @@ wordfish_corpus <- function(corpus, timeperiod, group, n) {
   corpus <- corpus[corpus != "all"] %>%
     bind_rows %>%
     get_political
+  # TODO: add filter for unwanted rows in the resulting list
+  #       For instance, the Greenland and Faroese parties are not
+  #       all that relevant for the larger analysis
   if(!missing(group)) {
     cat(str_c("Group ", group, " detected\n"))
     split(corpus, corpus[timeperiod]) %>%
