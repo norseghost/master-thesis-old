@@ -485,7 +485,7 @@ imap(jsons, ~ serVis(
                 out.dir = here(str_c("vis/bigrams_tfidfs_more_filtered/", .y)),
                 open.browser = FALSE))
 
-assignments <- map2(lda, dtm, augment, .x, .y)
+assignments <- map2(ldas, dtms, augment, .x, .y)
 
 
 lda_to_docs <- function(lda) {
