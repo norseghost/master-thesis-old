@@ -646,7 +646,20 @@ edu <- edu %>%
 ### WORDFISH
 # using the austin package
 
-# trim wfm to remove seldom-occuring tokens
+blocs <- c(
+           "Rød Blok",
+           "Centrum",
+           "Blå Blok",
+           "ikke angivet")
+parties <- c(
+             "Enhedslisten",
+             "Socialdemokratiet",
+             "Socialistisk Folkeparti",
+             "Dansk Folkeparti",
+             "Venstre",
+             "Konservative Folkeparti",
+             "Radikale Venstre"
+             )
 
 # need to remove the per-period grouping now,
 # to allow for more creative grouping later
@@ -819,19 +832,6 @@ plot_fishlist <- function(fishlist_periods) {
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
 
-blocs <- c(
-           "Rød Blok",
-           "Centrum",
-           "Blå Blok",
-           "ikke angivet")
-parties <- c(
-             "Enhedslisten",
-             "Socialdemokratiet",
-             "Socialistisk Folkeparti",
-             "Dansk Folkeparti",
-             "Venstre",
-             "Konservative Folkeparti",
-             "Radikale Venstre")
 write_wordfish_timeseries_plot <- function(fishlist, filters, name) {
   fishlist <- periods_fishlist(fishlist)
   filter(fishlist, Gruppe %in% filters) %>%
