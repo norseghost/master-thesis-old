@@ -647,11 +647,6 @@ edu <- edu %>%
 # using the austin package
 
 # trim wfm to remove seldom-occuring tokens
-trim_wfm <- function(wfm, min.count=5, min.doc = 5) {
-  wfm <- trim(wfm, min.count = min.count, min.doc = min.doc)
-  # this can lead to columns summing to 0
-  wfm[,colSums(wfm != 0) != 0] 
-}
 
 # need to remove the per-period grouping now,
 # to allow for more creative grouping later
@@ -688,6 +683,31 @@ corpus_to_fish <- function(corpus, group, n) {
     wordfish
 }
 
+trim_wfm <- function(wfm, min.count=5, min.doc = 5) {
+  wfm <- trim(wfm, min.count = min.count, min.doc = min.doc)
+  # this can lead to columns summing to 0
+  wfm[,colSums(wfm != 0) != 0] 
+}
+
+coef_fish_to_tibble <- function(fish) {
+  words <- coef(fish)$words
+  words["token"] <- rownames(words)
+  words <- as_tibble(words)
+}
+
+summarize_fish <- function(x) {
+  # create a tibble of wordfish summaries
+    if (!is(x, "wordfish"))
+    stop("First argument must be a wordfish model")
+    fish_summary <- rownames_to_column(summary(x)$scores, var = "Gruppe")  %>% as_tibble
+}
+
+periods_fishlist <- function(fishlist) {
+  fishlist %>%
+    map(~ summarize_fish(.x)) %>%
+    bind_rows(.id = "Periode")
+}
+
 write_coef_fishlist_plot <- function(fishlist, name) {
   plots <- imap(fishlist, ~ ggplot_coef_fish(coef(.x), plot_title = .y))
   p <- plot_grid(plotlist = plots,
@@ -695,33 +715,6 @@ write_coef_fishlist_plot <- function(fishlist, name) {
            align = "vh"
            )
   save_coef_plot(p, str_c("list_", name))
-}
-
-write_coef_plot <- function(p, name) {
-  save_coef_plot(p, name)
-}
-
-save_coef_plot <- function(p, name) {
-  filename <- str_c("coef_", name, ".tex")
-  ggsave(p,
-            filename = filename,
-            path = here("fig"),
-            device = tikz,
-            standAlone = FALSE
-  )
-  system2(command = "sed", args= (c("-i",
-                                    "s:coef:../fig/coef:g",
-                                    here(str_c("fig/", filename))
-                                    )
-  )
-  )
-}
-
-
-coef_fish_to_tibble <- function(fish) {
-  words <- coef(fish)$words
-  words["token"] <- rownames(words)
-  words <- as_tibble(words)
 }
 
 plot_constructor <- function(words, beta, psi) {
@@ -776,24 +769,29 @@ plot_coef_fish <- function(fish, psi = TRUE) {
   geom_label_repel(data = top_n(words, 5, psi),
                   aes(label = token)
                   )
-  return(text_plot)
+}
+save_coef_plot <- function(p, name) {
+  filename <- str_c("coef_", name, ".tex")
+  ggsave(p,
+            filename = filename,
+            path = here("fig"),
+            device = tikz,
+            standAlone = FALSE
+  )
+  system2(command = "sed", args= (c("-i",
+                                    "s:coef:../fig/coef:g",
+                                    here(str_c("fig/", filename))
+                                    )
+  )
+  )
+}
+write_coef_plot <- function(p, name) {
+  save_coef_plot(p, name)
 }
 
 get_wordfish_terms <- function(fish, para, n, desc = TRUE) {
   fish %>%
     top_n(n, para) 
-}
-
-summarize_fish <- function(x) {
-  # create a tibble of wordfish summaries
-    if (!is(x, "wordfish"))
-    stop("First argument must be a wordfish model")
-    fish_summary <- rownames_to_column(summary(x)$scores, var = "Gruppe")  %>% as_tibble
-}
-periods_fishlist <- function(fishlist) {
-  fishlist %>%
-    map(~ summarize_fish(.x)) %>%
-    bind_rows(.id = "Periode")
 }
 
 plot_fishlist <- function(fishlist_periods) {
