@@ -562,7 +562,7 @@ model_to_clust <- function(model) {
     hclust("ward.D")
 }
 
-clust_to_dendro <- function(clust) {
+clust_to_dendro <- function(clust, branches = c(19, 23, 1)) {
   topics <- lda_to_topics(model)
   topic_labels <- get_top_terms(topics, 1)$term %>%
     modify(~ paste("  ", .x, sep = ""))
@@ -573,7 +573,7 @@ clust_to_dendro <- function(clust) {
     # set("labels_to_character") %>%
     set("branches_k_color", value = 6:1, k = 6) %>%
     # sort() %>%     # highlight_branches_col
-    set("by_labels_branches_lwd", value = c(19, 23, 1), type = "all")
+    set("by_labels_branches_lwd", value = branches , type = "all")
 }
 
 save_topic_cluster_plot <- function(dendro, name = TRUE) {
