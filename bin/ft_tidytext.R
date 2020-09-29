@@ -496,7 +496,7 @@ lda_to_topics <- function(lda) {
     tidy(lda, matrix = "beta")
 }
 
-topics <- map(ldas, ~ lda_to_topics(.x))
+topic_list <- map(ldas, ~ lda_to_topics(.x))
 
 get_top_terms <- function(topics, number) {
   topics %>%
@@ -506,7 +506,24 @@ get_top_terms <- function(topics, number) {
     arrange(topic, -beta)
 }
 
-top_terms <- map(topics, ~ get_top_terms(.x))
+doc_list <- map(ldas, ~ lda_to_docs(.x))
+
+# WIP: get top documents per topic
+#
+get_n_docs_pr_topic <- function(docs, number) {
+  docs %>%
+    group_by(topic) %>%
+    top_n(number, gamma) %>%
+    ungroup() %>%
+    arrange(topic, document)
+}
+
+get_docs_pr_topic <- function(docs, frac) {
+  docs %>%
+    filter(gamma > frac)
+}
+
+top_terms <- map(topic_list, ~ get_top_terms(.x, 15))
 
 plot_terms <- function(top_terms, topics = c(2, 13, 24, 35, 17, 29)) {
   top_terms %>%
