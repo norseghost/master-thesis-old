@@ -97,7 +97,7 @@ pipeline <- function(proc_speeches) {
                     max_k = max_k,
                     steps = steps)
   plot_models(
-            mdels = models,
+            models = models,
             name = identifier,
             min_k = min_k,
             max_k = max_k,
