@@ -1,12 +1,35 @@
-\documentclass[a4paper]{memoir}
-
-\input{../../.shared/frontmatter.tex}
-
-\author{Martin Andreas Andersen \\ Kandidatstuderende, pædagogisk sociologi}
+%!TeX program = lualatex
+\documentclass[a4paper,oneside,openbib,openany,final]{memoir}
+\usepackage[backend=biber,citestyle=verbose-ibid,urldate=short,style=apa]{biblatex}
+\DeclareLanguageMapping{danish}{danish-apa}
+\bibliography{/home/martin/Documents/DPU/.shared/dpu}
+\usepackage[danish]{babel}
+\usepackage{csquotes}
+\usepackage[T1]{fontenc}
+\usepackage{fontspec}
+\usepackage{todonotes}
+\usepackage{tikz}
+\usepackage{import}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{booktabs}
+% \usepackage[strict]{changepage}
+\setmainfont{Apple Garamond}
+\setsansfont{Lucida Sans Unicode}
+\setmonofont{Inconsolata}
+\author{Martin Andreas Andersen  Kandidatstuderende, pædagogisk sociologi}
 \title{Speciale}
 \date{Maj 2020}
 \begin{document}
+\setsecnumdepth{section}
+\maxsecnumdepth{section}
+\headstyles{komalike}
+\setfloatadjustment{figure}{\small\sffamily\centering}
+\setfloatadjustment{table}{\small\sffamily\centering}
 % comment these lines to enable header/page numbers 
+
 \pagestyle{empty}
 \copypagestyle{part}{empty}
 \copypagestyle{chapter}{empty}
@@ -23,11 +46,15 @@
 % \fancyhead[C]{ \\ Speciale}
 % % \fancyhead[R]{Martin Andreas Andersen \\ Studienr. 201802341}
 
+
+% \pagenumbering{Alpha}
+% \begin{titlingpage}
 % \maketitle
-
-% \newpage
+% \end{titlingpage}
+% \frontmatter
 % \tableofcontents
-
+% \listoftables
+% \listoffigures
 % \begin{table*}[bp]
 % \centering \begin{tabular}{c}
 %     {\textbf{Tegnoptælling}} \\
@@ -35,12 +62,13 @@
 
 %   \end{tabular}
 % \end{table*}
-
+\input{resume.tex}
+\mainmatter
 \input{indledning.tex}
 \input{baggrund.tex}
 \input{metode.tex}
 \input{analyse.tex}
 \input{konklusion.tex}
-
+\backmatter
 % \printbibliography
 \end{document}
