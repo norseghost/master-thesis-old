@@ -19,10 +19,11 @@ library(gridExtra)
 library(magick)
 library(png)
 library(xtable)
+library(plotly)
+library(reticulate)
 library(data.table)
 library(tidyverse)
 library(tidytext)
-
 
 options(future.globals.maxSize = 9512896000)
 options(tikzDefaultEngine = "luatex")
