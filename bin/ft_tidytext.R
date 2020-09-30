@@ -923,50 +923,50 @@ get_political <- function(metadata) {
     # Erring on the side of inclusivity
     # Some more centrist parties may have issue
     mutate(Blok = factor(case_when(
-                                   Parti %in% c(
-                                                "Dansk Folkeparti",
-                                                "Venstre",
-                                                "Konservative Folkeparti",
-                                                "Fremskridtspartiet",
-                                                "De Uafhængige",
-                                                "Nye Borgerlige"
-                                                ) ~ "Blå Blok",
-                                   Parti %in% c(
-                                                "Alternativet",
-                                                "Enhedslisten",
-                                                "Socialdemokratiet",
-                                                "Socialistisk Folkeparti",
-                                                "Danmarks Kommunistiske Parti",
-                                                "Venstresocialisterne",
-                                                "Fælles Kurs"
-                                                ) ~ "Rød Blok",
-                                   Parti %in% c(
-                                                "Uden for partierne",
-                                                "Kristeligt Folkeparti",
-                                                "Centrum-Demokraterne",
-                                                "Radikale Venstre",
-                                                "Ny Alliance",
-                                                "Liberal Alliance",
-                                                "Retsforbundet",
-                                                "Liberalt Centrum"
-                                                ) ~ "Centrum",
-                                   # this isn't entirely accurate 
-                                   # unafilliated members are also picked up
-                                   Parti %in% c(
-                                                "Javnaðarflokkurin",
-                                                "Tjóðveldisflokkurin",
-                                                "Fólkaflokkurin",
-                                                "Sambandsflokkurin",
-                                                "Atássut",
-                                                "Siumut",
-                                                "Inuit Ataqatigiit"
-                                                ) ~ "Grønland/Færøerne",
-                                   Parti == "ikke angivet" ~ "ikke angivet",
-                                   ), levels = c("Rød Blok",
-                                   "Blå Blok",
-                                   "Centrum",
-                                   "Grønland/Færøerne",
-                                   "ikke angivet")))
+           Parti %in% c(
+                        "Dansk Folkeparti",
+                        "Venstre",
+                        "Konservative Folkeparti",
+                        "Fremskridtspartiet",
+                        "De Uafhængige",
+                        "Nye Borgerlige"
+                        ) ~ "Blå Blok",
+           Parti %in% c(
+                        "Alternativet",
+                        "Enhedslisten",
+                        "Socialdemokratiet",
+                        "Socialistisk Folkeparti",
+                        "Danmarks Kommunistiske Parti",
+                        "Venstresocialisterne",
+                        "Fælles Kurs"
+                        ) ~ "Rød Blok",
+           Parti %in% c(
+                        "Uden for partierne",
+                        "Kristeligt Folkeparti",
+                        "Centrum-Demokraterne",
+                        "Radikale Venstre",
+                        "Ny Alliance",
+                        "Liberal Alliance",
+                        "Retsforbundet",
+                        "Liberalt Centrum"
+                        ) ~ "Centrum",
+           # this isn't entirely accurate 
+           # unafilliated members are also picked up
+           Parti %in% c(
+                        "Javnaðarflokkurin",
+                        "Tjóðveldisflokkurin",
+                        "Fólkaflokkurin",
+                        "Sambandsflokkurin",
+                        "Atássut",
+                        "Siumut",
+                        "Inuit Ataqatigiit"
+                        ) ~ "Grønland/Færøerne",
+           Parti == "ikke angivet" ~ "ikke angivet",
+           ), levels = c("Rød Blok",
+           "Blå Blok",
+           "Centrum",
+           "Grønland/Færøerne",
+           "ikke angivet")))
 }
 
 split_by_govt <- function(metadata) {
