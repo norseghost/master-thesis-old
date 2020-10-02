@@ -58,6 +58,28 @@ control <- list(
                 # thin = thin,
                 # iter = iter
 )
+# blocs and parties to use in analysis
+blocs <- c(# don't use the greenland/faroese parties
+           # they add too much noise
+           "Rød Blok",
+           "Centrum",
+           "Blå Blok",
+           "ikke angivet")
+parties <- c(# similarly, the smaller parties 
+             # 1) add noise to the data; pre-analysis
+             # 2) too many parties p
+             "Enhedslisten",
+             "Socialdemokratiet",
+             "Socialistisk Folkeparti",
+             "Dansk Folkeparti",
+             "Venstre",
+             "Konservative Folkeparti",
+             "Radikale Venstre",
+             "Liberal Alliance",
+             "Ny Alliance",
+             "Alternativet",
+             "Fremskridspartiet"
+             )
 
 preprocess <- function(raw_speeches) {
   raw_speeches %>%
