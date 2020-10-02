@@ -23,28 +23,34 @@ Jeg vil også illustrere de særegenheder jeg måtte finde i mit datasæt underv
 
 \chapter{Indskrænkning af dokumenter til undersøgelse}
 
-Jeg begynder med, at udarbejde et tf-idf objekt pr korpus; der er blevet forhåndsbehandlet og klargjort - dog uden stopord.
-Dette filtreres ved, at udelukke ord der falder under gennemsnitsværdien;\todo{inkludere kodeeksempler?} og ved derefter at udelukke ord der er i de øverste to promille af forekomst.
+Jeg begynder med, at udarbejde et tf-idf objekt for hver analyseperiode.
+En analyseperiode udgør således et korpus, hvor teksten er blevet forhåndsbehandlet og klargjort.
+For at øge analyseværdien har jeg udeladt ord der falder under gennemsnitsværdien for \textit{tf-idf} for dermed at sortere de aller mes hyppigt forekommende ord fra.
+For at undgå, at de aller mest sjældne ord forvrænger analysen, udelukker jeg herefter ord der har en \textit{tf-idf} i de yderste to promille.
 
-Derefter foretager jeg en sammenligning af forskellige modeller for beregning af det optimale emner for videre analyse:
+Derefter foretager jeg en sammenligning af forskellige modeller for beregning af det optimale emner for videre analyse.
 
-\begin{figure}[H]
-\centering
-\input{../fig/models.tex}
-\caption{Differentiering mellem emner for forskellige antal emner; bigrams og ingen stopord. }
+\begin{figure}
+\input{../fig/models_edu_test_5to125by10.tex}
+\caption{Beregning af optimalt antal emner for videre analyse; bigrams og ingen stopord.}
+\label{fig:modelsFull}
 \end{figure}
 
-Ved at se på kurvene fra disse sammenligninger, begynder kurvene at flade ud omkring de 30-50 emner.
-Der er en meget grund kurve inden den begynder at bevæge sig opad igen.
-Vælger emner for undersøgelse ud fra “albueleds-princippet” - der hvor kurven begynder at bukke sig brat.
-I dette eksempel er det omkring 35 emner.
-Illustreret af perioden 1990 til 2000 giver dette følgende emner, repræsenteret af de 15 hyppigste termer pr emne:
+Figur ~\ref{fig:modelsFull} (side ~\pageref{fig:modelsFull}) viser en sammenligning af 4 forskellige modeller for udvælgelse af et "optimalt" antal emner for en LDA-baseret topic model.
+Ved at se på kurvene fra disse sammenligninger, konvergerer kurvene omkring de 30-50 emner, inden de bevæger sig opad igen\footnote{Med undtagelse af \autocite{deveaudAccurateEffectiveLatent2014}; der ikke ser ud til at være en særlig hjælpsom algoritme i denne sammenhæng. Muligvis en konsekvens af mit noget specielle datasæt.}.
+Jeg går videre med 45 emner, da det er her; der er størst enighed for hver kurve.
 
-\begin{figure}[H]
-  \small
-\centering
-\input{../fig/1990-01-topicnumbers.tex}
-\caption{oversigt over hyppigst forekommende ord pr emne}
+En LDA beregning giver ikke navngivne emner, som sådan.
+I kraft af at være en ikke-superviseret algoritme, bliver dokumenterne fordelt ud over det anviste antal emner, i det omfang (algoritmen mener) de ligner hinanden.
+vorvidt der er grupperinger der giver mening for mennesker i en social kontekst, og hvilken mening de eventuelt skulle have, er op til forskeren at vurdere.
+Som eksempel præsenteres emnerne genereret for perioden 1990 til 2000; repræsenteret af de 15 hyppigste termer pr emne, rangeret efter prævalens.
+
+\begin{figure}
+\begin{adjustwidth}{-1in}{-1in}
+  \input{../fig/terms_edu_test.tex}
+\end{adjustwidth}
+\caption{Oversigt over udvalgte emner for perioden 1990-2000, med tilhørende begreber.}
+\label{fig:termsFull}
 \end{figure}
 
 
