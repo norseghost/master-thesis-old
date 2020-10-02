@@ -41,8 +41,8 @@ Ved at se på kurvene fra disse sammenligninger, konvergerer kurvene omkring de 
 Jeg går videre med 45 emner, da det er her; der er størst enighed for hver kurve.
 
 En LDA beregning giver ikke navngivne emner, som sådan.
-I kraft af at være en ikke-superviseret algoritme, bliver dokumenterne fordelt ud over det anviste antal emner, i det omfang (algoritmen mener) de ligner hinanden.
-vorvidt der er grupperinger der giver mening for mennesker i en social kontekst, og hvilken mening de eventuelt skulle have, er op til forskeren at vurdere.
+I kraft af at være en ikke-superviseret algoritme, bliver dokumenterne fordelt ud over det anviste antal emner\footnote{LDA tildeler dokumenterne en score $\gamma$ mellem 0 og 1 for deres bidrag til et givet emne. Emner er distributioner over begreber; hvor hvert begreb tildeles en score $\beta$ mellem 0 og 1 for at tilhøre et givet emne. \\ \\ Hvert emne $\phi k$ er en multinominel distribution over ordforrådet $W$, og hvert dokument $\theta  d$er en multinominel distribution over $K$ emner. Dermed er sandsynligheden for at et givet dokument ($d$) bidrager til emnet $k$ $\theta _{d,k}$; og sandsynligheden for at ord $w$ tilhører et emne $\phi _{k,w}$. De multinominale distributioner for emnet genereres af en konjugat Dirichlet prior((FIXME: dansk begreb?)) $\overrightarrow{\beta}$, og distributionerne for dokumenter på baggrund af en Dirchlet prior $\overrightarrow{\alpha}$. Deraf navnet \textit{“Latent Dirichlet Allocation”} \autocite[s.65f]{deveaudAccurateEffectiveLatent2014}} , i det omfang (algoritmen mener) de ligner hinanden.
+Hvorvidt der er grupperinger der giver mening for mennesker i en social kontekst, og hvilken mening de eventuelt skulle have, er op til forskeren at vurdere.
 Som eksempel præsenteres emnerne genereret for perioden 1990 til 2000; repræsenteret af de 15 hyppigste termer pr emne, rangeret efter prævalens.
 
 \begin{figure}
@@ -53,19 +53,40 @@ Som eksempel præsenteres emnerne genereret for perioden 1990 til 2000; repræse
 \label{fig:termsFull}
 \end{figure}
 
+Et overblik over de genererede emner (Figur ~\ref{fig:termsFull}, side ~\pageref{fig:termsFull}) viser, at der er del “støj” i form af administrivia, formalia og 'jeg synes' og så videre.
+Der er dog nogle emner der har (pædagogisk) sociologisk relevans.
 
-Der er en gruppering (emne ??) der ser ud til at omhandle uddannelse.
-Det viser sig, at de manglende stopord gav mange emner omhandlende administrivia. For at se om jeg kan øge informationstætheden forsøger jeg en ny runde; denne gang med en række generelle plus nogle domænespecifikke stopord\footnote{for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets GitHub-repositorie.}.
+Man kan se der var tale om Tamil-sagen, i emne ??; og man kan se ??? i emne ???.
+Men mest interessant for mit vedkommende er emne ???; der er repræsenteret af termerne “ung menneske”, "videregående uddannelse”, “i praktik”, blandt andre.
 
-Dette giver følgende spredning:
+For at se om jeg kan øge informationstætheden forsøger jeg en ny runde; denne gang med en række generelle \autocite{stopwords-isoStopwordsISO2020} plus nogle domænespecifikke stopord\footnote{for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets Gitub-repositorie.}.
 
-\begin{figure}[H]
-\centering
-\input{../fig/models.tex}
-\caption{Differentiering mellem emner for forskellige antal emner; bigrams og stopord. }
+\begin{figure}
+\input{../fig/models_edu_test_5to125by10.tex}
+\caption{Differentiering mellem emner for forskellige antal emner; bigrams og stopord.}
+\label{fig:models_stopwords}
 \end{figure}
 
-Her kan man se, at det “optimale” antal emner for denne behandling af teksten ligger mellem ???.
+Dette viser sig dog at være en blindgyde, som vist i figur ~\ref{fig:modelsStopwords}.
+Kurverne er nu uden det pæne “buk”\footnote{Igen, på nær \autocite{deveaudAccurateEffectiveLatent2014}}, og svinder ned mod 0; uden der er en opadstigende kurve.
+Et uddrag af begreber, med antal emner sat til 45, giver tilsvarende utilfredsstillende resultater.
+At sortere stopordene fra har tilsyneladende medført for stort informationstab til at der er analyseværdi tilbage.
+Muligvis ville det være muligt at tilpasse listen af stopord; men dette er blevet udeladt af tidshensyn\footnote{Det tager flere dage til over en uge at sammenligne modellerne}.
+
+\section{Talernes indbyrdes relationer}
+Som tidligere nævnt har hvert datasæt sine særegenheder.
+Jeg formodede i mit metodeafsnit, at der var en forholdsvis stor ensartethed i min samling af taler.
+Min hypotese er, at dette skyldes den noget kunstfærdige situation en folketingstale befinder sig i.
+Talernes kontekst, lejret i det politiske spil, bringer en række rammer for talerne; der i sidste ende formodentlig får en tale til at ligne mange andre.
+Dette er illustreret ved figur ~\ref{fig:dendro_all}; hvor emnernes indbyrdes relationer for alle perioder fremgår\footnote{Graferne for de andre perioder kan ses på \href{martinandreasandersen.com/projects/au/}{min blog}}.
+Disse begreber (og de tilhørende dokumenter) vil dog ikke være de samme som begreberne for de individuelle perioder lagt sammen; da modellen laver beregningen på bagrund af alle dokumenter på en gang.
+For at bringe denne diskussion tilbage til en sociologisk relevans, kan også visualisere hvilke emner, computeren mener er nært beslægtede med emnerne omkring uddannelse.
+
+\begin{figure}
+  \input{../fig/cluster_edu_test.tex}
+  \caption{LDA-modellens emner for perioden 2014-20, efter indbyrdes relationer. Emner repræsenteres med deres mest fremtrædende begreb.}
+\label{fig:dendro_all}
+\end{figure}
 
 Ved udtræk af modellen for ??? emner, får jeg emner repræsenteret af følgende termer:
 
