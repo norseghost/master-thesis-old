@@ -922,6 +922,226 @@ write_wordfish_timeseries_plot <- function(fishlist, name, width = 5, height = 3
     )
 }
 
+###Sentiment analysis
+
+read_ann <- function() {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("speeches_annotated_84\\d*.rds"
+              )
+  )
+  cat("found annotations:\n")
+  map(filenames, ~ cat(str_c(.x, "\n")))
+  ann <- map(filenames, ~readRDS(here(str_c("data/", .x)))) %>%
+    bind_rows()
+}
+
+filter_ann <- function(ann, edu) {
+  #only keep the annotations for those documents that are
+  # in our (presumed) education related corpus
+  edudocs <- edu %>%
+    bind_rows %>%
+    select(doc_id) %>%
+    unique %>%
+    flatten %>%
+    unlist
+  ann %>%
+    filter(doc_id %in% edudocs) %>%
+    select(sentence, sentence_id, doc_id) %>%
+    distinct
+}
+
+sentences  <- filter_ann(read_ann(), edu)
+
+find_sentiments <- function(sentences, sentence) {
+  sent <- list(
+    sent_total = ~sentida(.x, "total"),
+    sent_mean = ~sentida(.x, "mean")
+    )
+  sentences %>%
+    rowwise %>%
+    mutate(across({{sentence}}, sent, .names = "{.fn}")) %>%
+    ungroup %>% 
+    select(-{{sentence}})
+}
+
+tally_sentiments <- function(sentiments) {
+  pol <- list(
+    pos = ~sign(.x) > 0
+    )
+  pol_sum <- list(
+    sumpos = ~sum(sign(.x) > 0),
+    sumneg = ~sum(sign(.x) < 0)
+    )
+  sentiments %>%
+    group_by(doc_id) %>%
+    mutate(across(c(sent_mean, sent_total), pol_sum)) %>%
+    # this adds a row per doc_id
+    # not very tidy
+    # add_count(across(c(sent_mean, sent_total), pol)) %>%
+    mutate(across(c(sent_mean, sent_total), ~sign(.x), .names = "{.col}_sign")) %>%
+    select(-n) %>%
+    ungroup
+}
+
+aggregate_sentiments <- function(sentiments) {
+  agg <- list(
+    mean = ~mean(.x),
+    median = ~median(.x),
+    max = ~max(.x),
+    min = ~min(.x)
+    )
+  sentiments %>%
+  group_by(doc_id) %>%
+  mutate(across(c(sent_total, sent_mean), agg)) %>%
+  nest(data = c(sentence_id, sent_total, sent_mean, sent_mean_sign, sent_total_sign)) %>%
+  ungroup %>%
+  distinct %>%
+  mutate(sentiments = data) %>%
+  select(-data) # %>%
+  #mutate(doc_id = as.double(doc_id))
+}
+
+sentiments <- find_sentiments(sentences, sentence) %>% tally_sentiments %>% aggregate_sentiments
+
+edu_pol <- edu %>%
+  bind_rows %>%
+  get_political
+
+doc_sentiments <- find_sentiments(edu_pol, text)
+
+sent_pol <- left_join(sentiments, doc_sentiments) %>%
+  mutate(timeseries = as.factor(timeseries))%>%
+  mutate(Period = as.factor(Period)) %>%
+  mutate(Parti = as.factor(Parti))
+
+sent_pol %>%
+  filter(Parti %in% parties) %>%
+  group_by(Parti) %>%
+    mutate(across(c(sent_mean_sumpos, sent_mean_sumneg), ~sum(.x)/cur_group_rows(), .names = "party_sum_{.col}")) %>%
+    mutate(across(party_sum_sent_mean_sumneg, ~ .x * -1)) %>%
+    pivot_longer(c(party_sum_sent_mean_sumneg, party_sum_sent_mean_sumpos), names_to = "sum", values_to = "score") %>%
+    ggplot(aes(x = reorder(Parti, score),
+               y = score, 
+               fill = score > 0)) +
+      geom_bar(stat="identity") +
+      coord_flip() +
+      guides(fill = FALSE)
+
+bloc_sent <- filter(sent_pol, Blok %in% blocs)
+
+party_sent <- filter(sent_pol, Parti %in% parties)
+
+plot_sentiment_posneg <- function(corpus) {
+  corpus %>%
+    pivot_longer(c(sent_mean_min, sent_mean_max), names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = Parti, y = value, color = variable)) +
+      guides(color = "none") +
+           facet_grid(timeseries ~ .)  +
+           geom_point() +
+           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ylab("Spredning i talernes gennemsnitlige holdningsværdi, på sætningsniveau" ) +
+    xlab(element_blank())
+}
+
+p<-plot_sentiment_posneg(filter(sent_pol, Parti %in% parties))
+
+ggsave(p,
+       device = tikz,
+       filename = str_c("sent_posneg", identifier, ".tex"),
+       path = here("fig/"),
+       width = 5,
+       height = 9
+       )
+
+plot_sentiment_minmax <- function(corpus) {
+  corpus %>%
+    # group_by(Parti) %>%
+    # mutate(across(c(sent_mean_sumpos, sent_mean_sumneg), sum, .names = "party_sum_{.col}")) %>%
+    # mutate(across(party_sum_sent_mean_sumneg, ~ .x * -1)) %>%
+    # mutate(log_ratio = log2(party_sum_sent_mean_sumneg / party_sum_sent_mean_sumpos)) %>%
+  pivot_longer(c(sent_total_min, sent_total_max), names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = Parti, y = value, color = variable)) +
+      guides(color = "none") +
+           facet_grid(timeseries ~ .)  +
+           geom_point() +
+           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ylab("Spredning i talernes yderlige holdningsværdi, på sætningsniveau" ) +
+    xlab(element_blank())
+}
+
+p3 <-plot_sentiment_minmax (filter(sent_pol, Parti %in% parties))
+
+ggsave(p3,
+       device = tikz,
+       filename = str_c("sent_minmax", identifier, ".tex"),
+       path = here("fig/"),
+       width = 5,
+       height = 9
+       )
+
+
+plot_sentiment_time <- function(corpus, group, period) {
+  corpus %>%
+  # pivot_longer(c(sent_mean, sent_total), names_to = "variable", values_to = "value") %>%
+  ggplot(aes(y = sent_mean, x = Date)) +
+    facet_grid(group) +
+    geom_point(aes_string(color = period)) +
+    theme(axis.text.x = element_blank(), 
+          legend.title = element_blank(),
+          legend.position = "bottom",
+    ) +
+    ylab("Gennemsnitlig holdningsværdi, på talebasis") +
+    xlab("Tid")
+}
+
+# WIP: the above crashes luatex
+#      attempting another tack
+plot_sentiment_time <- function(corpus, group, period) {
+  p <- ggplot(corpus, aes(y = sent_mean, x = Date)) +
+    facet_grid(group) +
+    geom_point(aes_string(color = period))
+  img_plot <- p +
+    theme_void() +
+    theme(strip.text = element_blank())
+  ggsave(img_plot,
+         filename = "tmp.svg",
+           path = here("tmp/"),
+           device = svg
+    )
+  plot_img <- image_read("tmp/tmp.svg")
+  p <- p +
+    annotation_custom(rasterGrob(plot_img,
+                                 width = unit(1, "npc"),
+                                 height = unit(1, "npc")),
+                      -Inf, Inf, -Inf, Inf) +
+    theme(axis.text.x = element_blank(), 
+          legend.title = element_blank(),
+          legend.position = "bottom",
+    ) +
+    ylab("Gennemsnitlig holdningsværdi, på talebasis") +
+    xlab("Tid")
+}
+
+p2 <- plot_sentiment_time(filter(doc_sentiments, Parti %in% parties), "Parti", "timeseries")
+
+ggsave(p2,
+       device = pdf,
+       filename = str_c("sent_spread_time_", identifier, ".pdf"),
+       path = here("fig/"),
+       width = 8,
+       height = 9
+  )
+
+plot_sentiment_time <- function(corpus, group, period) {
+  corpus %>%
+  # pivot_longer(c(sent_mean, sent_total), names_to = "variable", values_to = "value") %>%
+  ggplot(aes(y = sent_mean, x = Date)) +
+    facet_grid(group) +
+    geom_point(aes_string(color = period)) +
+    theme(axis.text.x = element_blank())
+}
+
 ### METADATA WORK
 # All filtering/coercion/massaging happens to bare metadata
 # the text is... quite voluminous
