@@ -211,8 +211,8 @@ group_corpora  <- function(folketinget) {
   # - parliamentary periods
   # - as maps to generalized trends in
   #   Danish educational policy
-
-  folketinget[, timeseries := future_sapply(Date, (function(x) {
+  folketinget <- as.data.table(folketinget)
+  folketinget[, timeseries := sapply(Date, (function(x) {
     case_when(
       # 53-57 (ny lærlingelov,vekseluddannelse)
       x < as.Date("1957-05-28") ~ "1953-57",
