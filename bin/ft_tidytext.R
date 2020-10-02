@@ -899,23 +899,25 @@ write_coef_plot <- function(p, name) {
 }
 
 plot_fishlist <- function(fishlist_periods) {
-  ggplot(data = fishlist_periods, aes(y = Estimate, x = Periode, group = Gruppe)) +
+  ggplot(data = fishlist_periods,
+         aes(y = Estimate, x = Periode, group = Gruppe)) +
     geom_line(aes(color = Gruppe)) +
     geom_point() +
+    guides(color = guide_legend(nrow = 3, byrow = TRUE)) +
     theme(legend.position = "bottom") +
     theme(legend.title = element_blank()) +
-    theme(legend.text = element_text(size = rel(0.8))) =
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(legend.text = element_text(size = rel(0.8))) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ylab("Estimeret position")
 }
 
-write_wordfish_timeseries_plot <- function(fishlist, filters, name) {
-  fishlist <- periods_fishlist(fishlist)
-  filter(fishlist, Gruppe %in% filters) %>%
+write_wordfish_timeseries_plot <- function(fishlist, name, width = 5, height = 3) {
+  fishlist <- periods_fishlist(fishlist) %>%
     plot_fishlist %>%
-    ggsave(filename = here(str_c("fig/wordfish_", name, ".tikz")),
+    ggsave(filename = here(str_c("fig/wordfish_", name, ".tex")),
            device = tikz,
-           width = 5,
-           height = 4,
+           width = width,
+           height = height,
            standAlone = FALSE
     )
 }
