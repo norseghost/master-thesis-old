@@ -691,7 +691,8 @@ wordfish_corpus <- function(corpus, timeperiod, group, n, filters, filter_col) {
       #       ?dplyr_data_masking
       #       or dplyr::across
       filter(!!sym(filter_col) %in% filters)
-  }  if(!missing(group)) {
+  }
+  if(!missing(group)) {
     cat(str_c("Group ", group, " detected\n"))
     split(corpus, corpus[timeperiod]) %>%
       map(. %>%
