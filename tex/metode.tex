@@ -156,7 +156,7 @@ I stedet for — eller i tillæg til — at jeg på egen hånd vurderer, hvilke 
 Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter “blot” beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
 
 Jeg har, efter en \texttt{tf-idf}\footnote{\textit{text frequency — inverse document frequency} er en beregning der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
-  Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score \autocite[s. 29]{silge2017text}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits\~værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
+  Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score \autocite[s. 29]{silgeTextMiningTidy2017}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits\ værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
 Dermed har jeg udeladt tokens der forekommer meget hyppigt i min samling korpora, og vil have lav værdi i forhold til at adskille dokumenter fra hinanden.
 For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.
 
@@ -326,6 +326,11 @@ Forudsat den ovenstående proces er vellykket, har jeg nu en lidt mere overskuel
 Dette mindre korpus vil jeg udforske videre; med henvisning til mine undersøgelsesspørgsmål fra specialets del I.
 
 En del af mine spørgsmål omhandler politiske holdninger over tid. Til at udforske denne dimension vil jeg anvende \texttt{Wordfish}-algoritmen efter \citeauthor{slapinScalingModelEstimating2008} (\citeyear{slapinScalingModelEstimating2008}; som implementeret i biblioteket \texttt{austin} for R \autocite{loweAustinPackageDoing2019}.
+
+Jeg ønsker også at gå dybere i min analyse, og drage indsigter ud over hvad der fremgår af teksten selv.
+Jeg vil gerne undersøge \textit{tonen} i talerne.
+Hvordan forholder politikerne sig, når de taler om uddannelse?
+Dette kaldes \textit{sentiment analysis\footnote{En dansk oversættelse vil nok være “holdningsanalyse”}}; og jeg vil benytte biblioteket \texttt{Sentida}, der netop er udviklet\footnote{Dette er også et produkt af studerende på Aarhus Universitet} til dansk holdningsanalyse \autocite{lauridsenSentida2020}.
 
 \chapter{Undersøgelsen i en pædagogisk-sociologisk kontekst}\label{chap:edusoc}
 
