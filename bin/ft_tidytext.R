@@ -669,20 +669,6 @@ edu <- edu %>%
 ### WORDFISH
 # using the austin package
 
-blocs <- c(
-           "Rød Blok",
-           "Centrum",
-           "Blå Blok",
-           "ikke angivet")
-parties <- c(
-             "Enhedslisten",
-             "Socialdemokratiet",
-             "Socialistisk Folkeparti",
-             "Dansk Folkeparti",
-             "Venstre",
-             "Konservative Folkeparti",
-             "Radikale Venstre"
-             )
 
 # need to remove the per-period grouping now,
 # to allow for more creative grouping later
