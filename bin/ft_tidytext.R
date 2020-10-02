@@ -760,8 +760,8 @@ get_coef_terms <- function(coef_tibble, n = 10) {
     slice_min(beta, n = n) %>%
     select(period, token) %>%
     summarise(left = paste(token, collapse = ", "))
-  terms <- inner_join(max_beta, min_beta) %>%
-    inner_join(max_psi)
+  terms <- inner_join(min_beta, max_psi) %>%
+    inner_join(max_beta)
 }
 
 write_term_xtable <- function(coef_terms, name) {
@@ -772,17 +772,30 @@ write_term_xtable <- function(coef_terms, name) {
            "Værdineutrale begreber" = neutral
            )
   t <- xtable(coef_terms,
-              caption = "Oversigt over begrebsvægtning efter en \textit{wordfish} beregning over analyseperioderne",
-              label = "tab:lrterms"
+              caption = "Oversigt over begrebsvægtning efter en \\textit{wordfish} beregning over analyseperioderne",
+              label = "tab:lrterms",
+              align = c("l",
+                        "l",
+                        "p{2in}",
+                        "p{2in}",
+                        "p{2in}"
+                        )
   )
   print(t,
         type = "latex",
         include.rownames = FALSE,
         booktabs = TRUE,
+        only.contents = TRUE,
+        # latex.environments = "\\begin{adjustwidth}{-8em}{-8em}",
         table.placement = NULL,
         latex.environments = NULL,
-        filename = here(str_c("fig/table_coef_terms_", identifier, ".tex"))
+        file = filename
   )
+  # system2(command = "sed", args= (c("-i",
+  #                                   "s/^\\&\\ //g",
+  #                                   filename
+  #                                   )
+  # ))
 }
 
 coef_fishlist <- function(fishlist) {
