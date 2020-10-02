@@ -228,7 +228,6 @@ group_corpora  <- function(folketinget) {
       x < as.Date("2014-02-03") ~ "2001-14",
       # 14-20 (fokus på unge; voksne falder fra)
       x > as.Date("2014-02-03") ~ "2014-20"
-
     )}
   ))]
 }
@@ -431,6 +430,7 @@ plot_topic_numbers <- function(values) {
     guides(shape = guide_legend(title="Målefunktion")) +
     labs(x = "Antal emner", y = NULL) +
     theme_bw() %+replace% theme(
+          legend.key = element_blank(),
           legend.position = "bottom",
           panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank(),
@@ -593,18 +593,18 @@ clust_to_dendro <- function(clust, branches = c(19, 23, 1)) {
     as.dendrogram %>%
     set_labels(topic_labels) %>%
     set("labels_cex", 0.7) %>%
-    # set("labels_to_character") %>%
+    set("labels_to_character") %>%
     set("branches_k_color", value = 6:1, k = 6) %>%
     # sort() %>%     # highlight_branches_col
     set("by_labels_branches_lwd", value = branches , type = "all")
 }
 
-save_topic_cluster_plot <- function(dendro, name = TRUE) {
+save_topic_cluster_plot <- function(dendro, name = "dendro") {
   # TODO: tried building this programmatically
   #       but it turns parts of the string into subdirectories
-  filename = "fig/cluster_edu_test.tex"
+  filename <- file.path(here("fig/"), paste0("cluster_", name, ".tex"))
   tikz(filename, width = 5, height = 5)
-  par(mar = c(2,2,2,10))
+  par(mar = c(2, 2, 2, 10))
   plot(dendro, horiz = TRUE, axes = FALSE)
   dev.off()
 }
@@ -613,11 +613,11 @@ save_topic_cluster_plot <- function(dendro, name = TRUE) {
 save_topic_cluster_plot <- function(dendro, name) {
   ggd <- as.ggdend(dendro, horiz = TRUE)
   p <- ggplot(ggd, horiz = TRUE)
-  # + +
     # prevent labels being chopped off
   p <- p + theme(plot.margin = margin(0, 2, 0, 0, "in"))
-   #  scale_y_reverse(expand = c(0.2, 0)) +
-   #  coord_polar(start = 0)
+  #  for a circle graph
+  #  scale_y_reverse(expand = c(0.2, 0)) +
+  #  coord_polar(start = 0)
   p %>%
     ggsave(filename = str_c("cluster_", name, ".tex"),
            path = here("fig/"),
