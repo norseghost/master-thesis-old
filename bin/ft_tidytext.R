@@ -392,7 +392,7 @@ read_models <- function(name, min_k, max_k, steps) {
   )
   cat("found models:\n")
   map(filenames, ~ cat(str_c(.x, "\n")))
-  models <- map(filenames, ~readRDS(here(str_c("data/", .x))))
+  models <- map(filenames, ~select(readRDS(here(str_c("data/", .x))), -LDA_model))
   names(models) <- filenames %>%
     map(~ str_match(.x, 
           pattern = str_c("models_", name, "_", "(.*)_\\d+to\\d+by\\d+.rds"))[, 2])
@@ -424,7 +424,7 @@ normalize_topic_numbers <- function(values) {
   # Drop models if present, as they won't rescale
   # Also, Deveaud is not useful for this dataset
   values <- values %>% 
-     select(-LDA_model)
+     select(-any_of(c("LDA_model")))
   # normalize to [0,1]
   columns <- values %>%
     select(-topics) %>%
