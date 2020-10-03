@@ -125,6 +125,13 @@ pipeline <- function(proc_speeches) {
             min_k = min_k,
             max_k = max_k,
             steps = steps)
+  ldas <- get_ldamodels(
+                    name = identifier,
+                    min_k = min_k,
+                    max_k = max_k,
+                    steps = steps,
+                    k = k
+    )
   return(list(tfidfs = tfidfs, dtms = dtms, models = models))
 }
 
@@ -392,12 +399,25 @@ read_models <- function(name, min_k, max_k, steps) {
   return(models)
 }
 
-get_ldamodels <- function(models, k) {
+get_ldamodel <- function(models, k) {
   models %>%
-    map(. %>%
     filter(topics == k) %>%
     select(LDA_model) %>%
-    unlist(use.names = FALSE))
+    unlist(use.names = FALSE)
+}
+get_ldamodels <- function(name, min_k, max_k, steps, k) {
+  filenames <- list.files(
+              path = here("data/"),
+              pattern = str_c("models_", name, "_(\\d+|all).*_", min_k, "to",  max_k, "by", steps, ".rds"
+              )
+  )
+  cat("found models:\n")
+  map(filenames, ~ cat(str_c(.x, "\n")))
+  ldas <- map(filenames, ~get_ldamodel(readRDS(here(str_c("data/", .x))), k))
+  names(ldas) <- filenames %>%
+    map(~ str_match(.x, 
+          pattern = str_c("models_", name, "_", "(.*)_\\d+to\\d+by\\d+.rds"))[, 2])
+  return(ldas)
 }
 
 normalize_topic_numbers <- function(values) {
