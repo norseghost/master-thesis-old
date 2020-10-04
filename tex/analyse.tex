@@ -13,13 +13,21 @@
 
 \chapter{At beskrive den sociale virkelighed}
 
-
 Denne opgave tager udgangspunkt i, at der antages at være en intersubjektiv social virkelighed, og det er muligt at undersøge denne.
-Jeg læner mig videre op af et socialkonstruktionistisk verdensbillede; hvor denne sociale verden er i kontinuerlig tilblivelse i en kollektiv samskabelsesproces \todo{kilde socialkonstruktionisme}.
+Jeg læner mig videre op af et socialkonstruktionistisk verdensbillede; hvor denne sociale verden er i kontinuerlig tilblivelse i en kollektiv samskabelsesproces \autocite{}.
+Et centralt element i denne samskabelse af en fælles social virkelighed er \textit{sam}talen.
+Ord skaber og former virkeligheden.
 Ikke dermed sagt, at der altid er enighed omkring konturene af denne samskabte sociale virkelighed — heller ikke i politik.
-Dette understreges, måske lidt kækt, af Søren Kjær på titelbladet for denne del af specialet\todo{kontekst - man skal argumentere for sine udtalelser; og underbygge sine argumenter}.
-Der er et spil der skal spilles; og præmien er en vis form for  “trappen” fra del III; og undervejs belyse mine undersøgelsesspørgsmål efterhånden som der dukker noget op; så at sige.
-Jeg vil også illustrere de særegenheder jeg måtte finde i mit datasæt undervejs; 
+Dette understreges, måske lidt kækt, af Søren Kjær på titelbladet for denne del af specialet.
+Ikke dermed forstået, at man blankt skal afvise påstande man er uenig i; men at man gerne skal have belæg for hvad, man fremlægger som “fakta”.
+Peter Skaarup argumenterer derimod med et moralistisk udgangspunkt.
+Man ved hvad der er “rigtigt”; og har ikke behov for beviser, for at det rigtige også er “sandt”.
+Der er et spil der skal spilles; og præmien er en vis form for kontrol over, hvad der fremstår som “rigtigt”.
+
+Jeg vil i det følgende bestræbe mig på, at både præsentere og underbygge mine fakta, i kraft af at ikke have en brik med i det politiske spil.
+Dette gør jeg med udgangspunkt i “trappen” fra del III.
+Undervejs vil jeg belyse mine undersøgelsesspørgsmål, efterhånden som det falder naturligt.
+Jeg vil også illustrere de særegenheder jeg måtte finde i mit datasæt undervejs; da dette har stor betydning for, hvordan jeg griber både forarbejdet og selve analysen an.
 
 \chapter{Indskrænkning af dokumenter til undersøgelse}
 
@@ -31,7 +39,7 @@ For at undgå, at de aller mest sjældne ord forvrænger analysen, udelukker jeg
 Derefter foretager jeg en sammenligning af forskellige modeller for beregning af det optimale emner for videre analyse.
 
 \begin{figure}
-\input{../fig/models_edu_test_5to125by10.tex}
+\input{../fig/models_bigrams_no_stopwords_5to125by10.tex}
 \caption{Beregning af optimalt antal emner for videre analyse; bigrams og ingen stopord.}
 \label{fig:modelsFull}
 \end{figure}
@@ -80,7 +88,7 @@ Min hypotese er, at dette skyldes den noget kunstfærdige situation en folketing
 Talernes kontekst, lejret i det politiske spil, bringer en række rammer for talerne; der i sidste ende formodentlig får en tale til at ligne mange andre.
 Dette er illustreret ved figur ~\ref{fig:dendro_all}; hvor emnernes indbyrdes relationer for alle perioder fremgår\footnote{Graferne for de andre perioder kan ses på \href{martinandreasandersen.com/projects/au/}{min blog}}.
 Disse begreber (og de tilhørende dokumenter) vil dog ikke være de samme som begreberne for de individuelle perioder lagt sammen; da modellen laver beregningen på bagrund af alle dokumenter på en gang.
-For at bringe denne diskussion tilbage til en sociologisk relevans, kan også visualisere hvilke emner, computeren mener er nært beslægtede med emnerne omkring uddannelse.
+For at bringe denne diskussion tilbage til en sociologisk relevans, kan også visualisere hvilke emner, computeren mener er nært beslægtede\todo{Beskriv clustering} med emnerne omkring uddannelse.
 
 \begin{figure}
   \input{../fig/cluster_edu_test.tex}
@@ -88,30 +96,196 @@ For at bringe denne diskussion tilbage til en sociologisk relevans, kan også vi
 \label{fig:dendro_all}
 \end{figure}
 
-Ved udtræk af modellen for ??? emner, får jeg emner repræsenteret af følgende termer:
+Vi kan fange vores emne omkring uddannelse, som nummer 19.
+Dette er nært beslægtet med emnerne 23 og 29; der udover “social arv” og “fri arbejdskraft”; også indeholder begreber som “????? ?????”, “dddssdfsdfsadfasd sdf”, “asdas dasd”, “asda fasdf”.
+Videre er disse emner uddannelse blade af ????; hvilket vil sige, at mange taler omhandler alle disse emner.
+
+Næste trin i min analyse bliver nu, at se på indholdet i mine udvalgte emner.
+
+Jeg fortsætter uden stopord; og undersøger de forskellige korpora hver især, og trækker dem ud, der ser ud til at omhandle uddannelse\footnote{Den interaktive visualisation jeg benytter til at udforske disse LDA-modeller kan findes fra \href{martinandreasandersen.com/projects/au/}{min blog}}.
 
 \chapter{Analyse af de udvalgte dokumenter}
+Jeg har nu en samling emner, der ser ud til, at kunne omhandle uddannelse.
+De dokumenter der har højest sandsynlighed for at tilhøre disse emner skal nu trækkes ud til videre analyse, idet en LDA-model vil tildele alle dokumenter en sandsynlighed for at tilhøre et bestemt emne.
+Jeg vælger de taler, der har en tildelt sandsynlighed for at tilhøre mine udvalgte emner på over $0,6$.
 
-Jeg har nu en samling dokumenter, der ser ud til, at kunne omhandle uddannelse.
-Disse trækkes ud til videre analyse.
-Først vil jeg se, hvilke termer der er gennemgående i dokumenterne, med en ordoptælling.
-Derefter vil jeg undersøge, hvorvidt der er emner at trække ud indenfor disse dokumenter.
-Jeg vil derefter køre en analyse, der har til sigte at afdække partipolitiske positioner over dette subset.
+Med mine dokumenter trukket ud; er der nu tid til en videre analyse.
 
-\section{Gennemgående termer for hver periode}
+Først vil jeg se, hvilke emner der er gennemgående i dette subset af dokumenter.
+Derefter vil jeg undersøge, hvorvidt der er emner at trække ud indenfor disse dokumenter; da jeg ikke kun er interesseret i uddannelse generelt, men har en specifik interesse i ungdomsuddannelserne.
+Jeg vil både se nærmere på dette eventuelt forskningsmæssigt interessant subset af data; og også holde øje med, om der er dokumenter der tydeligt ikke omhandler data inden jeg fortsætter min analyse.
 
-\begin{figure}
-  \caption{De 20 mest omtalte termer for de udvalgte dokumenter, fordelt over de definerede analyseperioder.} 
-\end{figure}
-
-\subsection{Hvilke begreber er kendetegnende for de politiske fløje}
-\todo{hvordan dele op i fløje}
+Jeg vil derefter forsøge at at afdække partipolitiske positioner over dette subset.
 
 \section{Emner indenfor uddannelse}
+Efter en ny beregning af et optimalt antal emner, udvælger jeg 25\todo{skift ud ved faktiske data} som gunstigt antal emner for undersøgelse af mit (formodede) uddannelses-subset.
+Som det fremgår af figur ~\ref{fig:models_edu}, er der dog blevet sværere, at differentiere mellem et optimalt antal emner...
+
+\begin{figure}
+  \input{../fig/models_edu_test_5to125by10.tex}
+\caption{Differentiering mellem emner for taler der har en forholdsvis høj sandsynlighed for, at omhandle uddannelse}
+\label{fig:models_edu}
+\end{figure}
+
+Jeg ser nogle emner gå igen — meget administrivia, formalia og så videre.
+Men nu kan jeg også i højere grad differentiere mellem underkategorier.
+Der er taler omkring ????? ?????? ????? ??  - som til sammen bliver noget med “erhvervsuddannelser”
+Og taler der handler om ?????? ??????? ??????? ????? ?????? - der kan smales under “gymnasier”
+
+Et nyt grendiagram (figur ~\ref{fig:dendro_edu} viser også, at disse begreber er beslægtede.
+Grendiagrammet er mere homogent nu, hvilket....
+
+
+\begin{figure}
+ \input{../fig/cluster_edu_test.tex}
+\caption{Grendiagram over emner indenfor uddannelse, med indbyrdes relationer fremhævet i farver.}
+\label{fig:dendro_edu}
+\end{figure}
+
+
+De fleste emner i dette nye subset ser ud til at omhandle uddannelse af en art.
+
+\begin{figure}
+\begin{adjustwidth}{-1in}{-1in}
+  \input{../fig/terms_edu_test.tex}
+\end{adjustwidth}
+\caption{Oversigt over udvalgte emner for perioden 1990-2000, med tilhørende begreber.}
+\label{fig:termsEdu}
+\end{figure}
 
 \section{Partipolitiske positioner}
 
-Ordoptellingen ovenfor er en noget simplistisk tilgang til at afdække partipolitiske positioner.
-Der er udarbejdet konkrete algoritmer for at undersøge dette.
+Ordoptellingen ovenfor er noget begrænset i forhold til at afdække partipolitiske positioner.
+Man kunne, for eksempel, se på hvilke begreber der var sigende for den enkelte periode; og dermed muligvis se en generel trend over tid.
+Men der er udarbejdet konkrete algoritmer for at undersøge dette.
 Jeg vil benytte mig af den før omtalte \texttt{wordfish}-algoritme \autocite{slapinScalingModelEstimating2008}.
+
+Denne algoritme tager for sig en samling dokumenter; hvor hvert dokument har en (af forskeren, på forhånd etableret) partipolitisk tilhørighed; og også ideelt set omhandler nogenlunde det samme emne.
+\citeauthor{slapinScalingModelEstimating2008} demonstrerer deres analyse på partiprogrammer - først i deres helhed; derefter delt op i politiske interesseområder.
+I mit tilfælde tager jeg for mig mine dokumenter der skal analyseres videre; og tildeler dem en politisk fløj på baggrund af politisk parti\footnote{Der er en mangel i mit datasæts metadata; hvor der ikke forefindes partitilhørighed på talere som “statministeren”; “formanden” og så videre. Disse er tildelt “ikke angivet” som blok.}.
+Derudover kategoriseres Grønland og Færøerne for sig.
+x
+\begin{table}
+\caption{Fordeling af partier i politiske blokke}
+\label{tab:party2bloc}
+\begin{adjustwidth}{-0.8in}{-0.8in}
+\begin{tabular}{@{}llll@{}}
+\multicolumn{1}{c}{\textbf{Blå blok}} & \multicolumn{1}{c}{\textbf{Rød blok}} & \multicolumn{1}{c}{\textbf{Centrum}} & \multicolumn{1}{c}{\textbf{Grønland/Færøerne}} \\ \midrule
+Dansk Folkeparti        & Alternativet                  & Uden for partierne    & Javnaðarflokkurin                           \\
+Venstre                 & Enhedslisten                  & Radikale Venstre      & Tjóðveldisflokkurin                         \\
+Konservative Folkeparti & Socialdemokraterne            & Kristeligt Folkeparti & Fólkaflokkurin                              \\
+Fremskridtspartiet      & Socialistisk Folkeparti       & Centrum-Demokraterne  & Sambandsflokkurin                           \\
+De Uafhængige           & Danmarks Kommunistiske Parti  & Ny Alliance           & Atássut                                     \\
+Nye Borgerlige          & Venstresocialisterne          & Liberal Alliance      & Siumut                                      \\
+                        & Fælles Kurs                   & Retsforbundet         & Inuit Ataqatigiit                            \\
+                        & & Liberalt Centrum            &                                                \\ \bottomrule
+\end{tabular}
+\end{adjustwidth}
+\end{table}
+
+
+\texttt{wordfish}-algoritmen\todo{hvordan formatere WORDFISH?} beregner positioner i én dimension, fortolket som en venstre-højre akse ud fra dokumenternes ordfordeling sig i mellem.
+Dokumenternes position holdes uafhængig af hinanden; således at et partis position i periode $t$ ikke påvirkes af positionen i periode $t-1$.
+Forbliver partiernes positioner forholdsvis uændrede, har partierne brugt lignende ord over tid.
+Er der derimod ændringer i hvilke ord der bruges over tid, vil dette vise sig i en ændret position over tid.
+
+Jeg udarbejder et nyt korpus, hvor hvert korpus udgør talerne for hver blok, der slås sammen til ét dokument pr periode\footnote{Dog er partier og/eller blokke der ikke fremgår af figurer og tabeller også udeladt fra analyserne. Da worfish-algoritmen sammenligner alle de medtagne dokumenter i sin vægtning, vil det forvride den relative præsentation af partiernes indbyrdes forhold}.
+Ud fra dette tæller jeg op antallet tokens per dokument, og laver beregninger ud fra dette.
+Til sammenligning laver jeg en lignende beregning, fordelt over partiernes positionering over regeringsperioder.
+
+\begin{figure}
+  \input{../fig/wordfish_blocs_periods.tex}
+\caption{Politiske blokkes politiske positioner over analyseperioderne}
+\label{fig:fish_blocXperiod}
+\end{figure}\todo{David: dette er ikke de endelige data; men vi kan i det mindste se, hvordan graferne vil arte sig}
+er ser vi, hvordan blokkene har ændret position i hver analyseperiode.
+Der er nogen bevægelse i de forskellige blokke, men de relative positioner er forholdsvis stabile\todo{skal ændres ift de faktiske data}.
+
+\begin{figure}
+  \input{../fig/wordfish_party_by_period.tex}
+\caption{Politiske partiers politiske positioner over analyseperioderne}
+\label{fig:fish_partyXperiod}
+\end{figure}
+
+Når man ser på de enkelte partier, kan man se hvordan de bevæger sig rundt...
+
+\begin{figure}
+\begin{adjustwidth}{-8em}{-8em}
+  \input{../fig/wordfish_parties_governments.tex}
+\end{adjustwidth}
+\caption{Politiske partiers politiske positioner over regeringsperioder}
+\label{fig:fish_partyXgovt}
+\end{figure}
+Nu er vi mere i detaljen; både hvad angår tidsinddeling og perioder. Nu kan vi se en større spredning i de forskellige partiers holdninger.
+
+\subsection{Hvilke begreber er kendetegnende for de politiske fløje over tid?}
+
+Man kan også udlede, hvilke ord giver anledning til hvilke positioner.
+Dette gøres ved at undersøge de værdier, wordfish-algoritmen har tildelt de enkelte begreber\footnote{((FIXME en kort forklaring af WORDFISH))}.
+
+\begin{figure}
+\begin{adjustwidth}{-8em}{-8em}
+  \input{../fig/coef_edu_test.tex}
+\end{adjustwidth}
+\caption{Ordfordeling og vægtning for de politiske blokke. Figuren udelukker de grønlandske og færøske partier.}
+\label{fig:coef_partyXperiod}
+\end{figure}
+
+Ved at se på figur ~\ref{fig:coef_blocXperiod}\todo{beskriv hvorfor figuren har den facon den har}, fremgår der, at ord som ?????, ??????, ????? indikerer en venstrerettet position; og ord som ???? ???? ?????? ?????? angiver en højreposition.
+Ordene ???, ???,, ???, der har en vægtning nær 0, er mere værdineutrale i denne sammenhæng.
+
+Figur ~\ref{fig:coef_blocXperiod} viser ordfordeling og vægtning for hele mit datagrundlag.
+Man kan også udlede samme data for de enkelte analyseperioder.
+Ordfordelingen for hver periode kan afleses i tabel ~\ref{tab:lrterms}, hvor de centrale begreber der giver venstre, højre, og neutral vægtning for hver periode er fremhævet.
+
+\begin{table}
+\caption{Oversigt over begrebsvægtning efter en \textit{wordfish} beregning af talerne i analyseperioderne.}
+\label{tab:lrterms}
+\begin{adjustwidth}{-9em}{-9em}
+\begin{tabular}{lp{2in}p{2in}p{2in}}
+\input{../fig/table_coef_terms_edu_test.tex}
+\end{tabular}
+\end{adjustwidth}
+\end{table}
+
+\subsection{Hvordan taler politkere om uddannelse?}
+Ovenfor har jeg givet en visualisering af de politiske partiers relative positioner omkring uddannelse.
+Der er ikke de store overraskelser; om end det er påfaldende at...
+
+Dette siger dog ikke noget om \textit{tonen} i talerne.
+Ved hjælp af biblioteket \texttt{SENTIDA} udarbejder jeg en holdningsanalyse, hvor jeg tildeler talerne en holdningsværdi; både for talen i sin helhed og for de individuelle sætninger talene er bygget op af.
+Er talen/sætnignen overvejende positiv; får den en positiv værdi, og er den negativ, giver det en negativ værdi\footnote{Der udarbejdes to værdier, for at være præcis. En for gennemsnitsværdien af teksten, og en for totalværdien af teksten. Jeg har derudover trukket minimums- og maksimumsværdier for talernes sætninger; samt en gennemsnits- og medianværdi for sætningernes holdningsscore}.
+Dermed kan man undersøge, hvilke grupperinger i Folketinget taler overvejende positivt eller negativt.
+Er der påfaldende mønstre; kan man videre trække de enkelte taler og sætninger ud.
+
+Figur ~\ref{fig:sentposneg} viser partiers\footnote{Jeg holder mig til det udvalg af partierjeg har benyttet mig af tidligere} spredning mellem lave og høje totalværdier for sætninger\todo{analyse på blokniveau?}, fordelt over mine analyseperioder.
+
+Det fremgår, at...
+
+\begin{figure}
+  \input{../fig/sent_minmaxedu_test.tex}
+\caption{Sprednig mellem talernes højeste og laveste holdningsværdi, på sætningsniveau.}
+\label{fig:sentminmax}
+\end{figure}
+
+Ser man på gennemsnitsværdierne (figur ~\ref{fig:sentminmax})  for de enkelte sætninger, ser det knapt så dramatisk ud.
+
+\begin{figure}
+  \input{../fig/sent_posnegedu_test.tex}
+\caption{Sprednig mellem talernes gennemsnitlige holdningsværdi, på sætningsniveau.}
+\label{fig:sentposneg}
+\end{figure}
+
+\begin{figure}
+\begin{adjustwidth}{-1.6in}{-1.5in}
+  \includegraphics{../fig/sent_spread_time_edu_test.pdf}
+\end{adjustwidth}
+\caption{Oversigt over udvalgte emner for perioden 1990-2000, med tilhørende begreber.}
+\label{fig:sentspread}
+\end{figure}
+
+
+\section{Omtale af uddannelsespolitiske målgrupper}
+
+\section{Ord skaber og reificerer samfundets strukturer}
 
