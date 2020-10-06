@@ -569,7 +569,6 @@ get_top_terms <- function(topics, number) {
     arrange(topic, -beta)
 }
 
-doc_list <- map(ldas, ~ lda_to_docs(.x))
 
 # WIP: get top documents per topic
 #
@@ -625,8 +624,8 @@ model_to_clust <- function(model) {
     hclust("ward.D")
 }
 
-clust_to_dendro <- function(clust, branches = c(19, 23, 1)) {
-  topics <- lda_to_topics(model)
+clust_to_dendro <- function(model, topicsorder, clust, branches = c(19, 23, 1)) {
+  topics <- lda_to_topics(model, topicsorder)
   topic_labels <- get_top_terms(topics, 1)$term %>%
     modify(~ paste("  ", .x, sep = ""))
   dendro <- clust %>%
@@ -634,20 +633,24 @@ clust_to_dendro <- function(clust, branches = c(19, 23, 1)) {
     set_labels(topic_labels) %>%
     set("labels_cex", 0.7) %>%
     set("labels_to_character") %>%
-    set("branches_k_color", value = 6:1, k = 6) %>%
+    # set("branches_k_color", value = 4:1, k = 4) %>%
     # sort() %>%     # highlight_branches_col
-    set("by_labels_branches_lwd", value = branches , type = "all")
+    set("by_labels_branches_col", value = topic_labels[branches], TF_values = c(3, 1), type = "all")
 }
 
 save_topic_cluster_plot <- function(dendro, name = "dendro") {
   # TODO: tried building this programmatically
   #       but it turns parts of the string into subdirectories
-  filename <- file.path(here("fig/"), paste0("cluster_", name, ".tex"))
+  filename <- file.path(here("fig/"), paste0("cluster_", name, "_k", k, ".tex"))
   tikz(filename, width = 5, height = 5)
   par(mar = c(2, 2, 2, 10))
   plot(dendro, horiz = TRUE, axes = FALSE)
   dev.off()
 }
+
+# clust <- model_to_clust(ldas[[3]])
+# dendro <- clust_to_dendro(ldas[[3]], topic_orders[[3]], clust, c(4, 5, 6, 13, 20, 23))
+# save_topic_cluster_plot(dendro, str_c(identifier, "_", names(ldas[3])))
 
 # FIXME: the ggplot version still cuts off the plot labels
 save_topic_cluster_plot <- function(dendro, name) {
