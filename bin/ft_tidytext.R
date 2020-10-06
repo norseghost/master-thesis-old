@@ -282,7 +282,7 @@ read_ngrams <- function(name) {
   print(filenames)
   tokens <- map(filenames, ~readRDS(here(str_c("data/", .x))))
   names(tokens) <- filenames %>%
-    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+).rds")[,2])
+    map(~ str_match(.x, pattern = ".*_(\\d+-\\d+|all).rds")[,2])
   return(tokens)
 }
 
