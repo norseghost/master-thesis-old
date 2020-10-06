@@ -112,8 +112,7 @@ Jeg undlader dog, for læsbarhedens skyld, at dykke ned i de konkrete formler og
 Jeg vil, som nævnt, foretage en gennemgang af folketingstaler fra 1978 indtil ultimo 2019.
 Datasættet\footnote{Typisk kaldet et \textit{korpus} indenfor tekstbehandlingsverdenen} er dannet ved, at hente mødereferaterne i PDF-form fra Folketingstidende, og er derefter blevet omdannet til tekstformat, og forsynet med metadata i form af fx mødets titel, dato, talerens navn og partiforhold, ved hjælp af computerbiblioteket \citetitle{pedersenFolketinget2019} \autocite{pedersenFolketinget2019}.
 Denne samling \textit{dokumenter} består af ord, der skal udledes mening af.
-Ord grupperes som \textit{tokens}, der kan udgøre ét ord; men kan også være to eller flere efterfølgende ord; eller ord der har n afstand mellem hinanden.
-Jeg bruger forskellige arter tokens\todo{opmærksomhed på, hvorvidt dette holder} afhængigt af hvad jeg undersøger.
+Ord grupperes som \textit{tokens}, der kan udgøre ét ord; men kan også være to eller flere efterfølgende ord; eller ord der har n ords afstand mellem hinanden \footnote{\textit{unigrams}, \textit{bigrams}, \textit{n-grams} og \textit{skip-n-grams}, respektive}.
 
 Min undersøgelse er primært på det første af de tre niveauer i tekstanalyse beskrevet ovenfor.
 Jeg ser på tekstens overordnede indhold, og forsøger at drage slutninger omkring kulturelle former for kommunikation.
@@ -132,7 +131,7 @@ Jeg har derfor en kopi af min kode tilgængeligt på GitHub, til frit brug og of
 \section{Forhåndsbearbejdning af data}\label{sec:preproc}
 
 Helt grundlæggende deler jeg mit store korpus dokumenter i flere mindre korpora, baseret på tidsperioder.
-Jeg bibeholder dog mit samlede korpus, til sammenligning og kontrol.
+Jeg bibeholder dog mit samlede korpus til en overordnet analyse, for sammenligning og kontrol.
 
 Tekstmaterialet kan med fordel simplificeres inden analyse, både for at begrænse kompleksitet i analysen og begrænse tab af information.
 For eksempel er ordene “stemme”, “stemte”, “stemmer” alle relaterede til konceptet at stemme.
@@ -144,8 +143,7 @@ Dog vil man her også muligvis tabe noget information — handlede det fx om “
 
 En anden vej til at reducere kompleksiteten i tekstmaterialet er, at udelukke ord med lav analyseværdi.
 Tal og tegnsætting kan ofte udelukkes — og er blevet det i dette konkrete tilfælde.
-Dermed er sidetal og så videre ikke medregnet; dog med tab af fx. datoer til følge.
-Ord der forekommer meget hyppigt eller meget sjældent vil kunne forvrænge en analyse; og gøre det svært at drage meningsfulde konklusioner.
+Dermed er sidetal og så videre ikke medregnet; dog med tab af fx. datoer og aldersgrupper til følge.
 
 En meget anvendt teknik er at sortere såkaldte \textit{stopord} fra.
 Der findes generelle lister over ord der, på bagrund af formodet lav analyseværdi, kan filtreres ud af dokumenterne inden analyse.
