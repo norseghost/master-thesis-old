@@ -65,35 +65,49 @@ men også af tidshensyn.
 En LDA beregning giver ikke navngivne emner, som sådan.
 I kraft af at være en ikke-superviseret algoritme, bliver dokumenterne fordelt ud over det anviste antal emner\footnote{LDA tildeler dokumenterne en score $\gamma$ mellem 0 og 1 for deres bidrag til et givet emne. Emner er distributioner over begreber; hvor hvert begreb tildeles en score $\beta$ mellem 0 og 1 for at tilhøre et givet emne. \\ \\ Hvert emne $\phi k$ er en multinominel distribution over ordforrådet $W$, og hvert dokument $\theta  d$er en multinominel distribution over $K$ emner. Dermed er sandsynligheden for at et givet dokument ($d$) bidrager til emnet $k$ $\theta _{d,k}$; og sandsynligheden for at ord $w$ tilhører et emne $\phi _{k,w}$. De multinominale distributioner for emnet genereres af en konjugat Dirichlet prior((FIXME: dansk begreb?)) $\overrightarrow{\beta}$, og distributionerne for dokumenter på baggrund af en Dirchlet prior $\overrightarrow{\alpha}$. Deraf navnet \textit{“Latent Dirichlet Allocation”} \autocite[s.65f]{deveaudAccurateEffectiveLatent2014}} , i det omfang (algoritmen mener) de ligner hinanden.
 Hvorvidt der er grupperinger der giver mening for mennesker i en social kontekst, og hvilken mening de eventuelt skulle have, er op til forskeren at vurdere.
-Som eksempel præsenteres emnerne genereret for perioden 1990 til 2000; repræsenteret af de 15 hyppigste termer pr emne, rangeret efter prævalens.
+Som eksempel præsenteres et udvalg af emnerne genereret for perioden 1990 til 2000 i figur ~\ref{fig:termsFull} (side ~\pageref{fig:termsFull}).
+Emnerne er repræsenteret af de 15 hyppigste termer pr emne, rangeret efter begrebernes vægtning for det pågældende emne.
 
 \begin{figure}
 \begin{adjustwidth}{-1in}{-1in}
-  \input{../fig/terms_edu_test.tex}
+  \input{../fig/terms_bigrams_no_stopwords.tex}
 \end{adjustwidth}
 \caption{Oversigt over udvalgte emner for perioden 1990-2000, med tilhørende begreber.}
 \label{fig:termsFull}
 \end{figure}
 
-Et overblik over de genererede emner (Figur ~\ref{fig:termsFull}, side ~\pageref{fig:termsFull}) viser, at der er del “støj” i form af administrivia, formalia og 'jeg synes' og så videre.
-Der er dog nogle emner der har (pædagogisk) sociologisk relevans.
+\textbf{Emne 4} er et eksempel på, de mange emner der genereres omkring “administrivia”.
+Folketingsmøder har et særligt, formelt sprog, og dette genspejles i rigtigt mange emner, der omhandler denne slags formalia\footnote{En grov optælling tilsiger ca. 10-12 af denne slags emner for hver periode; med “kontrolperioden” op over 20.}
 
-Man kan se der var tale om Tamil-sagen, i emne ??; og man kan se ??? i emne ???.
-Men mest interessant for mit vedkommende er emne ???; der er repræsenteret af termerne “ung menneske”, "videregående uddannelse”, “i praktik”, blandt andre.
+Der er dog alligevel meget klart, at nogle emner har (pædagogisk) sociologisk relevans.
+\textbf{Emne 5} omhandler tilsyneladende finanspolitik\footnote{Et lignende emne, med mange af de samme begreber, er at finde i alle perioder}.
+Man kan ane den førnævnte aktive socialpolitik i \textbf{emne 6}, og krigerne i Irak og Afghanistan i \textbf{emne 13}.
+Men mest interessant for mit vedkommende er \textbf{emne 20} og \textbf{emne 23}, der er repræsenteret af termerne \textit{“ung menneske”}, \textit{“videregående uddannelse”}, \textit{“i folkeskole”} og \textit{“dansk sprog”} blandt andre.
+Forhenværende børne- og undervisningsminister Christine Antorini gør også en optræden.
+Min udtalelse fra indledningen --- det er få politikere der kan undgå at tale om uddannelse — er også underbygget; idet jeg kan finde emner der indeholder beslægtede begreber for hver analyseperiode.
 
-For at se om jeg kan øge informationstætheden forsøger jeg en ny runde; denne gang med en række generelle \autocite{stopwords-isoStopwordsISO2020} plus nogle domænespecifikke stopord\footnote{for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets Gitub-repositorie.}.
-
-\begin{figure}
-\input{../fig/models_edu_test_5to125by10.tex}
-\caption{Differentiering mellem emner for forskellige antal emner; bigrams og stopord.}
-\label{fig:models_stopwords}
-\end{figure}
-
-Dette viser sig dog at være en blindgyde, som vist i figur ~\ref{fig:modelsStopwords}.
+Jeg vil gerne forsøge at øge mit forhold mellem signal og støj.
+Vil man kunne øge informationstætheden ved at udelukke de mange formalia-relaterede begreber?
+Dette er et oplagt scenarie til brug af \textit{stopord}.
+Jeg bruger en forhåndsgenereret samling af generelle stopord \autocite{stopwords-isoStopwordsISO2020};
+i tillæg til en liste domænespecifikke stopord\footnote{
+for den konkrete stopordsliste se \texttt{lib/stopwords.txt} i specialets Gitub-repositorie \autocite{andersenNorseghostMasterthesis2020}.}
+jeg selv har udfærdiget.
+Dette viser sig dog at være en blindgyde.
 Kurverne er nu uden det pæne “buk”\footnote{Igen, på nær \autocite{deveaudAccurateEffectiveLatent2014}}, og svinder ned mod 0; uden der er en opadstigende kurve.
 Et uddrag af begreber, med antal emner sat til 45, giver tilsvarende utilfredsstillende resultater.
-At sortere stopordene fra har tilsyneladende medført for stort informationstab til at der er analyseværdi tilbage.
-Muligvis ville det være muligt at tilpasse listen af stopord; men dette er blevet udeladt af tidshensyn\footnote{Det tager flere dage til over en uge at sammenligne modellerne}.
+At sortere stopordene fra har tilsyneladende medført for stort informationstab til at der er analyseværdi tilbage\footnote{
+Det samme gjorde sig gældende ved andre tiltag for at reducere kompleksiteten i mit materiale —
+det være sig andre øvre eller nedre terskelværdier for filtrering i \textit{tf-idf};
+eller en reduktion af sjældne terner i de genererede \textit{Document-Term Matrices}.}.
+Muligvis ville det være muligt at tilpasse listen af stopord, men dette er blevet udeladt af tidshensyn\footnote{Det tager flere dage til over en uge at sammenligne modellerne}.
+
+Jeg foretager dermed de videre analyser uden stopordslister.
+Men jeg kommer igen til et vurderingsspørgsmål:
+Det er nogle perioder, der har to emner der kan relatere til uddannelse bredt forstået; og andre der kun har en.
+Jeg vurderer, at mere data er godt i denne sammenhæng; og tager alle relevante emner med for hver periode.
+
+Men inden jeg dykker ned i uddannelse specifikt, vil jeg gerne se på, hvordan mit datasæt ser ud i forhold til sig selv.
 
 \section{Talernes indbyrdes relationer}
 Som tidligere nævnt har hvert datasæt sine særegenheder.
