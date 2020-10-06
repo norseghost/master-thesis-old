@@ -40,9 +40,6 @@ options(tikzLualatexPackages =
 theme_minimal()
 plan(multicore)
 seed <- 1234
-# burnin <- 500
-# thin <- 300
-# iter <- 3000
 n <- 2
 #global ID for for this round of processing
 identifier <- "bigrams_no_stopwords"
@@ -54,9 +51,6 @@ k <- 45
 n <- 2
 control <- list(
                 seed = seed
-                # burnin = burnin,
-                # thin = thin,
-                # iter = iter
 )
 # blocs and parties to use in analysis
 blocs <- c(# don't use the greenland/faroese parties
