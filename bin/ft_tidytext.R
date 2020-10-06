@@ -931,10 +931,15 @@ plot_fishlist <- function(fishlist_periods) {
     ylab("Estimeret position")
 }
 
-write_wordfish_timeseries_plot <- function(fishlist, name, width = 5, height = 3) {
-  fishlist <- periods_fishlist(fishlist) %>%
-    plot_fishlist %>%
-    ggsave(filename = here(str_c("fig/wordfish_", name, ".tex")),
+plot_fishlist_blocs <- function(fishlist_blocs) {
+  p <-  periods_fishlist(fishlist_blocs) %>%
+    plot_fishlist + 
+    scale_color_manual(values = c("red", "yellow", "blue", "gray"))
+} 
+
+write_wordfish_timeseries_plot <- function(p, name, width = 5, height = 3) {
+    ggsave(p,
+          filename = here(str_c("fig/wordfish_", name, ".tex")),
            device = tikz,
            width = width,
            height = height,
