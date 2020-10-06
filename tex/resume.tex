@@ -1,0 +1,78 @@
+\begin{abstract}
+  \abstractname{Abstract}
+
+\section*{Text mining educational policy discourse in a Danish context}
+
+In this thesis, I apply the tools of \textit{computational sociology} to glean insights into the political discourse on educational policy in Denmark.
+Within the field of educational policy generally; I aim to focus on secondary education\footnote{High school, more or less; what in Denmark is called “Gymnasium” or “Erhvervsuddannelse”}; and specifically the tension between the vocational and academic tracks in the Danish educational system.
+
+I am basing my research on transcripts from the floor of the Danish Parliament; from the fall of 1978 through the end of 2019.
+This is an extremely large corpus; even after trawling for relevant documents.
+The computer's capacity for inspecting and wrangling this large dataset is essential for the viability of my research.
+This is a particular strength in extending qualitiative research with a computational approach \autocite{evansMachineTranslationMining2016}.
+
+\section*{Inequality and inequity in Danish educational outcomes}
+
+A cohort study on the implications of tracking in Denmark indicates that there is a fair bit of correlation between socioeconomic status and lifelong earnings and which track in the educational system one is placed.
+Furthermore, there is also a correlation on the socioeconomic status of ones parents and which track one ends up pursuing.
+
+A general trend of higher general levels of education in Denmark over the past decades\footnote{Following the general expansion of higher education in Western Europe in the second half of the twentieth century} notwithstanding, the topic of equality and equity in educational outcomes remains a topic of political discussion.
+
+Danish educational policy has had a stated goal of eliminating the so-called “remainder cohort”\footnote{The 8-or-so percent of a given youth cohort with only compulsory education and no gainful employment} since at least the 1990s; where then Minister for Education Ole Vig Jensen presented “Education for all” in \citeyear{jensenRedegorelseR319931993}.
+As an overarching policy goal, success was determined as at least 95\% of a youth cohort completing secondary education.
+This was further expanded to include a focus on higher education in the early 2000s; with then Prime Minister Anders Fogh Rasmussen stating in 2005 a goal of 50\% of a youth cohort achieving university or college education in 2015.
+These policies seem to have had knock-on effects for the vocational educations.
+In \citeyear{simonsenLadOsGore2016} the leaders of two of the largest unions in Denmark went so far as waring about Denmark becoming an “over-educated society”; projecting a sever shortage of skilled tradesmen.
+Some further (seeming) consequences are described in part below.
+
+
+\subsection*{Tensions in Danish secondary education}
+There is a tendency among Danes to devalue vocational education.
+According to \citeauthor{danmarksstatistikErhvervsuddannelserDanmark20192019} a scant majority had a positive impression of Danish vocational education;  \autocite{danmarksstatistikErhvervsuddannelserDanmark20192019}, with a 10\% declining rates of enrollment after completed compulsory education from 2001 to 2013.
+The declining enrollment rate among vocational education is compounded by a markedly higher ratio of dropouts compared to the academic tracks \autocite{danskegymnasierFuldforelseOgKarakterer2019}.
+
+In addition to the tensions between the academic and vocational tracks, the vocational educations in Denmark have their own internal tensions:
+\begin{itemize}
+  \item
+    a lack of apprenticeships available \autocite[s. 10]{danmarksstatistikErhvervsuddannelserDanmark20192019};with remedial school education seen as less valuable
+\item
+    an increased focus on attracting youth cohorts; with possible decreased interest from adults seeking to achieve qualification \autocite[p. 13]{jorgensenReformenAfErhvervsuddannelserne2016}
+  \item
+    a change in the demographic among the vocational schools; as the more academically gifted youths gravitate toward the academic tracks, the vocational institutions are “saddled” with increasingly more academically---challenged students \autocite[s. 365f]{aarkrogRummelighedOgSammenhaeng2003} 
+  \item
+    somewhat at odds with the previous, there is a long tradition for vocational education to be a path toward higher education \autocite[s. 47ff]{bondergaardHistoricalEmergenceKey2014},  
+\end{itemize}
+
+\subsection*{Knowledge gaps}
+I hope to gain insights into a broad array of policy dimensions; such as:
+\begin{itemize}
+  \item
+    period-specific discourse around (voacational) education policies
+  \item
+    per-party policy dimensions
+  \item
+    level of political agreement over time
+\end{itemize}
+
+\section*{Methodology - a quantitative perspective on qualitative research}
+I will be performing comparative time-series analysis on the parliamentary speeches.
+In addition to the rather obvious time-based divisions of the data(year, government period), I have divided the rather large corpus into 4 sub-corpora; split on periods of trends in (vocational) education policy\footnote{these are discussed further in part II}.
+These are then fed through the unsupervised classification algorithm \texttt{LDA} \autocite{bleiLatentDirichletAllocation2003}; to discern speeches pertaining to educational policy.
+These speeches are then treated to further analysis, as deemed relevant to answer my research questions.
+
+Although I use methods that treats the text quantitatively; I maintain a largely qualitative focus.
+The parameters given and results obtained need to be evaluated by the researcher; and understood through their biases.
+
+\section*{Insights gathered}
+
+\subsection{Party-wise policy dimensions}
+There is a clear right-to-left skew in the relative positions of both political parties and political blocs, mapping more or less to an instinctual assumption of these parties.
+Interestingly; the per-party graph shows quite a lot more variance over time.
+This may be more reflective of a lack of sufficent data per observation; however.
+Controlling against the current party programs....
+
+\section*{Going forward}
+
+This is a thesis firmly on the descriptive side of sociological research.
+My observations and revealed trends can inform further research; such as predicting future trends in educational policy; or be contrasted to the accepted historical narrative of policy development.
+\end{abstract}
