@@ -524,16 +524,42 @@ imap(jsons, ~ serVis(
 
 assignments <- map2(ldas, dtms, augment, .x, .y)
 
+# WIP: want to reorder topics according to ldavis function
+#      instead I clobber the lda object
+# ldavis_data <- map(jsons, ~ fromJSON(.x))
+# topic_orders <- map(ldavis_data, ~ .x$topic.order)
+# reorder_topics <- function(lda, new_order) {
+#   lda@gamma[order(new_order), ]
+#   lda@beta[, order(new_order)]
+# }
 
-lda_to_docs <- function(lda) {
-    tidy(lda, matrix = "gamma")
+# Just list the topic mapping instead
+print_topicorder <- function(json, name) {
+  paste(json$topic.order)
 }
 
-lda_to_topics <- function(lda) {
-    tidy(lda, matrix = "beta")
+topicorders <- imap(ldavis_data, ~print_topicorder(.x, .y)) %>% as_tibble
+
+lda_to_docs <- function(lda, new_order) {
+    tidy(lda, matrix = "gamma") %>%
+      # this step probably unnecessary
+      arrange(topic) %>%
+      mutate(topic = factor(topic, levels = new_order)) %>%
+      group_by(topic) %>%
+      mutate(topic = cur_group_id()) %>%
+      ungroup
+}
+# FIXME: these can be collapsed
+lda_to_topics <- function(lda, new_order) {
+    tidy(lda, matrix = "beta") %>%
+      mutate(topic = factor(topic, levels = new_order)) %>%
+      group_by(topic) %>%
+      mutate(topic = cur_group_id()) %>%
+      ungroup
 }
 
-topic_list <- map(ldas, ~ lda_to_topics(.x))
+doc_list <- map2(ldas, topic_orders, ~ lda_to_docs(.x, .y))
+topic_list <- map2(ldas, topic_orders, ~ lda_to_topics(.x, .y))
 
 get_top_terms <- function(topics, number) {
   topics %>%
