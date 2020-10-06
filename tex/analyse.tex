@@ -130,31 +130,27 @@ Videre er disse emner uddannelse blade af ????; hvilket vil sige, at mange taler
 
 Næste trin i min analyse bliver nu, at se på indholdet i mine udvalgte emner.
 
-Jeg fortsætter uden stopord; og undersøger de forskellige korpora hver især, og trækker dem ud, der ser ud til at omhandle uddannelse\footnote{Den interaktive visualisation jeg benytter til at udforske disse LDA-modeller kan findes fra \href{martinandreasandersen.com/projects/au/}{min blog}}.
+Jeg fortsætter, som nævnt, uden stopord; og undersøger de forskellige korpora hver især, og trækker dem ud, der ser ud til at omhandle uddannelse\footnote{Den interaktive visualisation jeg benytter til at udforske disse LDA-modeller kan (også) findes på \href{martinandreasandersen.com/projects/au/}{min blog} \autocite{andersenSelectedAssignmentsAarhus}}.
 
 \chapter{Analyse af de udvalgte dokumenter}
 Jeg har nu en samling emner, der ser ud til, at kunne omhandle uddannelse.
-De dokumenter der har højest sandsynlighed for at tilhøre disse emner skal nu trækkes ud til videre analyse, idet en LDA-model vil tildele alle dokumenter en sandsynlighed for at tilhøre et bestemt emne.
-Jeg vælger de taler, der har en tildelt sandsynlighed for at tilhøre mine udvalgte emner på over $0,6$.
+De dokumenter der har højest sandsynlighed for at tilhøre disse emner skal nu trækkes ud til videre analyse, idet en LDA-model, som nævnt, vil tildele alle dokumenter en sandsynlighed for at tilhøre et bestemt emne.
+Jeg vælger de taler, der falder i de øverste 2\%  af sandsynlighed for, at tilhøre mine udvalgte emner.
+Dette giver en minimumsværdi for sandsynligheden for at dokumenterne tilhører mine udvalgte emner ($\gamma$) på omkring $~0.1\ldots-0.2$.
+Dette er givetvis ikke særlig højt; men en lavere andel gav rigtigt få dokumenter at arbejde med\footnote{Jeg prøvede også med en minimums\textit{værdi} for $\gamma$; men denne skulle være meget lav før jeg fik en nævneværdig samling dokumenter retur. Derudover var der nogen variation i højeste værdi for $\gamma$ i de forskellige perioder; med tilsvarende variation i antal dokumenter for en given minimumsværdi.}.
 
 Med mine dokumenter trukket ud; er der nu tid til en videre analyse.
 
 Først vil jeg se, hvilke emner der er gennemgående i dette subset af dokumenter.
 Derefter vil jeg undersøge, hvorvidt der er emner at trække ud indenfor disse dokumenter; da jeg ikke kun er interesseret i uddannelse generelt, men har en specifik interesse i ungdomsuddannelserne.
-Jeg vil både se nærmere på dette eventuelt forskningsmæssigt interessant subset af data; og også holde øje med, om der er dokumenter der tydeligt ikke omhandler data inden jeg fortsætter min analyse.
+Jeg vil både se nærmere på dette eventuelt forskningsmæssigt interessant subset af data; og også holde øje med, om der er dokumenter der tydeligt ikke omhandler uddannelse inden jeg fortsætter min analyse.
 
 Jeg vil derefter forsøge at at afdække partipolitiske positioner over dette subset.
 
 \section{Emner indenfor uddannelse}
-Efter en ny beregning af et optimalt antal emner, udvælger jeg 25\todo{skift ud ved faktiske data} som gunstigt antal emner for undersøgelse af mit (formodede) uddannelses-subset.
-Som det fremgår af figur ~\ref{fig:models_edu}, er der dog blevet sværere, at differentiere mellem et optimalt antal emner...
 
-\begin{figure}
-  \input{../fig/models_edu_test_5to125by10.tex}
-\caption{Differentiering mellem emner for taler der har en forholdsvis høj sandsynlighed for, at omhandle uddannelse}
-\label{fig:models_edu}
-\end{figure}
-
+Efter en ny beregning af et optimalt antal emner, fortsætter jeg med... som gunstigt antal emner for undersøgelse af mit (formodede) uddannelses-subset.
+Som det fremgår af grendiagrammet i ~\ref{fig:dendro_edu}, er der dog blevet sværere, at differentiere mellem et optimalt antal emner...
 Jeg ser nogle emner gå igen — meget administrivia, formalia og så videre.
 Men nu kan jeg også i højere grad differentiere mellem underkategorier.
 Der er taler omkring ????? ?????? ????? ??  - som til sammen bliver noget med “erhvervsuddannelser”
