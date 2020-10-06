@@ -505,12 +505,12 @@ pmap(l, ~
 read_json <- function(name, k) {
   filenames <- list.files(
               path = here("data/"),
-              pattern = str_c("json_", name, "_k", k, "_", ".*.rds"
+              pattern = str_c("json_", identifier, "_k", k, "_", ".*.rds"
               )
   )
   jsons <- map(filenames, ~readRDS(here(str_c("data/", .x))))
   names(jsons) <- filenames %>%
-    map_chr(~ str_match(.x, pattern = str_c("json_", name, "_k", k,  "_", "(.*).rds"))[,2]) 
+    map_chr(~ str_match(.x, pattern = str_c("json_", identifier, "_k", k,  "_", "(.*).rds"))[,2]) 
   return(jsons)
 }
 jsons <- read_json(name = identifier, k = k)
