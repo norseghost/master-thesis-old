@@ -281,3 +281,6 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
+
+# fuse
+.fuse*
