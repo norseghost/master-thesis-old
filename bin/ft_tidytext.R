@@ -50,7 +50,7 @@ treshold <- 0.998
 min_k <- 5
 max_k <- 125
 steps <- 10
-k <- 35
+k <- 45
 n <- 2
 control <- list(
                 seed = seed
