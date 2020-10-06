@@ -1170,7 +1170,7 @@ plot_sentiment_time <- function(corpus, group, period) {
 ### METADATA WORK
 # All filtering/coercion/massaging happens to bare metadata
 # the text is... quite voluminous
-metadata <- readRDS(here('data/speeches_metadata.rds'))
+# metadata <- readRDS(here('data/speeches_metadata.rds'))
 
 # fix transcription errors and inconsistencies
 clean_parties <- function(metadata) {
