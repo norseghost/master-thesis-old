@@ -112,21 +112,26 @@ Men inden jeg dykker ned i uddannelse specifikt, vil jeg gerne se på, hvordan m
 \section{Talernes indbyrdes relationer}
 Som tidligere nævnt har hvert datasæt sine særegenheder.
 Jeg formodede i mit metodeafsnit, at der var en forholdsvis stor ensartethed i min samling af taler.
-Min hypotese er, at dette skyldes den noget kunstfærdige situation en folketingstale befinder sig i.
+Min hypotese er, at dette skyldes den noget kunstfærdige situation en tale i Folketinget befinder sig i.
 Talernes kontekst, lejret i det politiske spil, bringer en række rammer for talerne; der i sidste ende formodentlig får en tale til at ligne mange andre.
-Dette er illustreret ved figur ~\ref{fig:dendro_all}; hvor emnernes indbyrdes relationer for alle perioder fremgår\footnote{Graferne for de andre perioder kan ses på \href{martinandreasandersen.com/projects/au/}{min blog}}.
-Disse begreber (og de tilhørende dokumenter) vil dog ikke være de samme som begreberne for de individuelle perioder lagt sammen; da modellen laver beregningen på bagrund af alle dokumenter på en gang.
-For at bringe denne diskussion tilbage til en sociologisk relevans, kan også visualisere hvilke emner, computeren mener er nært beslægtede\todo{Beskriv clustering} med emnerne omkring uddannelse.
+Dette er illustreret ved figur ~\ref{fig:dendro_all};
+hvor emnernes indbyrdes relationer for perioden \textit{2001-14} fremgår\footnote{
+Graferne for de andre perioder kan ses på \href{martinandreasandersen.com/projects/au/}{min blog} \autocite{andersenSelectedAssignmentsAarhus}}.
+For at bringe denne diskussion tilbage til en sociologisk relevans, kan også visualisere hvilke emner, computeren mener er nært beslægtede\footnote{Dette er en proces kaldet \textit{hierarchical clustering}. Alle emner tildeles en klynge; hvorpå de klynger der er tættest på hinanden slås sammen. Jeg benytter Ward's algoritme til dette, hvor klynger med mindst indbyrdes variation grupperes \autocite{wardHierarchicalGroupingOptimize1963}.} med emnerne omkring uddannelse.\footnote{Jeg har indikeret de emner, jeg trak ud i forrige figur med farve.}
+Vi kan fange vores emner omkring uddannelse, repræsenteret af begreberne \textit{“den ung”} og \textit{“den fri”}.
+
+Også i grendiagrammet er de tæt beslægtede.
+De ser videre ud til, at alle være en del af en stor klynge, der omhandler det almindelige politiske virke.
+Alle mine eksempelemner figurerer i denne klynge.
+Der er videre ikke stor forskel på bladenes højde, i kraft af et forholdsvist homogent datasæt. 
 
 \begin{figure}
-  \input{../fig/cluster_edu_test.tex}
+  \input{../fig/cluster_bigrams_no_stopwords_2001-14_k45.tex}
   \caption{LDA-modellens emner for perioden 2014-20, efter indbyrdes relationer. Emner repræsenteres med deres mest fremtrædende begreb.}
 \label{fig:dendro_all}
 \end{figure}
 
-Vi kan fange vores emne omkring uddannelse, som nummer 19.
-Dette er nært beslægtet med emnerne 23 og 29; der udover “social arv” og “fri arbejdskraft”; også indeholder begreber som “????? ?????”, “dddssdfsdfsadfasd sdf”, “asdas dasd”, “asda fasdf”.
-Videre er disse emner uddannelse blade af ????; hvilket vil sige, at mange taler omhandler alle disse emner.
+\hrule
 
 Næste trin i min analyse bliver nu, at se på indholdet i mine udvalgte emner.
 
