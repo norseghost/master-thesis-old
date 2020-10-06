@@ -1232,10 +1232,10 @@ get_political <- function(metadata) {
                         ) ~ "Grønland/Færøerne",
            Parti == "ikke angivet" ~ "ikke angivet",
            ), levels = c("Rød Blok",
-           "Blå Blok",
            "Centrum",
-           "Grønland/Færøerne",
-           "ikke angivet")))
+           "Blå Blok",
+           "ikke angivet",
+           "Grønland/Færøerne"))),
 }
 
 split_by_govt <- function(metadata) {
