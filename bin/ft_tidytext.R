@@ -441,10 +441,9 @@ plot_topic_numbers <- function(values) {
     geom_line(linetype = "dashed") +
     geom_point(aes(shape = variable), size = 3) +
     scale_x_continuous(breaks = values$topics) +
-    guides(shape = guide_legend(title="Målefunktion")) +
+    guides(shape = guide_legend(title = element_blank())) +
     labs(x = "Antal emner", y = NULL) +
-    theme_bw() %+replace% theme(
-          legend.key = element_blank(),
+    theme_minimal_vgrid() %+replace% theme(
           legend.position = "bottom",
           panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank(),
