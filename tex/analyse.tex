@@ -186,10 +186,10 @@ De fleste emner i dette nye subset ser ud til at omhandle uddannelse af en art.
 Ordoptellingen ovenfor er noget begrænset i forhold til at afdække partipolitiske positioner.
 Man kunne, for eksempel, se på hvilke begreber der var sigende for den enkelte periode; og dermed muligvis se en generel trend over tid.
 Men der er udarbejdet konkrete algoritmer for at undersøge dette.
-Jeg vil benytte mig af den før omtalte \texttt{wordfish}-algoritme \autocite{slapinScalingModelEstimating2008}.
+Jeg vil benytte mig af den før omtalte \textit{Wordfish}-algoritme \autocite{slapinScalingModelEstimating2008}.
 
 Denne algoritme tager for sig en samling dokumenter; hvor hvert dokument har en (af forskeren, på forhånd etableret) partipolitisk tilhørighed; og også ideelt set omhandler nogenlunde det samme emne.
-\citeauthor{slapinScalingModelEstimating2008} demonstrerer deres analyse på partiprogrammer - først i deres helhed; derefter delt op i politiske interesseområder.
+\citeauthor{slapinScalingModelEstimating2008} demonstrerer deres analyse på partiprogrammer - først i deres helhed; derefter delt op i politiske interesseområder\footnote{\textit{Wordfish}(et ordspil over ord og den franske betydning af \textit{poisson}) modellerer ordfrekvenser mod en Poisson-distribution; og tildeler en en-dimensionel værdi på baggrund af dette. Dette er også medvirkende til, at algoritmen har det bedst med dokumenter der falder indenfor samme emne; da man ellers risikerer en meget stor spredning i ordfrekvenser dokumenterne i mellem.}.
 I mit tilfælde tager jeg for mig mine dokumenter der skal analyseres videre; og tildeler dem en politisk fløj på baggrund af politisk parti\footnote{Der er en mangel i mit datasæts metadata; hvor der ikke forefindes partitilhørighed på talere som “statministeren”; “formanden” og så videre. Disse er tildelt “ikke angivet” som blok.}.
 Derudover kategoriseres Grønland og Færøerne for sig.
 x
@@ -212,7 +212,7 @@ Nye Borgerlige          & Venstresocialisterne          & Liberal Alliance      
 \end{table}
 
 
-\texttt{wordfish}-algoritmen\todo{hvordan formatere WORDFISH?} beregner positioner i én dimension, fortolket som en venstre-højre akse ud fra dokumenternes ordfordeling sig i mellem.
+\textit{Wordfish}-algoritmen beregner positioner i én dimension, fortolket som en venstre-højre akse ud fra dokumenternes ordfordeling sig i mellem.
 Dokumenternes position holdes uafhængig af hinanden; således at et partis position i periode $t$ ikke påvirkes af positionen i periode $t-1$.
 Forbliver partiernes positioner forholdsvis uændrede, har partierne brugt lignende ord over tid.
 Er der derimod ændringer i hvilke ord der bruges over tid, vil dette vise sig i en ændret position over tid.
@@ -225,9 +225,8 @@ Til sammenligning laver jeg en lignende beregning, fordelt over partiernes posit
   \input{../fig/wordfish_blocs_periods.tex}
 \caption{Politiske blokkes politiske positioner over analyseperioderne}
 \label{fig:fish_blocXperiod}
-\end{figure}\todo{David: dette er ikke de endelige data; men vi kan i det mindste se, hvordan graferne vil arte sig}
-er ser vi, hvordan blokkene har ændret position i hver analyseperiode.
-Der er nogen bevægelse i de forskellige blokke, men de relative positioner er forholdsvis stabile\todo{skal ændres ift de faktiske data}.
+\end{figure}Her ser vi, hvordan blokkene har ændret position i hver analyseperiode.
+Der er nogen bevægelse i de forskellige blokke, men de relative positioner er forholdsvis stabile......
 
 \begin{figure}
   \input{../fig/wordfish_party_by_period.tex}
@@ -249,7 +248,7 @@ Nu er vi mere i detaljen; både hvad angår tidsinddeling og perioder. Nu kan vi
 \subsection{Hvilke begreber er kendetegnende for de politiske fløje over tid?}
 
 Man kan også udlede, hvilke ord giver anledning til hvilke positioner.
-Dette gøres ved at undersøge de værdier, wordfish-algoritmen har tildelt de enkelte begreber\footnote{((FIXME en kort forklaring af WORDFISH))}.
+Dette gøres ved at undersøge de værdier, \textit{Wordfish}-algoritmen har tildelt de enkelte begreber.
 
 \begin{figure}
 \begin{adjustwidth}{-8em}{-8em}
@@ -259,7 +258,7 @@ Dette gøres ved at undersøge de værdier, wordfish-algoritmen har tildelt de e
 \label{fig:coef_partyXperiod}
 \end{figure}
 
-Ved at se på figur ~\ref{fig:coef_blocXperiod}\todo{beskriv hvorfor figuren har den facon den har}, fremgår der, at ord som ?????, ??????, ????? indikerer en venstrerettet position; og ord som ???? ???? ?????? ?????? angiver en højreposition.
+Ved at se på figur ~\ref{fig:coef_blocXperiod}\footnote{Den noget karakteristiske form kommer af, at politisk neutrale ord ikke får tildelt en positiv eller negativ vægtning; og vil ikke trække et parti eller en blok i en bestemt retning. Ord der bliver brugt ofte af alle parter, med andre ord, er i udgangspunktet politisk neutrale \autocite[s. 709]{slapinScalingModelEstimating2008}}, fremgår der, at ord som ?????, ??????, ????? indikerer en venstrerettet position; og ord som ???? ???? ?????? ?????? angiver en højreposition.
 Ordene ???, ???,, ???, der har en vægtning nær 0, er mere værdineutrale i denne sammenhæng.
 
 Figur ~\ref{fig:coef_blocXperiod} viser ordfordeling og vægtning for hele mit datagrundlag.
@@ -267,7 +266,7 @@ Man kan også udlede samme data for de enkelte analyseperioder.
 Ordfordelingen for hver periode kan afleses i tabel ~\ref{tab:lrterms}, hvor de centrale begreber der giver venstre, højre, og neutral vægtning for hver periode er fremhævet.
 
 \begin{table}
-\caption{Oversigt over begrebsvægtning efter en \textit{wordfish} beregning af talerne i analyseperioderne.}
+\caption{Oversigt over begrebsvægtning efter en \textit{Wordfish} beregning af talerne i analyseperioderne.}
 \label{tab:lrterms}
 \begin{adjustwidth}{-9em}{-9em}
 \begin{tabular}{lp{2in}p{2in}p{2in}}
@@ -286,7 +285,7 @@ Er talen/sætnignen overvejende positiv; får den en positiv værdi, og er den n
 Dermed kan man undersøge, hvilke grupperinger i Folketinget taler overvejende positivt eller negativt.
 Er der påfaldende mønstre; kan man videre trække de enkelte taler og sætninger ud.
 
-Figur ~\ref{fig:sentposneg} viser partiers\footnote{Jeg holder mig til det udvalg af partierjeg har benyttet mig af tidligere} spredning mellem lave og høje totalværdier for sætninger\todo{analyse på blokniveau?}, fordelt over mine analyseperioder.
+Figur ~\ref{fig:sentposneg} viser partiers\footnote{Jeg holder mig til det udvalg af partier jeg har benyttet mig af tidligere} spredning mellem lave og høje totalværdier for sætninger\todo{analyse på blokniveau?}, fordelt over mine analyseperioder.
 
 Det fremgår, at...
 
