@@ -811,6 +811,7 @@ get_coef_terms <- function(coef_tibble, n = 10) {
 }
 
 write_term_xtable <- function(coef_terms, name) {
+  filename = here(str_c("fig/table_coef_terms_", name, ".tex"))
   coef_terms <- coef_terms %>%
     rename("Periode" = period,
            "Venstreladede begreber" = left,
