@@ -838,11 +838,6 @@ write_term_xtable <- function(coef_terms, name) {
         latex.environments = NULL,
         file = filename
   )
-  # system2(command = "sed", args= (c("-i",
-  #                                   "s/^\\&\\ //g",
-  #                                   filename
-  #                                   )
-  # ))
 }
 
 coef_fishlist <- function(fishlist) {
