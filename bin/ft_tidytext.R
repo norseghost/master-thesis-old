@@ -671,43 +671,37 @@ save_topic_cluster_plot <- function(dendro, name) {
            )
 }
 
+### EDUCATION SUBSET 
 # topics pertaining to education per analysis period,
 # as determined by visual inspection
-# TODO: named list instead?
-# TODO: Cannot handle more than one topic per period
-# FIXME: quite monstrous code, actually
-edu_topic_numbers <- c(6, 16, 7, 3, 9)
-# read in required data
-# subject to change
-ldas <- readRDS(here("data/lda-35_periods_bigrams"))
-ldas <- ldas[order(names(ldas))]
-docs <- map(ldas, ~ lda_to_docs(.x))
-corpora <- readRDS(here("data/speeches_with_periods.rds"))
-# construct list for education docs
-edu_docs <- vector("list", length(docs))
+edu_topicnum <- list(
+    `1978-90` = c(7, 17),
+    `1990-01` = c(17),
+    `2001-14` = c(20, 23),
+    `2014-20` = c(19, 44),
+    `all`     = c(25)
+)
 
-l <- list(topicnum = edu_topic_numbers, edu_docs = edu_docs, docs = docs)
-edu_docs <- pmap(l, 
-                 function(edu_docs, docs, topicnum) {
-                   edu_docs <- filter(docs, topic == topicnum)}) %>%
+corpora <- readRDS(here("data/speeches_with_periods.rds"))
+
+edu_docs <- map2(doc_list, edu_topicnum,
+                   ~filter(.x, topic %in% .y)) %>%
                   # all docs have a probability of being assigned to a topic
-                  # we only want the 3% most likely
-                  map(~ filter(.x, gamma > quantile(gamma, prob = 1 - 3/100)))
-names(edu_docs) <- names(docs)
+                  # we only want the upper 2% most likely
+                  map( ~filter(.x, gamma > quantile(gamma, 0.998)))
+
 
 get_edu_corpora <- function(corpus, doc_ids) {
   corpus %>%
   filter(doc_id %in% doc_ids)
 }
 
-edu <- map2(corpora, edu_docs,
-                    ~get_edu_corpora(corpus = .x,
-                                    doc_ids = .y$document))
-# do we need metadata?
-metadata <- readRDS(here("data/speeches_metadata.rds"))
-edu <- edu %>%
-  map(~ inner_join(.x, metadata, by = doc_id))
-
+edu <- map2(corpora,
+            edu_docs,
+            ~get_edu_corpora(corpus = .x,
+                             doc_ids = .y$document
+                             )
+            )
 
 ### WORDFISH
 # using the austin package
