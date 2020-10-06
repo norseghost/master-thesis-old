@@ -8,7 +8,7 @@ tags
 # or the literature
 lit/
 # data is pre-generated, no need to track
-data/
+# data/
 # visualizations are for data exploration
 vis/
 # png, pdf figures are ephemeral
