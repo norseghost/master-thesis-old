@@ -514,12 +514,13 @@ read_json <- function(name, k) {
   return(jsons)
 }
 jsons <- read_json(name = identifier, k = k)
-
-# FIXME: How do I make a directory inside the function?
+vis_dir <- file.path(here("vis"), paste0(identifier, "_k", k))
+dir.create(vis_dir, recursive = TRUE)
 imap(jsons, ~ serVis(
-                json = .x, 
-                out.dir = here(str_c("vis/bigrams_tfidfs_more_filtered/", .y)),
-                open.browser = FALSE))
+                json = .x,
+                out.dir = file.path(vis_dir, .y),
+                open.browser = FALSE)
+)
 
 assignments <- map2(ldas, dtms, augment, .x, .y)
 
