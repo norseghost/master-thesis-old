@@ -476,7 +476,7 @@ topicmodels_json_ldavis <- function(model, dtm, name, k, period){
   require(slam)
   library(parallel)
   cluster <- makePSOCKcluster(
-                names = 8
+                names = 1
         )
   # Find required quantities
   phi <- as.matrix(posterior(model)$terms)
