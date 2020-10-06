@@ -735,7 +735,8 @@ wordfish_corpus <- function(corpus, timeperiod, group, n, filters, filter_col) {
       # TODO: rewrite using .data[[group]] syntax
       #       ?dplyr_data_masking
       #       or dplyr::across
-      filter(!!sym(filter_col) %in% filters)
+      filter(!!sym(filter_col) %in% filters) %>%
+      mutate(across({{filter_col}}, ~factor(.x, levels = filters)))
   }
   if(!missing(group)) {
     cat(str_c("Group ", group, " detected\n"))
