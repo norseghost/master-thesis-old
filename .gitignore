@@ -284,3 +284,6 @@ TSWLatexianTemp*
 
 # fuse
 .fuse*
+
+# temporary
+tmp/
