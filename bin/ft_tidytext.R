@@ -706,6 +706,14 @@ edu <- map2(corpora,
 ### WORDFISH
 # using the austin package
 
+# for control, read in education policy documents of 
+# major parties
+
+edufiles <- list.files(path = here("tmp/"),
+                       pattern = str_c(".*", "txt"))
+edupolicy <- map(edufiles, ~ read_file(str_c(here("tmp/"), .x)))
+  names(edupolicy) <- edufiles %>%
+    map_chr(~ str_match(.x, pattern = str_c("(.*)", ".txt"))[,2])
 
 # need to remove the per-period grouping now,
 # to allow for more creative grouping later
