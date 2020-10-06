@@ -155,13 +155,15 @@ I folketingstalerne omtales regeringen og ministre fx forholdsvis oftere end i d
 I stedet for — eller i tillæg til — at jeg på egen hånd vurderer, hvilke ord der skal sorteres fra, kan jeg også her tage en computers evner til at tælle i brug.
 Den kan beregne hvilke ord der forekommer hyppigt eller sjældent; jeg skal derefter “blot” beslutte mig for en tærskelværdi jeg vil vælge ord indenfor.
 
-Jeg har, efter en \texttt{tf-idf}\footnote{\textit{text frequency — inverse document frequency} er en beregning der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
-  Tokens der forekommer i mange eller alle dokumenter vil have en lav \texttt{tf-idf}; tokens der findes i færre dokumenter vil have en højere \texttt{tf-idf}-score \autocite[s. 29]{silgeTextMiningTidy2017}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnits\ værdien af den samlede vægtning\footnote{se \citeauthor{grunTopicmodelsPackageFitting2011} (\citeyear{grunTopicmodelsPackageFitting2011}) s. 13 for begrundelse} for \texttt{tf-idf}.
+Begreber der forekommer meget hyppigt eller meget sjældent vil kunne forvrænge en analyse; og gøre det svært at drage meningsfulde konklusioner.
+Derfor sorterer jeg de mest almindelige begreber fra; og også dem, der ikke forekommer ret tit.
+Det gør jeg efter en \textit{tf-idf}\footnote{\textit{text frequency — inverse document frequency} er en beregning der tilskriver tokens en værdi efter hvor hyppigt de forekommer i det samlede korpus.
+Tokens der forekommer i mange eller alle dokumenter vil have en lav \textit{tf-idf}; tokens der findes i færre dokumenter vil have en højere \textit{tf-idf}-score \autocite[s. 29]{silgeTextMiningTidy2017}.} vægtning af tokens pr tale, sorteret de tokens fra, der falder under gennemsnitsværdien af \textit{tf-idf}-score\footnote{Jeg kom frem til at bruge gennemsnitsværdien som nedre tærskel efter en afprøvning af forskellige værdier herfor; hvor andre tilgange overvejende tog for meget information væk.} for \textit{tf-idf}.
 Dermed har jeg udeladt tokens der forekommer meget hyppigt i min samling korpora, og vil have lav værdi i forhold til at adskille dokumenter fra hinanden.
-For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de ord, der er i de højeste to promille for \texttt{tf-idf}.
+For at udelukke ord der forekommer meget sjældent — typisk tekstkonverteringsfejl og lignende — har jeg derefter udeladt de tokens, der er i de højeste to promille for \texttt{tf-idf} af de resterende dokumenter.
 
-Efter jeg har genereret \texttt{tf-idf} værdier for tokens i mine korpora, laver jeg et \textit{document-term matrix} over disse.
-Et document-term matrix er en krydstabel over tokens og dokumenter; hvor der markeres, hvorvidt et token forefindes i et dokument.
+Efter jeg har genereret \textit{tf-idf} værdier for tokens i mine korpora, laver jeg et \textit{document-term matrix} over disse.
+Et \textit{document-term matrix} er en krydstabel over tokens og dokumenter; hvor der markeres, hvorvidt et token forefindes i et dokument.
 Også her kan datasættets kompleksitet reduceres, ved at fjerne de termer, der ikke findes i ret mange dokumenter.
 
 Som nævnt ovenfor, er en konsekvens af brug af disse teknikker en udviskning af grænseværdier og tab af data i yderpositioner.
