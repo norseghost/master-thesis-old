@@ -48,8 +48,19 @@ Derefter foretager jeg en sammenligning af forskellige modeller for beregning af
 \end{figure}
 
 Figur ~\ref{fig:modelsFull} (side ~\pageref{fig:modelsFull}) viser en sammenligning af 4 forskellige modeller for udvælgelse af et "optimalt" antal emner for en LDA-baseret topic model.
-Ved at se på kurvene fra disse sammenligninger, konvergerer kurvene omkring de 30-50 emner, inden de bevæger sig opad igen\footnote{Med undtagelse af \autocite{deveaudAccurateEffectiveLatent2014}; der ikke ser ud til at være en særlig hjælpsom algoritme i denne sammenhæng. Muligvis en konsekvens af mit noget specielle datasæt.}.
-Jeg går videre med 45 emner, da det er her; der er størst enighed for hver kurve.
+Ved at se på kurvene fra disse sammenligninger, konvergerer kurvene omkring de 25-65 emner, inden de bevæger sig opad igen\footnote{Med undtagelse af \autocite{deveaudAccurateEffectiveLatent2014}; der ikke ser ud til at være en særlig hjælpsom algoritme i denne sammenhæng. Muligvis en konsekvens af mit noget specielle datasæt.}.
+Jeg går videre med 45 emner, da det er her; der er flest perioder med en “bund” i sine kurve.
+Et nærmere blik på kurverne giver også nogle indsigter.
+Perioden \textit{2001-14} flader ud helt op til ca 75 emner, i lighed med “kontrolperioden”\footnote{
+De emner (og de tilhørende dokumenter) vil dog ikke være de samme som begreberne for de individuelle perioder lagt sammen; da modellen laver beregningen på bagrund af alle dokumenterne på en gang.
+Jævnfør “sækken med ord” fra min metodediskussion, er der nu langt flere ord i sækken; og de skal fordeles over flere dokumenter.}
+\textit{all}.
+Dette er formodentlig et produkt af, at disse grupperinger er på top i antal dokumenter at gennemgå; som funktion af deres forholdsvis lange tidsperioder.
+Dermed er jeg igen nået til en subjektiv vurdering:
+Skulle man give hver periode forskelligt antal emner?
+Jeg vælger at ensrette antal emner. 
+Dette både for sammenligningen mellem perioders skyld;
+men også af tidshensyn.
 
 En LDA beregning giver ikke navngivne emner, som sådan.
 I kraft af at være en ikke-superviseret algoritme, bliver dokumenterne fordelt ud over det anviste antal emner\footnote{LDA tildeler dokumenterne en score $\gamma$ mellem 0 og 1 for deres bidrag til et givet emne. Emner er distributioner over begreber; hvor hvert begreb tildeles en score $\beta$ mellem 0 og 1 for at tilhøre et givet emne. \\ \\ Hvert emne $\phi k$ er en multinominel distribution over ordforrådet $W$, og hvert dokument $\theta  d$er en multinominel distribution over $K$ emner. Dermed er sandsynligheden for at et givet dokument ($d$) bidrager til emnet $k$ $\theta _{d,k}$; og sandsynligheden for at ord $w$ tilhører et emne $\phi _{k,w}$. De multinominale distributioner for emnet genereres af en konjugat Dirichlet prior((FIXME: dansk begreb?)) $\overrightarrow{\beta}$, og distributionerne for dokumenter på baggrund af en Dirchlet prior $\overrightarrow{\alpha}$. Deraf navnet \textit{“Latent Dirichlet Allocation”} \autocite[s.65f]{deveaudAccurateEffectiveLatent2014}} , i det omfang (algoritmen mener) de ligner hinanden.
